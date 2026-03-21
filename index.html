@@ -17,7 +17,7 @@
     </script>
     
     <style>
-        /* === CSS ENTERPRISE VIPERCELL v6.0 === */
+        /* === CSS ENTERPRISE VIPERCELL v6.1 === */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
         :root {
@@ -86,7 +86,7 @@
         .admin-tab-content, .guru-tab-content { display: none; animation: fadeIn 0.3s ease; }
         .admin-tab-content.active, .guru-tab-content.active { display: block; padding-bottom: 40px; }
 
-        /* ID CARD DESIGN (Fitur Baru) */
+        /* ID CARD DESIGN */
         .id-card-wrapper { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
         .id-card { width: 250px; height: 380px; border-radius: 15px; background: white; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; overflow: hidden; position: relative; display: flex; flex-direction: column; align-items: center; }
         .id-card-header { background: linear-gradient(135deg, var(--primary-dark), var(--primary-color)); width: 100%; height: 100px; color: white; text-align: center; padding-top: 15px; position: absolute; top: 0; left: 0; z-index: 1; }
@@ -97,12 +97,12 @@
         .id-card-body p { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 10px; }
         .id-card-qr { width: 100px; height: 100px; background: #f8fafc; border-radius: 10px; padding: 5px; border: 1px solid #e2e8f0; margin-top: auto;}
         
-        /* RFID SCANNER UI (Fitur Baru) */
+        /* RFID SCANNER UI */
         .rfid-box { background: var(--primary-dark); border-radius: 20px; padding: 40px; text-align: center; color: white; box-shadow: 0 15px 30px rgba(37, 99, 235, 0.3); position: relative; overflow: hidden;}
         .rfid-box h2 { font-size: 24px; margin-bottom: 10px; }
         .rfid-box p { font-size: 14px; opacity: 0.9; margin-bottom: 30px; }
         .rfid-icon { font-size: 60px; margin-bottom: 20px; animation: pulse 2s infinite; }
-        .rfid-input { opacity: 0; position: absolute; top: -100px; } /* Hidden input for physical scanner to type into */
+        .rfid-input { opacity: 0; position: absolute; top: -100px; } 
         .rfid-dummy-input { background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); color: white; text-align: center; font-size: 18px; letter-spacing: 2px; padding: 15px; border-radius: 10px; width: 100%; max-width: 300px; outline: none;}
         .rfid-dummy-input::placeholder { color: rgba(255,255,255,0.5); }
 
@@ -133,7 +133,7 @@
         .badge { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
         .badge.success { background-color: #d1fae5; color: #059669; }
         .badge.warning { background-color: #fef3c7; color: #d97706; }
-        .admin-preview-badge { display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--text-dark); color: white; padding: 12px 25px; border-radius: 30px; font-size: 13px; font-weight: 700; z-index: 9999; cursor: pointer; align-items: center; gap: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .queue-badge { display: none; font-size: 11px; background: var(--warning-color); color: white; padding: 4px 10px; border-radius: 6px; margin-left: auto; font-weight: 700; }
         
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.4); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
         .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease-out; }
@@ -157,7 +157,6 @@
 <body>
 
     <div id="toastNotif" class="toast"><span id="toastMsg">Memproses...</span></div>
-    <div id="adminPreviewExit" class="admin-preview-badge" onclick="exitPreviewMode()">🚨 Keluar Mode Preview</div>
 
     <div id="view-login" class="view-section active">
         <div class="login-wrapper">
@@ -194,7 +193,7 @@
                 
                 <div class="menu-label">Laporan & Alat</div>
                 <div class="sidebar-link" onclick="switchAdminTab('admin-finance', this)"><span class="icon">💳</span> Kelola Keuangan</div>
-                <div class="sidebar-link" onclick="switchAdminTab('admin-idcard', this)"><span class="icon">sisi</span> Kartu Pegawai/Siswa</div>
+                <div class="sidebar-link" onclick="switchAdminTab('admin-idcard', this)"><span class="icon">🪪</span> Kartu Pegawai/Siswa</div>
                 <div class="sidebar-link" onclick="switchAdminTab('admin-settings', this)"><span class="icon">⚙️</span> Pengaturan Sistem</div>
             </nav>
             <div class="sidebar-footer">
@@ -233,7 +232,7 @@
                 <div id="admin-users" class="admin-tab-content">
                     <div class="grid-2">
                         <div class="card">
-                            <h3>Tambah Murid / Guru</h3>
+                            <h3>Tambah Murid / Guru <span id="queueBadgeUI" class="queue-badge">⏳ Antrean: 0</span></h3>
                             <div class="grid-2" style="gap: 15px; margin-bottom: 15px;">
                                 <div class="form-group" style="margin: 0;"><label>Peran</label><select id="newUserRole"><option value="siswa">Siswa</option><option value="guru">Guru</option></select></div>
                                 <div class="form-group" style="margin: 0;"><label>Nama Lengkap</label><input type="text" id="newUserName" placeholder="Masukkan nama" autocomplete="off"></div>
@@ -260,7 +259,7 @@
                     <div class="card" style="text-align: center; padding: 50px;">
                         <div style="font-size: 50px; margin-bottom: 15px;">📚</div>
                         <h2 style="margin-bottom: 10px;">Modul Kelola Akademik</h2>
-                        <p style="color: var(--text-muted); font-size: 14px; max-width: 400px; margin: 0 auto;">Fitur relasional lanjutan (Pembuatan Kelas, Jurusan, dan Mata Pelajaran) memerlukan arsitektur database multi-table yang akan diterapkan pada versi Server-Side mendatang.</p>
+                        <p style="color: var(--text-muted); font-size: 14px; max-width: 400px; margin: 0 auto;">Fitur relasional lanjutan (Pembuatan Kelas, Jurusan, dan Mata Pelajaran) diakses via modul sistem akademik inti.</p>
                     </div>
                 </div>
 
@@ -269,11 +268,10 @@
                         <div class="rfid-box">
                             <div class="rfid-icon">📡</div>
                             <h2>Dashboard Monitoring RFID</h2>
-                            <p>Pintu Masuk - Sesi 1</p>
+                            <p>Pintu Masuk - Sistem Utama</p>
                             <div style="font-size: 40px; font-weight: 800; margin: 20px 0; font-family: monospace;" id="rfidClock">00:00:00</div>
                             <p style="font-size: 16px; font-weight: 600;">Tap your RFID card or scan QR code</p>
                             <p style="font-size: 12px; opacity: 0.6; margin-bottom: 10px;">Letakkan kartu RFID pada alat reader Anda</p>
-                            
                             <input type="text" id="rfidInputScanner" class="rfid-dummy-input" placeholder="(Menunggu scan...)" autocomplete="off">
                         </div>
                         <div class="card">
@@ -292,7 +290,6 @@
                             <label>Pilih Pengguna untuk Mencetak Kartu</label>
                             <select id="idCardUserSelect"><option value="">Memuat data...</option></select>
                         </div>
-                        
                         <div class="id-card-wrapper" id="idCardPreview" style="display: none;">
                             <div class="id-card">
                                 <div class="id-card-header">
@@ -326,14 +323,6 @@
                 </div>
 
                 <div id="admin-settings" class="admin-tab-content">
-                    <div class="card" style="background: var(--primary-light); border: 1px dashed var(--primary-color);">
-                        <h3 style="color: var(--primary-dark); border: none;">Mode Pratinjau Sistem</h3>
-                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Uji fungsionalitas UI Guru atau Siswa. Tekan tombol merah darurat di bawah layar untuk kembali ke Admin.</p>
-                        <div style="display: flex; gap: 15px;">
-                            <button class="btn-action outline" onclick="startPreviewMode('view-guru')">Preview Guru</button>
-                            <button class="btn-action" onclick="startPreviewMode('view-siswa')">Preview Siswa</button>
-                        </div>
-                    </div>
                     <div class="grid-2">
                         <div class="card">
                             <h3>Identitas Aplikasi Web</h3>
@@ -353,7 +342,7 @@
 
     <div id="view-guru" class="view-section desktop-layout">
         <aside class="sidebar">
-            <div class="sidebar-header"><h2 class="dynamic-school-name">Absensi Sekolah</h2><p>Guru / Wali Kelas</p></div>
+            <div class="sidebar-header"><h2 class="dynamic-school-name">Absensi Sekolah</h2><p>Panel Guru</p></div>
             <nav class="sidebar-menu">
                 <div class="sidebar-link active" onclick="switchGuruTab('guru-dashboard', this)"><span class="icon">🏠</span> Dashboard</div>
                 <div class="sidebar-link" onclick="switchGuruTab('guru-absen', this)"><span class="icon">📅</span> Kelola Absensi</div>
@@ -396,7 +385,7 @@
         <div id="siswa-main-dashboard" style="padding: 0 20px;">
             <div class="card" style="margin-top: 20px; border-left: 4px solid var(--primary-color); padding: 20px;">
                 <h3 style="border: none; margin: 0; font-size: 14px;">Tahun Ajaran 2025/2026</h3>
-                <p style="font-size: 11px; color: var(--text-muted); margin-top: 5px; font-weight: 600;">Semester 2 (Genap)</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 5px; font-weight: 600;">Semester Aktif</p>
             </div>
             <div class="menu-grid">
                 <div class="menu-item" onclick="openSiswaSubpage('siswa-subpage-absen')"><div class="menu-icon">📅</div><span>Absen</span></div>
@@ -427,7 +416,7 @@
                     <img id="sppQrImageSiswa" src="" alt="QRIS" style="max-width: 180px; display: none; border-radius: 8px;">
                     <p id="sppQrFallbackSiswa" style="font-size: 12px; font-weight: 600;">Admin belum mengatur QRIS.</p>
                 </div>
-                <button class="btn-action success" id="btnKonfirmasiSppSiswa" style="width:100%;">Konfirmasi Pembayaran</button>
+                <button class="btn-action success" id="btnKonfirmasiSppSiswa" style="width:100%; padding: 16px;">Konfirmasi Pembayaran</button>
             </div>
             <div class="card"><h3>Riwayat Pembayaran</h3><div class="user-list-wrapper" id="listSppSiswaMobile"></div></div>
         </div>
@@ -457,19 +446,20 @@
         </div>
 
         <nav class="bottom-nav">
-            <div class="nav-item active" id="nav-home" onclick="switchSiswaBottomNav('nav-home')"><span style="font-size: 18px;">🏠</span>Dashboard</div>
-            <div class="nav-item" id="nav-nilai" onclick="switchSiswaBottomNav('nav-nilai')"><span style="font-size: 18px;">📊</span>Nilai</div>
-            <div class="nav-item" id="nav-jadwal" onclick="switchSiswaBottomNav('nav-jadwal')"><span style="font-size: 18px;">🔔</span>Jadwal</div>
-            <div class="nav-item btn-logout"><span style="font-size: 18px; color: var(--danger-color);">🚪</span>Keluar</div>
+            <div class="nav-item active" id="nav-home" onclick="switchSiswaBottomNav('nav-home')"><span style="font-size: 20px;">🏠</span>Dashboard</div>
+            <div class="nav-item" id="nav-nilai" onclick="switchSiswaBottomNav('nav-nilai')"><span style="font-size: 20px;">📊</span>Nilai</div>
+            <div class="nav-item" id="nav-jadwal" onclick="switchSiswaBottomNav('nav-jadwal')"><span style="font-size: 20px;">🔔</span>Jadwal</div>
+            <div class="nav-item btn-logout"><span style="font-size: 20px; color: var(--danger-color);">🚪</span>Keluar</div>
         </nav>
     </div>
 
     <div class="modal-overlay" id="modalLupaSandi">
         <div class="modal-content">
             <span class="close-modal" onclick="hideModal('modalLupaSandi')">×</span>
+            <div style="font-size:40px; margin-bottom:15px; display:inline-block;">🔐</div>
             <h3 style="margin-bottom: 10px; font-weight: 800;">Pemulihan Sandi</h3>
             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Sistem keamanan memblokir perubahan mandiri. Hubungi Admin Sekolah.</p>
-            <button class="btn-action" onclick="hideModal('modalLupaSandi')">Tutup</button>
+            <button class="btn-action" onclick="hideModal('modalLupaSandi')" style="width: 100%;">Tutup</button>
         </div>
     </div>
 
@@ -480,7 +470,7 @@
             <input type="hidden" id="editUserId">
             <div class="form-group"><label>Nama Lengkap</label><input type="text" id="editUserName"></div>
             <div class="form-group"><label>Email Login</label><input type="email" id="editUserIdentitas" disabled></div>
-            <button class="btn-action" id="btnSaveUserEdit">Simpan Perubahan</button>
+            <button class="btn-action" id="btnSaveUserEdit" style="width: 100%; margin-top: 10px;">Simpan Perubahan</button>
         </div>
     </div>
 
@@ -497,9 +487,28 @@
         const ADMIN_EMAIL = "millerstoreid@gmail.com";
         let allUsersData = {}; let currentUserRole = '', currentUserName = '', currentUserUid = '';
         let activeQrisString = ""; let currentFilterRole = 'siswa';
-        window.adminActivePreview = null;
 
-        // UI Utilities
+        // === QUEUE ENGINE ===
+        const saveQueue = []; let isProcessingQueue = false;
+        function updateQueueUI() {
+            const badge = document.getElementById('queueBadgeUI');
+            if(badge) {
+                if(saveQueue.length > 0) { badge.innerText = `⏳ Antrean: ${saveQueue.length}`; badge.style.display = 'inline-block'; } 
+                else { badge.style.display = 'none'; }
+            }
+        }
+        async function processSaveQueue() {
+            if(saveQueue.length === 0) { isProcessingQueue = false; updateQueueUI(); return; }
+            isProcessingQueue = true; const task = saveQueue[0];
+            try {
+                const userCredential = await createUserWithEmailAndPassword(secondaryAuth, task.email, task.password);
+                await set(ref(db, 'users/' + userCredential.user.uid), { nama: task.nama, role: task.role, email: task.email, waktuDibuat: new Date().toISOString() });
+                await signOut(secondaryAuth); showToast(`${task.nama} tersimpan!`);
+            } catch (error) { showToast(`Gagal: ${task.email}`); }
+            saveQueue.shift(); updateQueueUI(); processSaveQueue();
+        }
+
+        // === UI UTILITIES ===
         window.showModal = (id) => document.getElementById(id).classList.add('active');
         window.hideModal = (id) => document.getElementById(id).classList.remove('active');
         
@@ -550,12 +559,6 @@
             }
         };
 
-        window.startPreviewMode = (viewId) => {
-            if (currentUserRole !== 'admin') return; window.adminActivePreview = viewId; switchView(viewId);
-            document.getElementById('adminPreviewExit').style.display = 'flex'; showToast(`Mode Preview`);
-        }
-        window.exitPreviewMode = () => { window.adminActivePreview = null; switchView('view-admin'); document.getElementById('adminPreviewExit').style.display = 'none'; }
-
         function getAvatarColor(name) {
             const colors = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4'];
             let sum = 0; for(let i=0; i<name.length; i++) sum += name.charCodeAt(i); return colors[sum % colors.length];
@@ -573,7 +576,7 @@
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 document.getElementById('loginText').innerText = "Masuk Sekarang"; currentUserUid = user.uid;
-                if (user.email === ADMIN_EMAIL) { currentUserRole = 'admin'; window.exitPreviewMode(); } 
+                if (user.email === ADMIN_EMAIL) { currentUserRole = 'admin'; switchView('view-admin'); } 
                 else {
                     const snapshot = await get(ref(db, 'users/' + user.uid));
                     if (snapshot.exists()) {
@@ -599,12 +602,10 @@
             const nama = namaInput.value.trim(); const email = emailInput.value.trim();
             if(!nama || !email || password.length < 6) return showToast("Data tidak valid!");
             
-            try {
-                const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password);
-                await set(ref(db, 'users/' + userCredential.user.uid), { nama: nama, role: role, email: email, waktuDibuat: new Date().toISOString() });
-                await signOut(secondaryAuth); showToast(`${nama} tersimpan!`);
-                namaInput.value = ''; emailInput.value = ''; namaInput.focus();
-            } catch (error) { showToast("Gagal menyimpan"); }
+            // Queue Process
+            saveQueue.push({ nama, email, role, password }); updateQueueUI();
+            namaInput.value = ''; emailInput.value = ''; namaInput.focus();
+            if(!isProcessingQueue) processSaveQueue();
         });
 
         onValue(ref(db, 'users'), (snapshot) => {
@@ -654,7 +655,7 @@
             catch (error) { showToast("Gagal update"); } 
         });
 
-        // --- FITUR BARU: ID CARD GENERATOR ---
+        // --- ID CARD GENERATOR ---
         function populateIdCardDropdown() {
             const select = document.getElementById('idCardUserSelect'); if(!select) return;
             select.innerHTML = '<option value="">-- Pilih Pengguna --</option>';
@@ -672,8 +673,7 @@
             preview.style.display = 'flex';
         });
 
-        // --- FITUR BARU: RFID / QR SCANNER ---
-        // Menjalankan jam digital di layar RFID
+        // --- RFID / QR SCANNER ---
         setInterval(() => {
             const clock = document.getElementById('rfidClock');
             if(clock && document.getElementById('admin-rfid').classList.contains('active')) {
@@ -681,7 +681,6 @@
             }
         }, 1000);
 
-        // Simulasi input dari alat RFID Scanner fisik (biasanya mengirimkan ketikan cepat + Enter)
         const rfidInput = document.getElementById('rfidInputScanner');
         if(rfidInput) {
             rfidInput.addEventListener('keypress', async (e) => {
@@ -697,26 +696,23 @@
                         await set(ref(db, `absensi/${today}/${scannedUid}`), { nama: userName, waktu: time });
                         showToast(`Absen Diterima: ${userName}`);
                         
-                        // Catat ke log RFID lokal
                         const logDiv = document.createElement('div'); logDiv.className = 'user-item';
                         logDiv.innerHTML = `<div class="user-info-box"><h4>${userName}</h4></div><span class="badge success">${time}</span>`;
                         const historyList = document.getElementById('rfidHistoryList');
                         if(historyList.innerHTML.includes('Belum ada')) historyList.innerHTML = '';
                         historyList.prepend(logDiv);
                     } else {
-                        showToast("Kartu Tidak Dikenali!", "error");
+                        showToast("Kartu Tidak Dikenali!");
                     }
                 }
             });
-            // Auto-focus ketika tab RFID dibuka agar siap menangkap scan alat
-            document.querySelector('.sidebar-link[onclick*="admin-rfid"]').addEventListener('click', () => {
+            document.querySelector('.sidebar-link[onclick*="admin-rfid"]')?.addEventListener('click', () => {
                 setTimeout(() => rfidInput.focus(), 100);
             });
         }
 
         // --- SISTEM ABSEN MANUAL ---
         document.getElementById('btnHadirSiswa').addEventListener('click', async () => {
-            if(currentUserRole === 'admin') return alert("Admin Preview: Logika absen berfungsi.");
             const today = new Date().toISOString().split('T')[0];
             await set(ref(db, `absensi/${today}/${currentUserUid}`), { nama: currentUserName, waktu: new Date().toLocaleTimeString() });
             showToast("Absen Tercatat!"); document.getElementById('btnHadirSiswa').innerText = "✅ Anda Sudah Absen"; document.getElementById('btnHadirSiswa').disabled = true;
@@ -782,10 +778,6 @@
             catch (err) { showToast("Gagal"); }
         });
 
-        window.adminKonfirmasiSPP = async (trxKey) => {
-            try { await update(ref(db, `transactions/spp/${trxKey}`), { status: "Lunas" }); showToast("Lunas!"); } catch (err) { showToast("Gagal"); }
-        };
-
         onValue(ref(db, 'transactions/spp'), (snapshot) => {
             const listAdmin = document.getElementById('listSppAdmin'); const listSiswa = document.getElementById('listSppSiswaMobile'); let pendingCount = 0;
             if(listAdmin) listAdmin.innerHTML = ''; if(listSiswa) listSiswa.innerHTML = '';
@@ -801,13 +793,17 @@
                     listAdmin.innerHTML += `
                         <div class="user-item">
                             <div class="user-info-box"><h4>${trx.namaSiswa}</h4><p>${dateStr}</p></div>
-                            ${trx.status === 'Pending' ? `<button class="btn-confirm" onclick="adminKonfirmasiSPP('${key}')">Konfirmasi</button>` : `<span class="badge success">Lunas</span>`}
+                            ${trx.status === 'Pending' ? `<button class="btn-action success" style="padding: 6px 12px; font-size: 11px;" onclick="adminKonfirmasiSPP('${key}')">Konfirmasi</button>` : `<span class="badge success">Lunas</span>`}
                         </div>`;
                 }
                 if(listSiswa && trx.uid === currentUserUid) listSiswa.innerHTML += `<div class="user-item"><div class="user-info-box"><h4>SPP Bulanan</h4><p>${dateStr}</p></div><span class="badge ${trx.status === 'Pending' ? 'warning' : 'success'}">${trx.status}</span></div>`;
             });
             if(document.getElementById('dashPendingSpp')) document.getElementById('dashPendingSpp').innerText = pendingCount;
         });
+        
+        window.adminKonfirmasiSPP = async (trxKey) => {
+            try { await update(ref(db, `transactions/spp/${trxKey}`), { status: "Lunas" }); showToast("Lunas!"); } catch (err) { showToast("Gagal"); }
+        };
 
         // --- PENGATURAN GLOBAL ---
         document.getElementById('btnSaveJadwalAdminTab')?.addEventListener('click', async () => {
