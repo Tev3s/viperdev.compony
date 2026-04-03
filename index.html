@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartBell v24.0 - Ultimate Stable Edition</title>
+    <title>SmartBell v19.0 - Cloud Premium TTS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
             color: #0f172a;
             -webkit-tap-highlight-color: transparent;
             margin: 0;
             overflow-x: hidden;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         }
         
         .font-mono-custom { font-family: 'JetBrains Mono', monospace; letter-spacing: -0.05em; }
@@ -28,15 +28,13 @@
 
         .playing-wave { animation: wave 0.8s infinite ease-in-out alternate; }
         @keyframes wave { 0% { transform: scaleY(0.3); opacity: 0.5; } 100% { transform: scaleY(1.2); opacity: 1; } }
-        .ai-loading-dots::after { content: ''; animation: dots 1.5s steps(5, end) infinite; }
-        @keyframes dots { 0%, 20% { content: ''; } 40% { content: '.'; } 60% { content: '..'; } 80%, 100% { content: '...'; } }
 
         input[type=range] {
             -webkit-appearance: none; background: #e2e8f0; border-radius: 8px; height: 6px; width: 100%;
         }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%;
-            background: #4f46e5; cursor: pointer; box-shadow: 0 0 12px rgba(79, 70, 229, 0.4);
+            background: #3b82f6; cursor: pointer; box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
             transition: transform 0.2s ease;
         }
         input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
@@ -46,310 +44,307 @@
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em;
         }
-        select option { background-color: #ffffff; color: #0f172a; }
-        select optgroup { background-color: #f1f5f9; color: #475569; font-weight: bold; }
 
         .day-cb:checked + div {
-            background-color: #4f46e5; color: white; border-color: #4f46e5;
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.35);
+            background-color: #3b82f6; color: white; border-color: #3b82f6;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
             font-weight: 800;
         }
 
         .premium-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 1);
-            border-radius: 1.75rem;
-            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.05);
+            background: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 2rem;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
         }
 
         .smooth-input {
             background: #f8fafc; border: 1px solid #e2e8f0; transition: all 0.3s ease;
         }
         .smooth-input:focus {
-            background: #ffffff; border-color: #4f46e5; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+            background: #ffffff; border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
         .logo-container:hover .logo-overlay { opacity: 1; }
+        
         #yt-player-container { position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none; }
     </style>
 </head>
-<body class="h-screen w-screen flex flex-col p-2 lg:p-4 lg:gap-4 overflow-hidden relative">
+<body class="h-screen w-screen flex flex-col p-2 lg:p-6 lg:gap-6 overflow-hidden bg-slate-50 relative">
 
     <div id="yt-player-container"></div>
 
     <!-- ================= NAVBAR ================= -->
     <header class="premium-card px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4 shrink-0 z-20 mx-2 lg:mx-0 mt-2 lg:mt-0">
+        
         <div class="flex items-center gap-4 w-full lg:w-auto">
             <input type="file" id="logo-upload" class="hidden" accept="image/*" onchange="handleLogoUpload(event)">
-            <div class="relative w-14 h-14 rounded-2xl bg-white flex items-center justify-center cursor-pointer border border-slate-200 shadow-sm overflow-hidden logo-container shrink-0" onclick="document.getElementById('logo-upload').click()" title="Ubah Logo">
+            <div class="relative w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center cursor-pointer border border-slate-200 shadow-sm overflow-hidden logo-container shrink-0" onclick="document.getElementById('logo-upload').click()" title="Klik untuk ubah logo">
                 <img id="school-logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'><path d='M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72l5 2.73 5-2.73v3.72z'/></svg>" alt="Logo" class="w-full h-full object-cover">
-                <div class="logo-overlay absolute inset-0 bg-slate-900/60 opacity-0 transition-opacity flex items-center justify-center">
+                <div class="logo-overlay absolute inset-0 bg-black/50 opacity-0 transition-opacity flex items-center justify-center">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
                 </div>
             </div>
             <div>
                 <h1 class="text-2xl font-extrabold tracking-tight text-slate-800 leading-none">SmartBell</h1>
-                <p class="text-indigo-600 text-[10px] font-black uppercase tracking-widest mt-1">V24.0 - Ultra Stable & AI</p>
+                <p class="text-blue-600 text-[10px] font-black uppercase tracking-widest mt-1">Cloud Studio TTS</p>
             </div>
         </div>
 
-        <div class="flex flex-col md:flex-row items-center gap-3 w-full lg:w-auto bg-slate-50/50 p-2 lg:p-0 lg:bg-transparent rounded-2xl border border-slate-200 lg:border-none">
-            <div class="w-full md:w-36 flex flex-col gap-1.5 px-3 justify-center">
+        <div class="flex flex-col md:flex-row items-center gap-3 w-full lg:w-auto bg-slate-50/50 p-2 lg:p-0 lg:bg-transparent rounded-2xl">
+            <div class="w-full md:w-36">
+                <label class="text-slate-500 text-[9px] font-bold uppercase tracking-widest ml-1 mb-1 block">Model Bel</label>
+                <select id="bell-model-select" class="w-full smooth-input rounded-xl px-3 py-2 text-[11px] font-bold text-indigo-700 outline-none">
+                    <option value="classic">🇬🇧 Westminster (Klasik)</option>
+                    <option value="japan">🇯🇵 Sekolah Jepang (Ceria)</option>
+                    <option value="airport">✈️ Bandara Internasional</option>
+                    <option value="gamelan">🇮🇩 Gamelan Tradisional</option>
+                    <option value="future">🚀 Futuristik Sci-Fi</option>
+                </select>
+            </div>
+            
+            <div class="w-full md:w-36 flex flex-col gap-1.5 px-2 justify-center">
                 <label class="text-slate-500 text-[9px] font-bold uppercase tracking-widest flex justify-between">
-                    <span>Volume Master</span><span id="vol-val" class="text-indigo-600 font-black">80%</span>
+                    <span>Volume</span><span id="vol-val" class="text-blue-600 font-black">80%</span>
                 </label>
                 <input type="range" id="volume-slider" min="0" max="100" value="80" class="mt-1">
             </div>
+            
             <div class="w-full md:w-auto flex gap-2">
-                <div class="w-full md:w-40">
-                    <label class="text-slate-500 text-[9px] font-bold uppercase tracking-widest ml-1 mb-1 block">Suara ID (Utama)</label>
-                    <select id="voice-id-select" class="w-full smooth-input rounded-xl px-3 py-2 text-[10px] font-bold text-slate-700 outline-none shadow-sm"></select>
+                <div class="w-full md:w-32">
+                    <label class="text-slate-500 text-[9px] font-bold uppercase tracking-widest ml-1 mb-1 block">Suara Cloud ID</label>
+                    <select id="voice-id-select" class="w-full smooth-input rounded-xl px-3 py-2 text-[10px] font-bold text-slate-700 outline-none">
+                        <option value="Aoede">👩🏻 Aoede (Sopan/Dewasa)</option>
+                        <option value="Kore">👧🏻 Kore (Ceria/Muda)</option>
+                        <option value="Charon">👨🏻 Charon (Berwibawa)</option>
+                        <option value="Fenrir">👨🏻‍🦰 Fenrir (Tegas)</option>
+                    </select>
                 </div>
-                <div class="w-full md:w-40">
-                    <label class="text-slate-500 text-[9px] font-bold uppercase tracking-widest ml-1 mb-1 block">Suara EN</label>
-                    <select id="voice-en-select" class="w-full smooth-input rounded-xl px-3 py-2 text-[10px] font-bold text-slate-700 outline-none shadow-sm"></select>
+                <div class="w-full md:w-32">
+                    <label class="text-slate-500 text-[9px] font-bold uppercase tracking-widest ml-1 mb-1 block">Suara Cloud EN</label>
+                    <select id="voice-en-select" class="w-full smooth-input rounded-xl px-3 py-2 text-[10px] font-bold text-slate-700 outline-none">
+                        <option value="Puck">👨🏼 Puck (Friendly)</option>
+                        <option value="Aoede">👩🏼 Aoede (Formal)</option>
+                        <option value="Kore">👧🏼 Kore (Bright)</option>
+                        <option value="Fenrir">👨🏻‍🦰 Fenrir (Authoritative)</option>
+                    </select>
                 </div>
             </div>
-            <button onclick="toggleFullScreen()" class="hidden lg:flex items-center justify-center p-3 bg-white hover:bg-indigo-50 rounded-xl text-slate-400 hover:text-indigo-600 transition border border-slate-200 shadow-sm ml-1 mt-4" title="Layar Penuh">
+            <button onclick="toggleFullScreen()" class="hidden lg:block p-2.5 bg-white hover:bg-slate-50 rounded-xl text-slate-400 hover:text-slate-600 transition border border-slate-200 shadow-sm ml-1 mt-3" title="Layar Penuh">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
             </button>
         </div>
     </header>
 
     <!-- ================= MAIN CONTENT ================= -->
-    <main class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-grow min-h-0 overflow-y-auto lg:overflow-hidden p-2 lg:p-0">
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow min-h-0 overflow-y-auto lg:overflow-hidden p-2 lg:p-0">
         
-        <!-- KOLOM KIRI -->
-        <div class="col-span-1 lg:col-span-4 flex flex-col gap-4">
-            <div class="premium-card p-6 flex flex-col items-center justify-center text-center relative bg-gradient-to-b from-white to-indigo-50/50 overflow-hidden shrink-0">
+        <!-- KOLOM KIRI (Clock & Status) -->
+        <div class="col-span-1 lg:col-span-4 flex flex-col gap-6">
+            
+            <div class="premium-card p-8 flex flex-col items-center justify-center text-center relative bg-gradient-to-b from-white to-blue-50/30 overflow-hidden shrink-0">
                 <div id="playing-indicator" class="hidden absolute top-6 right-6 flex items-end gap-1.5 h-4">
-                    <div class="w-1.5 bg-indigo-500 rounded-t-full playing-wave" style="animation-delay: 0s"></div>
-                    <div class="w-1.5 bg-indigo-500 rounded-t-full playing-wave" style="animation-delay: 0.2s"></div>
-                    <div class="w-1.5 bg-indigo-500 rounded-t-full playing-wave" style="animation-delay: 0.1s"></div>
+                    <div class="w-1.5 bg-blue-500 rounded-t-full playing-wave" style="animation-delay: 0s"></div>
+                    <div class="w-1.5 bg-blue-500 rounded-t-full playing-wave" style="animation-delay: 0.2s"></div>
+                    <div class="w-1.5 bg-blue-500 rounded-t-full playing-wave" style="animation-delay: 0.1s"></div>
                 </div>
-                <span id="current-day-display" class="text-indigo-600 text-[10px] font-black uppercase tracking-[0.3em] mb-3 bg-indigo-50 px-4 py-1.5 rounded-full border border-indigo-100 shadow-sm">HARI INI</span>
-                <div class="text-6xl lg:text-7xl font-mono-custom text-slate-800 font-extrabold tracking-tighter mb-2 drop-shadow-sm" id="current-time">
+                <span id="current-day-display" class="text-blue-600 text-[10px] font-black uppercase tracking-[0.3em] mb-3 bg-blue-50 px-4 py-1.5 rounded-full border border-blue-100 shadow-sm">HARI INI</span>
+                <div class="text-6xl xl:text-7xl font-mono-custom text-slate-800 font-extrabold tracking-tighter mb-4" id="current-time">
                     00<span class="blink text-slate-300">:</span>00
                 </div>
             </div>
 
-            <div class="premium-card p-8 bg-gradient-to-br from-indigo-600 to-blue-700 border-none shadow-[0_10px_30px_rgba(79,70,229,0.3)] text-white relative overflow-hidden shrink-0">
-                <div class="absolute -right-10 -bottom-10 opacity-10">
-                    <svg class="w-56 h-56" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg>
+            <div class="premium-card p-6 bg-blue-600 border-none shadow-xl shadow-blue-600/20 text-white relative overflow-hidden shrink-0">
+                <div class="absolute -right-8 -bottom-8 opacity-10">
+                    <svg class="w-48 h-48" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg>
                 </div>
-                <p class="text-indigo-200 text-[10px] font-bold uppercase tracking-widest mb-4 flex items-center gap-2 relative z-10">
-                    <span class="w-2.5 h-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]"></span> JADWAL BERIKUTNYA
+                <p class="text-blue-200 text-[10px] font-bold uppercase tracking-widest mb-3 flex items-center gap-2 relative z-10">
+                    <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Bel Selanjutnya
                 </p>
-                <div class="text-white font-black text-5xl mb-2 font-mono-custom relative z-10 tracking-tight" id="next-bell-time">--:--</div>
-                <div class="text-indigo-100 text-sm font-medium line-clamp-2 mb-8 h-10 relative z-10 leading-relaxed border-l-2 border-indigo-400/50 pl-3" id="next-bell-desc">Sistem belum diaktifkan.</div>
+                <div class="text-white font-black text-4xl mb-1 font-mono-custom relative z-10" id="next-bell-time">--:--</div>
+                <div class="text-blue-100 text-sm font-medium line-clamp-2 mb-6 h-10 relative z-10" id="next-bell-desc">Sistem belum diaktifkan.</div>
                 
                 <div class="mt-auto relative z-10">
                     <div class="flex justify-between items-end mb-2.5">
-                        <span class="text-indigo-200 text-[10px] font-bold uppercase tracking-widest">Waktu Menuju Bel</span>
-                        <span class="text-indigo-700 text-[10px] font-black uppercase bg-white px-3 py-1.5 rounded-lg shadow-md" id="next-bell-countdown">OFFLINE</span>
+                        <span class="text-blue-200 text-[10px] font-bold uppercase tracking-widest">Hitung Mundur</span>
+                        <span class="text-blue-700 text-[10px] font-black uppercase bg-white px-3 py-1.5 rounded-lg shadow-sm" id="next-bell-countdown">OFFLINE</span>
                     </div>
-                    <div class="w-full h-2 bg-indigo-900/40 rounded-full overflow-hidden shadow-inner">
-                        <div id="countdown-progress" class="h-full bg-white transition-all duration-1000 rounded-full" style="width: 0%"></div>
+                    <div class="w-full h-2 bg-blue-900/30 rounded-full overflow-hidden">
+                        <div id="countdown-progress" class="h-full bg-white transition-all duration-1000" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
 
             <div class="mt-auto flex flex-col gap-3 shrink-0 pb-4 lg:pb-0">
-                <button id="btn-toggle-system" onclick="toggleSystem()" class="w-full py-5 rounded-[1.5rem] font-black text-sm uppercase tracking-[0.15em] text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/40 transition-all active:scale-95 flex justify-center items-center gap-3">
-                    <span id="btn-icon" class="bg-white/20 p-2 rounded-xl"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg></span>
+                <button id="btn-toggle-system" onclick="toggleSystem()" class="w-full py-5 rounded-[1.5rem] font-black text-xs lg:text-sm uppercase tracking-widest text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all active:scale-95 flex justify-center items-center gap-3">
+                    <span id="btn-icon" class="bg-white/20 p-1.5 rounded-lg"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg></span>
                     <span id="btn-text">AKTIFKAN SISTEM</span>
                 </button>
-                <button id="btn-stop-audio" onclick="stopCurrentAudio()" class="hidden w-full py-4 rounded-[1.25rem] font-bold text-[10px] uppercase tracking-widest text-rose-500 bg-white border border-rose-200 hover:bg-rose-50 transition-all flex justify-center items-center gap-2 shadow-sm">
-                    ⏹ Hentikan Audio & Lagu
+                <button id="btn-stop-audio" onclick="stopCurrentAudio()" class="hidden w-full py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest text-rose-500 bg-white border border-rose-200 hover:bg-rose-50 transition-all flex justify-center items-center gap-2 shadow-sm">
+                    ⏹ Batalkan Suara / Lagu Berjalan
                 </button>
             </div>
         </div>
 
-        <!-- KOLOM KANAN -->
-        <div class="col-span-1 lg:col-span-8 flex flex-col gap-4 overflow-y-auto pr-1 pb-6 lg:pb-0">
+        <!-- KOLOM KANAN (Akses Cepat, Form, List) -->
+        <div class="col-span-1 lg:col-span-8 flex flex-col gap-6 overflow-y-auto pr-1 pb-6 lg:pb-0">
             
-            <!-- Quick Access Bar -->
-            <div class="premium-card p-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shrink-0 overflow-hidden">
+            <div class="premium-card p-5 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shrink-0 overflow-hidden">
                 <div class="flex items-center gap-2 overflow-x-auto w-full pb-2 lg:pb-0 scroll-smooth">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2 shrink-0">Akses Instan:</span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2 shrink-0">Instan:</span>
                     <button onclick="playInstantBell('upacara')" class="shrink-0 px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-rose-100 shadow-sm flex items-center gap-1.5">🇲🇨 Upacara</button>
                     <button onclick="playInstantBell('apel')" class="shrink-0 px-4 py-2 bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-orange-100 shadow-sm flex items-center gap-1.5">📢 Apel</button>
-                    <button onclick="playInstantBell('masuk')" class="shrink-0 px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-indigo-100 shadow-sm flex items-center gap-1.5">🏫 Masuk</button>
-                    <button onclick="playInstantBell('istirahat')" class="shrink-0 px-4 py-2 bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white rounded-xl text-[11px] font-bold transition border border-amber-100 shadow-sm flex items-center gap-1.5">☕ Istirahat</button>
-                    <button onclick="playInstantBell('ibadah')" class="shrink-0 px-4 py-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-emerald-100 shadow-sm flex items-center gap-1.5">🕌 Ibadah</button>
+                    <button onclick="playInstantBell('masuk')" class="shrink-0 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-blue-100 shadow-sm flex items-center gap-1.5">🏫 Masuk</button>
+                    <button onclick="playInstantBell('istirahat')" class="shrink-0 px-4 py-2 bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white rounded-xl text-[11px] font-bold transition border border-amber-100 shadow-sm flex items-center gap-1.5">☕ Rehat</button>
                     <button onclick="playInstantBell('pulang')" class="shrink-0 px-4 py-2 bg-slate-50 text-slate-600 hover:bg-slate-700 hover:text-white rounded-xl text-[11px] font-bold transition border border-slate-200 shadow-sm flex items-center gap-1.5">🏠 Pulang</button>
                     
-                    <div class="w-px h-6 bg-slate-200 mx-2 hidden lg:block shrink-0"></div>
+                    <div class="w-px h-6 bg-slate-200 mx-1 hidden lg:block shrink-0"></div>
                     
-                    <!-- PANGGILAN KHUSUS / SISWA -->
-                    <button onclick="openCallModal()" class="shrink-0 px-4 py-2 bg-slate-800 text-white hover:bg-slate-900 rounded-xl text-[11px] font-bold transition shadow-md flex items-center gap-1.5 ml-auto lg:ml-0">
-                        🎙️ Panggilan Siswa/Guru
-                    </button>
-                    
-                    <!-- AI BROADCAST -->
-                    <button onclick="openAIBroadcastModal()" class="shrink-0 px-4 py-2 bg-purple-600 text-white hover:bg-purple-700 rounded-xl text-[11px] font-bold transition shadow-md flex items-center gap-1.5">
-                        ✨ Siaran AI
+                    <button onclick="openCallModal()" class="shrink-0 px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-indigo-200 shadow-sm flex items-center gap-1.5 ml-auto lg:ml-0">
+                        🎙️ Panggilan
                     </button>
                 </div>
             </div>
 
-            <!-- Form & List Container -->
-            <div class="flex flex-col lg:flex-row gap-4 h-full">
-                <!-- Add Schedule Form -->
-                <div class="premium-card p-6 flex flex-col shrink-0 w-full lg:w-3/5" id="form-container">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-4 border-b border-slate-100 pb-4">
-                        <h3 id="form-title" class="text-lg font-extrabold text-slate-800 flex items-center gap-3">
-                            <span class="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg></span>
-                            Buat Jadwal Baru
-                        </h3>
-                        <div class="flex gap-2 items-center">
-                            <button onclick="openSmartScheduleModal()" class="px-2.5 py-1.5 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-lg text-[9px] font-bold text-purple-600 transition flex items-center gap-1.5 shadow-sm">
-                                ✨ AI GENERATOR
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col gap-4 flex-grow">
-                        <div class="flex flex-col md:flex-row gap-4">
-                            <!-- Waktu -->
-                            <div class="w-full md:w-1/3 flex flex-col justify-start">
-                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Waktu</label>
-                                <div class="flex items-center justify-center gap-1.5 bg-slate-50 p-2 rounded-xl border border-slate-200 shadow-inner h-11">
-                                    <select id="hour-select" class="w-full bg-transparent border-none text-center text-lg font-black text-slate-800 font-mono-custom outline-none focus:ring-0"></select>
-                                    <span class="text-slate-400 font-black text-lg">:</span>
-                                    <select id="minute-select" class="w-full bg-transparent border-none text-center text-lg font-black text-slate-800 font-mono-custom outline-none focus:ring-0"></select>
-                                </div>
-                            </div>
-                            
-                            <!-- Nada Bel Khusus -->
-                            <div class="w-full md:w-2/3 flex flex-col justify-start">
-                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Pilih Nada Bel</label>
-                                <select id="input-bell-model" class="w-full smooth-input rounded-xl px-3 py-2.5 text-[11px] font-bold text-indigo-700 outline-none shadow-sm h-11 cursor-pointer">
-                                    <option value="nasional">🔔 Nasional (Bel Keramat Sangat Jernih & Kuat)</option>
-                                    <option value="westminster">🕰️ Westminster (Gema Jam Besar)</option>
-                                    <option value="japan">🇯🇵 Jepang (Marimba Ceria)</option>
-                                    <option value="gamelan">🇮🇩 Gamelan (Tradisional Nusantara)</option>
-                                    <option value="airport">✈️ Bandara (Chime Lembut)</option>
-                                    <option value="modern">🏢 Modern Minimalis</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Input Detail -->
-                        <div class="flex flex-col gap-4">
-                            <div class="flex flex-col relative group">
-                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 flex justify-between items-center px-1">
-                                    <span>Teks ID 🇮🇩</span>
-                                    <button onclick="generateAnnouncementWithAI()" class="text-[9px] font-bold text-indigo-600 hover:text-indigo-800 transition opacity-0 group-hover:opacity-100">✨ Rapikan AI</button>
-                                </label>
-                                <textarea id="input-text-id" rows="2" class="w-full smooth-input rounded-[1rem] p-3 text-xs font-medium text-slate-700 outline-none resize-none placeholder-slate-400 shadow-inner" placeholder="Ketik pengumuman utama di sini..."></textarea>
-                            </div>
-                            
-                            <div class="flex flex-col relative group">
-                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 flex justify-between items-center px-1">
-                                    <span>Teks EN 🇬🇧</span>
-                                    <button id="btn-translate" onclick="autoTranslateToEnglish()" class="text-[9px] font-bold text-indigo-600 hover:text-white bg-indigo-50 hover:bg-indigo-600 px-2 py-0.5 rounded transition border border-indigo-100 shadow-sm">🔤 Translate AI</button>
-                                </label>
-                                <textarea id="input-text-en" rows="2" class="w-full smooth-input rounded-[1rem] p-3 text-xs font-medium text-slate-700 outline-none resize-none placeholder-slate-400 shadow-inner" placeholder="Terjemahan (Boleh Kosong)..."></textarea>
-                            </div>
-                            
-                            <!-- Fitur YouTube -->
-                            <div class="flex flex-col">
-                                <label class="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-1 flex items-center gap-1.5 px-1">
-                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                                    Lagu Latar YouTube (MP3)
-                                </label>
-                                <input type="text" id="input-yt-url" class="w-full smooth-input rounded-xl p-3 text-xs font-medium text-slate-700 outline-none placeholder-slate-400 shadow-inner" placeholder="Contoh: https://youtu.be/xxx... (Opsional)">
-                            </div>
-
-                            <div id="ai-loading-status" class="hidden text-center py-2 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-black border border-indigo-100 shadow-sm">
-                                MEMPROSES AI<span class="ai-loading-dots"></span>
-                            </div>
-                        </div>
-
-                        <!-- Days Checkboxes & Save -->
-                        <div class="mt-auto pt-4">
-                            <div class="flex flex-wrap gap-1.5 w-full bg-slate-50 p-1.5 rounded-xl border border-slate-200 mb-4">
-                                <label class="cursor-pointer flex-1"><input type="checkbox" value="1" class="day-cb peer sr-only" checked><div class="py-2 rounded-lg text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-indigo-600 peer-checked:text-white transition">SEN</div></label>
-                                <label class="cursor-pointer flex-1"><input type="checkbox" value="2" class="day-cb peer sr-only" checked><div class="py-2 rounded-lg text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-indigo-600 peer-checked:text-white transition">SEL</div></label>
-                                <label class="cursor-pointer flex-1"><input type="checkbox" value="3" class="day-cb peer sr-only" checked><div class="py-2 rounded-lg text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-indigo-600 peer-checked:text-white transition">RAB</div></label>
-                                <label class="cursor-pointer flex-1"><input type="checkbox" value="4" class="day-cb peer sr-only" checked><div class="py-2 rounded-xl text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-indigo-600 peer-checked:text-white transition">KAM</div></label>
-                                <label class="cursor-pointer flex-1"><input type="checkbox" value="5" class="day-cb peer sr-only" checked><div class="py-2 rounded-lg text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-indigo-600 peer-checked:text-white transition">JUM</div></label>
-                                <label class="cursor-pointer flex-1"><input type="checkbox" value="6" class="day-cb peer sr-only"><div class="py-2 rounded-lg text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-slate-700 peer-checked:text-white transition">SAB</div></label>
-                                <label class="cursor-pointer flex-1"><input type="checkbox" value="0" class="day-cb peer sr-only"><div class="py-2 rounded-lg text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-rose-500 peer-checked:text-white transition text-rose-500">MIN</div></label>
-                            </div>
-                            <div class="flex gap-2 w-full">
-                                <button id="btn-cancel-edit" onclick="cancelEdit()" class="hidden px-5 py-3.5 rounded-xl bg-slate-100 text-slate-500 font-bold text-[11px] hover:bg-slate-200 transition uppercase shrink-0">Batal</button>
-                                <button id="btn-save-schedule" onclick="saveSchedule()" class="w-full px-6 py-3.5 bg-indigo-600 text-white font-black text-[11px] rounded-xl shadow-md shadow-indigo-500/30 hover:bg-indigo-700 transition active:scale-95 uppercase tracking-widest">Simpan Jadwal</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Schedule List -->
-                <div class="premium-card p-6 flex flex-col w-full lg:w-2/5 h-[500px] lg:h-auto">
-                    <div class="flex justify-between items-end mb-4 border-b border-slate-100 pb-3">
-                        <div>
-                            <h3 class="text-sm font-extrabold text-slate-800 flex items-center gap-2 tracking-tight">
-                                Jadwal Aktif
-                                <span id="total-sched" class="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-md text-[10px] font-black">0</span>
-                            </h3>
-                        </div>
-                        <button onclick="confirmReset()" class="text-[9px] font-bold text-rose-500 hover:text-white bg-white hover:bg-rose-500 px-2.5 py-1.5 rounded-md transition border border-rose-200 uppercase tracking-widest shadow-sm">
-                            Reset
+            <!-- Add Schedule Form -->
+            <div class="premium-card p-6 lg:p-8 flex flex-col shrink-0" id="form-container">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 border-b border-slate-100 pb-4">
+                    <h3 id="form-title" class="text-lg font-black text-slate-800 flex items-center gap-2">
+                        <span class="p-1.5 bg-blue-100 text-blue-600 rounded-xl"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg></span>
+                        Buat Jadwal Baru
+                    </h3>
+                    <div class="flex gap-2 items-center">
+                        <button onclick="openSmartScheduleModal()" class="px-2.5 py-1.5 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-lg text-[9px] font-bold text-purple-600 transition flex items-center gap-1 shadow-sm">
+                            ✨ AI GENERATOR
                         </button>
-                    </div>
-                    
-                    <div class="flex-grow overflow-y-auto pr-1" id="schedule-scroll-area">
-                        <div id="schedule-list" class="grid grid-cols-1 gap-3">
-                            <!-- Cards injected by JS -->
-                        </div>
-                        
-                        <!-- Empty State -->
-                        <div id="empty-state" class="hidden flex-col items-center justify-center py-12 text-slate-400 bg-slate-50 rounded-2xl border-2 border-slate-200 border-dashed">
-                            <svg class="w-10 h-10 mb-2 opacity-30 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            <p class="text-[10px] font-bold uppercase tracking-widest">Belum ada jadwal.</p>
-                        </div>
+                        <div class="w-px h-4 bg-slate-200 mx-1"></div>
+                        <button onclick="useTemplate('masuk')" class="px-2.5 py-1.5 bg-slate-50 hover:bg-blue-50 border border-slate-200 rounded-lg text-[9px] font-bold text-slate-500 hover:text-blue-600 transition">MASUK</button>
+                        <button onclick="useTemplate('istirahat')" class="px-2.5 py-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 rounded-lg text-[9px] font-bold text-slate-500 hover:text-amber-600 transition">REHAT</button>
+                        <button onclick="useTemplate('pulang')" class="px-2.5 py-1.5 bg-slate-50 hover:bg-rose-50 border border-slate-200 rounded-lg text-[9px] font-bold text-slate-500 hover:text-rose-600 transition">PULANG</button>
                     </div>
                 </div>
 
+                <div class="flex flex-col lg:flex-row gap-6">
+                    <div class="w-full lg:w-48 shrink-0 flex flex-col justify-start">
+                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 text-center lg:text-left">Waktu Bel</label>
+                        <div class="flex items-center justify-center gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                            <select id="hour-select" class="w-full bg-white border border-slate-200 rounded-xl py-3 text-center text-2xl font-black text-slate-800 font-mono-custom outline-none shadow-sm focus:ring-2 focus:ring-blue-500"></select>
+                            <span class="text-slate-400 font-black text-2xl">:</span>
+                            <select id="minute-select" class="w-full bg-white border border-slate-200 rounded-xl py-3 text-center text-2xl font-black text-slate-800 font-mono-custom outline-none shadow-sm focus:ring-2 focus:ring-blue-500"></select>
+                        </div>
+                    </div>
+
+                    <div class="flex-grow flex flex-col gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="flex flex-col relative">
+                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 flex justify-between items-center px-1">
+                                    <span>Teks Indonesia 🇮🇩</span>
+                                    <button onclick="generateAnnouncementWithAI()" class="text-[9px] font-bold text-blue-600 hover:text-white bg-blue-50 hover:bg-blue-600 px-2 py-1 rounded transition border border-blue-100">✨ Rapikan AI</button>
+                                </label>
+                                <textarea id="input-text-id" rows="2" class="w-full smooth-input rounded-2xl p-4 text-xs font-medium text-slate-700 outline-none resize-none placeholder-slate-400" placeholder="Ketik pengumuman di sini..."></textarea>
+                            </div>
+                            
+                            <div class="flex flex-col relative">
+                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 flex justify-between items-center px-1">
+                                    <span>Teks English 🇬🇧</span>
+                                    <button id="btn-translate" onclick="autoTranslateToEnglish()" class="text-[9px] font-bold text-indigo-600 hover:text-white bg-indigo-50 hover:bg-indigo-600 px-2 py-1 rounded transition border border-indigo-100">🔤 Translate AI</button>
+                                </label>
+                                <textarea id="input-text-en" rows="2" class="w-full smooth-input rounded-2xl p-4 text-xs font-medium text-slate-700 outline-none resize-none placeholder-slate-400" placeholder="Terjemahan (Boleh Kosong)..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col mt-1">
+                            <label class="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-1.5 flex items-center gap-1 px-1">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                Lagu Nasional / MP3 YouTube (Opsional)
+                            </label>
+                            <input type="text" id="input-yt-url" class="w-full smooth-input rounded-xl p-3.5 text-xs font-medium text-slate-700 outline-none placeholder-slate-400" placeholder="Contoh: https://youtu.be/xxx... Lagu akan diputar setelah pengumuman">
+                        </div>
+
+                        <div id="ai-loading-status" class="hidden text-center py-2 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black border border-blue-100">
+                            MEMPROSES DATA CLOUD<span class="ai-loading-dots"></span>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-4 items-center mt-2">
+                            <div class="flex flex-wrap gap-1.5 flex-grow w-full bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+                                <label class="cursor-pointer flex-1"><input type="checkbox" value="1" class="day-cb peer sr-only" checked><div class="py-2.5 rounded-lg text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-blue-600 peer-checked:text-white transition">SEN</div></label>
+                                <label class="cursor-pointer flex-1"><input type="checkbox" value="2" class="day-cb peer sr-only" checked><div class="py-2.5 rounded-lg text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-blue-600 peer-checked:text-white transition">SEL</div></label>
+                                <label class="cursor-pointer flex-1"><input type="checkbox" value="3" class="day-cb peer sr-only" checked><div class="py-2.5 rounded-lg text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-blue-600 peer-checked:text-white transition">RAB</div></label>
+                                <label class="cursor-pointer flex-1"><input type="checkbox" value="4" class="day-cb peer sr-only" checked><div class="py-2.5 rounded-xl text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-blue-600 peer-checked:text-white transition">KAM</div></label>
+                                <label class="cursor-pointer flex-1"><input type="checkbox" value="5" class="day-cb peer sr-only" checked><div class="py-2.5 rounded-lg text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-blue-600 peer-checked:text-white transition">JUM</div></label>
+                                <label class="cursor-pointer flex-1"><input type="checkbox" value="6" class="day-cb peer sr-only"><div class="py-2.5 rounded-lg text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-slate-700 peer-checked:text-white transition">SAB</div></label>
+                                <label class="cursor-pointer flex-1"><input type="checkbox" value="0" class="day-cb peer sr-only"><div class="py-2.5 rounded-lg text-[10px] font-bold text-center text-slate-500 border border-transparent peer-checked:bg-rose-500 peer-checked:text-white transition text-rose-500">MIN</div></label>
+                            </div>
+                            <div class="flex gap-2 w-full md:w-auto shrink-0">
+                                <button id="btn-cancel-edit" onclick="cancelEdit()" class="hidden px-5 py-3 rounded-xl bg-slate-100 text-slate-500 font-bold text-[11px] hover:bg-slate-200 transition uppercase">Batal</button>
+                                <button id="btn-save-schedule" onclick="saveSchedule()" class="w-full md:w-auto px-8 py-3 bg-slate-900 text-white font-black text-[11px] rounded-xl shadow-lg hover:bg-slate-800 transition active:scale-95 uppercase tracking-widest">Simpan Jadwal</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Schedule List -->
+            <div class="premium-card p-6 lg:p-8 flex-grow flex flex-col">
+                <div class="flex justify-between items-end mb-6 pb-4 border-b border-slate-100">
+                    <div>
+                        <h3 class="text-base font-extrabold text-slate-800 flex items-center gap-2 tracking-tight">
+                            Daftar Jadwal
+                            <span id="total-sched" class="bg-blue-100 text-blue-700 px-2.5 py-0.5 rounded-md text-[11px] font-black">0</span>
+                        </h3>
+                        <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">Jadwal Aktif Berjalan</p>
+                    </div>
+                    <button onclick="confirmReset()" class="text-[10px] font-bold text-rose-500 hover:text-white bg-rose-50 hover:bg-rose-500 px-4 py-2 rounded-lg transition border border-rose-200 uppercase tracking-widest shadow-sm">
+                        Hapus Semua Data
+                    </button>
+                </div>
+                
+                <div class="flex-grow overflow-y-auto pr-2 pb-1" id="schedule-scroll-area">
+                    <div id="schedule-list" class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                        <!-- Cards injected by JS -->
+                    </div>
+                    
+                    <div id="empty-state" class="hidden flex-col items-center justify-center py-16 text-slate-400 bg-slate-50 rounded-2xl border-2 border-slate-200 border-dashed">
+                        <svg class="w-12 h-12 mb-3 opacity-30 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <p class="text-xs font-bold uppercase tracking-widest">Belum ada jadwal.</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
-    <!-- Modal Panggilan Khusus -->
+    <!-- Modal (Panggilan Khusus) -->
     <div id="call-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 p-4">
         <div class="bg-white border border-slate-200 rounded-[2rem] p-8 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300">
-            <div class="flex items-center gap-4 mb-6 pb-4 border-b border-slate-100">
+            <div class="flex items-center gap-4 mb-6">
                 <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-inner border border-indigo-100 shrink-0">
                     <span class="text-2xl">🎙️</span>
                 </div>
                 <div>
-                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">Panggilan Siswa/Guru</h3>
-                    <p class="text-indigo-600 text-[10px] font-bold uppercase tracking-widest">Pusat Informasi Khusus</p>
+                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">Panggilan Khusus</h3>
+                    <p class="text-indigo-600 text-[10px] font-bold uppercase tracking-widest">Pusat Informasi</p>
                 </div>
             </div>
             
-            <div class="space-y-5 mb-8">
+            <div class="space-y-4 mb-6">
                 <div>
-                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Panggil Kepada</label>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Panggil Kepada</label>
                     <div class="flex gap-2">
-                        <select id="call-role" class="smooth-input rounded-xl px-3 py-3.5 text-xs font-bold text-slate-700 outline-none w-[110px] shrink-0">
+                        <select id="call-role" class="smooth-input rounded-xl px-3 py-3 text-xs font-bold text-slate-700 outline-none w-[110px] shrink-0">
                             <option value="siswa">Siswa/i</option>
-                            <option value="guru">Bapak/Ibu Guru</option>
+                            <option value="guru">Bpk/Ibu Guru</option>
                             <option value="staf">Staf/TU</option>
                         </select>
-                        <input type="text" id="call-name" placeholder="Nama Lengkap..." class="w-full smooth-input rounded-xl px-4 py-3.5 text-xs font-medium text-slate-700 outline-none placeholder-slate-400">
+                        <input type="text" id="call-name" placeholder="Nama Lengkap..." class="w-full smooth-input rounded-xl px-4 py-3 text-xs font-medium text-slate-700 outline-none placeholder-slate-400">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Menuju Ke Lokasi</label>
-                    <select id="call-location" class="w-full smooth-input rounded-xl px-4 py-3.5 text-xs font-bold text-slate-700 outline-none">
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Menuju Ke Lokasi</label>
+                    <select id="call-location" class="w-full smooth-input rounded-xl px-4 py-3 text-xs font-bold text-slate-700 outline-none">
                         <option value="Meja Piket">Meja Piket / Pos Jaga</option>
                         <option value="Ruang Tata Usaha">Ruang Tata Usaha (TU)</option>
                         <option value="Ruang Kepala Sekolah">Ruang Kepala Sekolah</option>
-                        <option value="Ruang Guru">Ruang Majelis Guru</option>
+                        <option value="Ruang Majelis Guru">Ruang Majelis Guru</option>
                         <option value="Ruang Bimbingan Konseling">Ruang BK</option>
                         <option value="Perpustakaan">Perpustakaan</option>
                         <option value="UKS">UKS / Unit Kesehatan</option>
@@ -357,68 +352,36 @@
                 </div>
             </div>
             
-            <div class="flex gap-3 justify-end mt-4 pt-4 border-t border-slate-100">
-                <button onclick="closeCallModal()" class="px-6 py-3.5 text-[11px] font-bold text-slate-500 bg-slate-100 rounded-xl hover:bg-slate-200 transition uppercase tracking-widest">Batal</button>
-                <button onclick="executeCall()" class="px-8 py-3.5 text-[11px] font-bold text-white bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 transition flex items-center gap-2 uppercase tracking-widest">🔊 Siarkan Panggilan</button>
+            <div class="flex gap-2 justify-end mt-4 pt-4 border-t border-slate-100">
+                <button onclick="closeCallModal()" class="px-5 py-2.5 text-xs font-bold text-slate-500 bg-slate-100 rounded-xl hover:bg-slate-200 transition">Batal</button>
+                <button onclick="executeCall()" class="px-6 py-2.5 text-xs font-bold text-white bg-indigo-600 rounded-xl shadow-md hover:bg-indigo-700 transition flex items-center gap-2">🔊 Buat Panggilan</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Siaran Cerdas AI -->
-    <div id="ai-broadcast-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 p-4">
-        <div class="bg-white border border-slate-200 rounded-[2rem] p-8 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300">
-            <div class="flex items-center gap-4 mb-6 pb-4 border-b border-slate-100">
-                <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center shadow-inner border border-purple-200 shrink-0">
-                    <span class="text-2xl">✨</span>
-                </div>
-                <div>
-                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">Siaran Cerdas AI</h3>
-                    <p class="text-purple-600 text-[10px] font-bold uppercase tracking-widest">Penyiaran Langsung</p>
-                </div>
-            </div>
-            
-            <p class="text-slate-500 text-xs mb-4 font-medium leading-relaxed">Masukkan pokok pesanan anda. AI akan menyusunnya menjadi pengumuman rasmi dan menyiarkannya serta-merta!</p>
-            
-            <div class="space-y-4 mb-6">
-                <div>
-                    <textarea id="ai-broadcast-prompt" rows="3" class="w-full smooth-input rounded-xl p-4 text-xs font-medium text-slate-700 outline-none resize-none placeholder-slate-400 shadow-inner" placeholder="Contoh: Beritahu seluruh siswa untuk membersihkan kelas masing-masing sebelum pulang..."></textarea>
-                </div>
-            </div>
-
-            <div id="ai-broadcast-loading" class="hidden text-center py-2.5 bg-purple-50 text-purple-600 rounded-xl text-[10px] font-black border border-purple-100 shadow-sm mb-4">
-                MENJANA SIARAN<span class="ai-loading-dots"></span>
-            </div>
-            
-            <div class="flex gap-3 justify-end mt-2 pt-4 border-t border-slate-100">
-                <button onclick="closeAIBroadcastModal()" class="px-6 py-3.5 text-[11px] font-bold text-slate-500 bg-slate-100 rounded-xl hover:bg-slate-200 transition uppercase tracking-widest">Batal</button>
-                <button onclick="executeAIBroadcast()" class="px-8 py-3.5 text-[11px] font-bold text-white bg-purple-600 rounded-xl shadow-lg shadow-purple-500/30 hover:bg-purple-700 transition flex items-center gap-2 uppercase tracking-widest">🔊 SIARKAN SEKARANG</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Smart Schedule Generator -->
+    <!-- Modal (Smart Schedule Generator) -->
     <div id="smart-schedule-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 p-4">
         <div class="bg-white border border-slate-200 rounded-[2rem] p-8 max-w-lg w-full shadow-2xl transform scale-95 transition-transform duration-300">
             <div class="flex items-center gap-4 mb-4">
-                <div class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center shadow-inner border border-indigo-200">
-                    <span class="text-2xl">🤖</span>
+                <div class="w-14 h-14 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center shadow-inner border border-purple-200">
+                    <span class="text-2xl">✨</span>
                 </div>
                 <div>
-                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">AI Generator Jadwal</h3>
-                    <p class="text-indigo-600 text-[10px] font-black uppercase tracking-widest mt-1">Dikuasakan oleh Gemini</p>
+                    <h3 class="text-xl font-black text-slate-900 tracking-tight">Generator Jadwal Pintar</h3>
+                    <p class="text-purple-600 text-[10px] font-bold uppercase tracking-widest">Dikuasakan oleh Gemini AI</p>
                 </div>
             </div>
-            <p class="text-slate-500 text-xs mb-5 font-medium leading-relaxed">Ceritakan jadual harian sekolah anda menggunakan bahasa santai. AI akan automatik menetapkan masa dan mengarang teks rasmi dwi-bahasa!</p>
+            <p class="text-slate-500 text-xs mb-5 font-medium leading-relaxed">Gunakan bahasa santai untuk memberitahu jadual sekolah. AI akan automatik set jam dan teks pengumuman dalam 2 bahasa!</p>
             
-            <textarea id="smart-schedule-prompt" rows="5" class="w-full smooth-input rounded-2xl p-4 text-xs font-medium text-slate-700 outline-none resize-none mb-4 shadow-inner placeholder-slate-400" placeholder="Contoh: Buatkan jadwal Isnin. Jam 7 pagi apel, 10 pagi rehat pertama, jam 2 petang waktu pulang..."></textarea>
+            <textarea id="smart-schedule-prompt" rows="5" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs font-medium text-slate-700 focus:bg-white focus:ring-2 focus:ring-purple-500 outline-none transition-all resize-none mb-4 shadow-sm" placeholder="Contoh: Buatkan jadwal Isnin. Jam 7 pagi apel, 10 pagi rehat pertama, jam 2 petang waktu pulang..."></textarea>
             
-            <div id="smart-loading" class="hidden text-center py-3 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-black border border-indigo-100 mb-4 animate-pulse">
-                GEMINI SEDANG MENGANALISIS DATA ANDA<span class="ai-loading-dots"></span>
+            <div id="smart-loading" class="hidden text-center py-3 bg-purple-50 text-purple-600 rounded-xl text-[10px] font-black border border-purple-100 mb-4 animate-pulse">
+                GEMINI SEDANG MENGANALISIS JADUAL ANDA<span class="ai-loading-dots"></span>
             </div>
 
-            <div class="flex gap-3 justify-end pt-2 border-t border-slate-100">
+            <div class="flex gap-3 justify-end">
                 <button onclick="closeSmartScheduleModal()" class="px-6 py-3 text-[11px] font-bold text-slate-500 bg-slate-100 rounded-xl hover:bg-slate-200 transition uppercase tracking-widest">Batal</button>
-                <button onclick="generateBulkSchedule()" class="px-6 py-3 text-[11px] font-bold text-white bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 transition uppercase tracking-widest flex items-center gap-2">✨ BINA JADUAL</button>
+                <button onclick="generateBulkSchedule()" class="px-6 py-3 text-[11px] font-bold text-white bg-purple-600 rounded-xl shadow-md shadow-purple-500/30 hover:bg-purple-700 transition uppercase tracking-widest flex items-center gap-2">✨ BINA JADUAL</button>
             </div>
         </div>
     </div>
@@ -426,7 +389,7 @@
     <!-- Modals (Information) -->
     <div id="custom-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 p-4">
         <div class="bg-white border border-slate-200 rounded-[2rem] p-8 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300 text-center">
-            <h3 id="modal-title" class="text-xl font-extrabold text-slate-900 mb-3 tracking-tight">Pemberitahuan</h3>
+            <h3 id="modal-title" class="text-xl font-extrabold text-slate-900 mb-2 tracking-tight">Pemberitahuan</h3>
             <p id="modal-message" class="text-slate-500 text-sm mb-8 leading-relaxed font-medium"></p>
             <div class="flex gap-3 justify-center" id="modal-actions"></div>
         </div>
@@ -437,9 +400,9 @@
         const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
         const hariSingkat = ["MIN", "SEN", "SEL", "RAB", "KAM", "JUM", "SAB"];
         
-        let savedData = localStorage.getItem('SmartBell_V24_Stable');
+        let savedData = localStorage.getItem('SmartBell_V19_Cloud');
         let schedules = savedData ? JSON.parse(savedData) : [
-            { id: 1, time: "07:00", textId: "Perhatian. Jam pelajaran pertama segera dimulai. Kepada seluruh siswa, silakan masuk ke dalam kelas.", textEn: "Attention please. The first period is about to begin.", ytUrl: "", bellModel: "nasional", days: [1,2,3,4,5] }
+            { id: 1, time: "07:00", textId: "Perhatian, jam pelajaran pertama segera dimulai. Kepada seluruh siswa, silakan masuk ke dalam kelas.", textEn: "Attention please. The first period is about to begin.", ytUrl: "", days: [1,2,3,4,5] }
         ];
 
         let systemActive = false;
@@ -448,14 +411,14 @@
         let editingId = null;
         let masterVolume = 0.8;
         let lastPlayedMinute = "";
-        let pendingTimeouts = [];
-        let activeOscillators = [];
+        let currentSequenceId = 0;
         
-        window.activeUtterances = []; 
+        let currentTTSAudio = null;
         let audioUnlocked = false;
         let ytPlayerReady = false;
         let ytPlayer;
 
+        // --- YOUTUBE IFRAME API ---
         function onYouTubeIframeAPIReady() {
             ytPlayer = new YT.Player('yt-player-container', {
                 height: '0', width: '0',
@@ -471,6 +434,7 @@
             return (match && match[2].length === 11) ? match[2] : null;
         }
 
+        // --- MANAJEMEN LOGO CUSTOM ---
         function loadCustomLogo() {
             const savedLogo = localStorage.getItem('SmartBell_Logo');
             if(savedLogo) document.getElementById('school-logo').src = savedLogo;
@@ -489,24 +453,14 @@
             }
         }
 
-        // --- AUDIO ENGINE ---
-        function setupAudioContext() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-        }
-
         function unlockAudioSystems() {
             if (audioUnlocked) return;
-            setupAudioContext();
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             audioUnlocked = true;
-            document.body.removeEventListener('click', unlockAudioSystems);
-            document.body.removeEventListener('touchstart', unlockAudioSystems);
         }
-
-        document.body.addEventListener('click', unlockAudioSystems);
-        document.body.addEventListener('touchstart', unlockAudioSystems);
+        document.body.addEventListener('click', unlockAudioSystems, { once: true });
+        document.body.addEventListener('touchstart', unlockAudioSystems, { once: true });
 
         function initUI() {
             const hSel = document.getElementById('hour-select'), mSel = document.getElementById('minute-select');
@@ -518,82 +472,20 @@
                 masterVolume = e.target.value / 100;
                 document.getElementById('vol-val').innerText = `${e.target.value}%`;
                 if(ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(e.target.value);
+                if(currentTTSAudio) currentTTSAudio.volume = masterVolume;
             });
             loadCustomLogo();
         }
 
-        function loadVoices() {
-            const v = window.speechSynthesis.getVoices();
-            if (!v || v.length === 0) return;
-
-            const sid = document.getElementById('voice-id-select');
-            const sen = document.getElementById('voice-en-select');
-            const currId = sid.value || localStorage.getItem('SmartBell_V24_VoiceID');
-            const currEn = sen.value || localStorage.getItem('SmartBell_V24_VoiceEN');
-
-            sid.innerHTML = ''; sen.innerHTML = '';
-            const gId = document.createElement('optgroup'); gId.label = "🇮🇩 Indonesia (Utama)";
-            const gMs = document.createElement('optgroup'); gMs.label = "🇲🇾 Melayu (Alternatif)";
-            const gEn = document.createElement('optgroup'); gEn.label = "🇬🇧 English";
-            const gOt = document.createElement('optgroup'); gOt.label = "🌐 Lainnya";
-
-            let hasIdVoices = false;
-
-            v.forEach(voice => {
-                const opt = new Option(`${voice.name} (${voice.lang})`, voice.name);
-                const lang = voice.lang.toLowerCase(), vname = voice.name.toLowerCase();
-                
-                if (lang === 'id-id' || lang === 'id' || vname.includes('indonesia')) {
-                    gId.appendChild(opt); hasIdVoices = true;
-                } else if (lang.includes('ms') || vname.includes('melayu')) {
-                    gMs.appendChild(opt);
-                } else if (lang.includes('en')) { 
-                    gEn.appendChild(opt); 
-                } else { 
-                    gOt.appendChild(opt); 
-                }
-            });
-
-            if (!hasIdVoices) gId.appendChild(new Option("⚠️ Tidak ada Suara Indonesia", ""));
-            
-            if (gId.childNodes.length > 0) { sid.appendChild(gId); sen.appendChild(gId.cloneNode(true)); }
-            if (gMs.childNodes.length > 0) { sid.appendChild(gMs); sen.appendChild(gMs.cloneNode(true)); }
-            if (gEn.childNodes.length > 0) { sid.appendChild(gEn.cloneNode(true)); sen.appendChild(gEn); }
-            if (gOt.childNodes.length > 0) { sid.appendChild(gOt.cloneNode(true)); sen.appendChild(gOt); }
-
-            if (currId && Array.from(sid.options).some(o => o.value === currId)) {
-                sid.value = currId;
-            } else if (hasIdVoices) {
-                const gVoice = Array.from(gId.childNodes).find(o => o.text.toLowerCase().includes('google') || o.text.toLowerCase().includes('damayanti') || o.text.toLowerCase().includes('gadis'));
-                if(gVoice) sid.value = gVoice.value;
-                else sid.selectedIndex = 0; 
-            }
-
-            if (currEn && Array.from(sen.options).some(o => o.value === currEn)) {
-                sen.value = currEn;
-            } else {
-                const gEnVoice = Array.from(sen.options).find(o => o.text.toLowerCase().includes('google') && o.text.toLowerCase().includes('en'));
-                if(gEnVoice) sen.value = gEnVoice.value;
-            }
-
-            sid.addEventListener('change', (e) => localStorage.setItem('SmartBell_V24_VoiceID', e.target.value));
-            sen.addEventListener('change', (e) => localStorage.setItem('SmartBell_V24_VoiceEN', e.target.value));
-        }
-
-        function clearAllTimeouts() {
-            pendingTimeouts.forEach(t => clearTimeout(t));
-            pendingTimeouts = [];
-        }
-
+        // --- CLOUD AUDIO & CHIME ENGINE ---
         function stopCurrentAudio() {
-            clearAllTimeouts();
             isPlayingSequence = false;
-            activeOscillators.forEach(osc => { try { osc.stop(); } catch(e){} });
-            activeOscillators = [];
+            currentSequenceId++; // Mematikan urutan asinkron yang sedang berjalan
             
-            window.speechSynthesis.cancel();
-            
-            window.activeUtterances = []; 
+            if (currentTTSAudio) {
+                currentTTSAudio.pause();
+                currentTTSAudio.currentTime = 0;
+            }
             if(ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
             setPlayingState(false);
         }
@@ -604,219 +496,264 @@
             else { if(ind) ind.classList.add('hidden'); if(btn) btn.classList.add('hidden'); }
         }
 
-        // TUGAS: Loceng Jernih Kuat
-        function playSynthBell(baseFreq, start, dur, type) {
-            if(!audioCtx) return;
-            
-            let harmonics = [];
-            
-            if (type === 'nasional') {
-                // Loceng Murni Tepat mengikut Video (Kuat, Jernih, Panjang)
-                harmonics = [
-                    {ratio: 1.0, amp: 1.0, decay: 1.0, w: 'sine'},      
-                    {ratio: 2.0, amp: 0.3, decay: 0.5, w: 'sine'},     
-                    {ratio: 3.0, amp: 0.1, decay: 0.3, w: 'sine'},      
-                    {ratio: 4.2, amp: 0.05, decay: 0.2, w: 'triangle'} // Hentakan tajam
-                ];
-            } else if (type === 'westminster') {
-                harmonics = [
-                    {ratio: 1, amp: 0.8, decay: 1.0, w: 'sine'},
-                    {ratio: 1.19, amp: 0.4, decay: 0.8, w: 'sine'},
-                    {ratio: 2.54, amp: 0.2, decay: 0.6, w: 'sine'}
-                ];
-            } else if (type === 'modern') {
-                harmonics = [ {ratio: 1, amp: 0.8, decay: 1.0, w: 'sine'} ];
-            } else if (type === 'gamelan') {
-                harmonics = [ {ratio: 1, amp: 1.0, decay: 1.0, w: 'sine'}, {ratio: 2.76, amp: 0.6, decay: 0.7, w: 'sine'} ];
-            } else if (type === 'japan') {
-                harmonics = [ {ratio: 1, amp: 1.0, decay: 0.5, w: 'sine'}, {ratio: 2.7, amp: 0.4, decay: 0.2, w: 'sine'} ];
-            } else if (type === 'airport') {
-                harmonics = [ {ratio: 1, amp: 1.0, decay: 1.0, w: 'sine'}, {ratio: 2, amp: 0.3, decay: 0.6, w: 'sine'} ];
-            }
-
-            harmonics.forEach(h => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                
-                osc.type = h.w;
-                osc.frequency.value = baseFreq * h.ratio;
-                
-                const peakVol = h.amp * masterVolume * 0.4;
-                const actualDur = dur * h.decay; 
-                
-                gain.gain.setValueAtTime(0, start);
-                gain.gain.linearRampToValueAtTime(peakVol, start + 0.02); // Hentakan tajam
-                gain.gain.exponentialRampToValueAtTime(0.001, start + actualDur); 
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                osc.start(start);
-                osc.stop(start + actualDur + 0.1);
-                activeOscillators.push(osc);
-            });
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        function playSeparatorChime(callback) {
-            if(!audioCtx) { if(callback) callback(); return; }
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            
-            const now = audioCtx.currentTime + 0.1;
-            playSynthBell(1046.50, now, 1.5, 'modern'); 
-            playSynthBell(1318.51, now + 0.15, 2.0, 'modern'); 
-            let t = setTimeout(() => { if(isPlayingSequence && callback) callback(); }, 1500);
-            pendingTimeouts.push(t);
+        // Penukar Base64 PCM 16-bit ke WAV Blob untuk dimainkan via <audio>
+        function pcmToWav(base64PCM, sampleRate = 24000) {
+            const binaryString = window.atob(base64PCM);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            const pcm16 = new Int16Array(bytes.buffer);
+
+            const wavBuffer = new ArrayBuffer(44 + pcm16.byteLength);
+            const view = new DataView(wavBuffer);
+
+            // RIFF chunk
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + pcm16.byteLength, true);
+            writeString(view, 8, 'WAVE');
+
+            // fmt subchunk
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); // PCM
+            view.setUint16(22, 1, true); // Mono
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+
+            // data subchunk
+            writeString(view, 36, 'data');
+            view.setUint32(40, pcm16.byteLength, true);
+
+            const dataView = new Int16Array(wavBuffer, 44);
+            dataView.set(pcm16);
+
+            return new Blob([view], { type: 'audio/wav' });
         }
 
-        function playChime(timingType, bellModel, callback) {
-            unlockAudioSystems();
-            if(!audioCtx) { if(callback) callback(); return; }
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            
-            const now = audioCtx.currentTime + 0.1; 
-            let waitTime = 0;
-
-            if (bellModel === 'nasional') {
-                // Tepat seperti video: C5-G4-E4-C4 (Teng, Tong, Teng, Tong)
-                let seq = timingType === 'start' ? 
-                    [{f:523.25, t:0}, {f:392.00, t:0.8}, {f:329.63, t:1.6}, {f:261.63, t:2.4}] : 
-                    [{f:261.63, t:0}, {f:329.63, t:0.8}, {f:392.00, t:1.6}, {f:523.25, t:2.4}];
-                
-                seq.forEach(n => playSynthBell(n.f, now + n.t, n.t === 2.4 ? 6.0 : 3.5, 'nasional'));
-                waitTime = 6500;
-            } 
-            else if (bellModel === 'westminster') {
-                let seq = timingType === 'start' ? [{f:659.25, t:0}, {f:523.25, t:0.8}, {f:587.33, t:1.6}, {f:392, t:2.4}] : [{f:392, t:0}, {f:587.33, t:0.8}, {f:659.25, t:1.6}, {f:523.25, t:2.4}];
-                seq.forEach(n => playSynthBell(n.f, now + n.t, n.t === 2.4 ? 6.0 : 3.5, 'westminster'));
-                waitTime = 6500;
-            } 
-            else if (bellModel === 'japan') {
-                let seq = timingType === 'start' ? [{f:349.23, t:0}, {f:440.00, t:0.5}, {f:523.25, t:1.0}, {f:698.46, t:1.5}] : [{f:698.46, t:0}, {f:523.25, t:0.5}, {f:440.00, t:1.0}, {f:349.23, t:1.5}];
-                seq.forEach(n => playSynthBell(n.f, now + n.t, 3.5, 'japan'));
-                waitTime = 4000;
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
             }
-            else if (bellModel === 'airport') {
-                let seq = timingType === 'start' ? [{f:523.25, t:0}, {f:392.00, t:1.5}] : [{f:392.00, t:0}, {f:523.25, t:1.5}];
-                seq.forEach(n => playSynthBell(n.f, now + n.t, 5.0, 'airport'));
-                waitTime = 6000;
-            }
-            else if (bellModel === 'modern') {
-                let seq = timingType === 'start' ? [{f:659.25, t:0}, {f:739.99, t:0.4}, {f:987.77, t:0.8}] : [{f:987.77, t:0}, {f:739.99, t:0.4}, {f:659.25, t:0.8}];
-                seq.forEach(n => playSynthBell(n.f, now + n.t, 4.0, 'modern'));
-                waitTime = 4000;
-            } 
-            else if (bellModel === 'gamelan') {
-                let seq = timingType === 'start' ? [{f:622.25, t:0}, {f:466.16, t:1.0}, {f:369.99, t:2.0}] : [{f:369.99, t:0}, {f:466.16, t:1.0}, {f:622.25, t:2.0}];
-                seq.forEach(n => playSynthBell(n.f, now + n.t, n.t === 2.0 ? 5.5 : 3.5, 'gamelan'));
-                waitTime = 7000;
-            }
-
-            let t = setTimeout(() => { if(isPlayingSequence && callback) callback(); }, waitTime);
-            pendingTimeouts.push(t);
         }
 
-        // TUGAS: Penyelamat TTS (Anti-Bisu & Suara Standard)
-        function speakSingleText(text, langType, callback) {
-            if (!text || text.trim() === '') { 
-                if(isPlayingSequence && callback) callback(); 
-                return; 
-            }
-            if (!isPlayingSequence) return;
-
-            // Membuang simbol yang mengganggu
-            let cleanText = text.replace(/[*_~`#\[\]{}()<>|\\]/g, '');
-
-            const msg = new SpeechSynthesisUtterance(cleanText);
-            window.activeUtterances.push(msg);
-            
-            const selectId = langType === 'id' ? 'voice-id-select' : 'voice-en-select';
-            const selectEl = document.getElementById(selectId);
-            const vName = selectEl ? selectEl.value : "";
-            const voices = window.speechSynthesis.getVoices();
-            const selectedVoice = voices.find(v => v.name === vName);
-
-            if(selectedVoice) { msg.voice = selectedVoice; msg.lang = selectedVoice.lang; }
-            else { msg.lang = langType === 'id' ? 'id-ID' : 'en-US'; }
-
-            // KEMBALI KE TETAPAN ASAL (ROBOT) - Dijamin paling stabil
-            msg.rate = 1.0; 
-            msg.pitch = 1.0; 
-            msg.volume = masterVolume;
-            
-            let isFinished = false;
-            let watchdog;
-
-            const finish = () => {
-                if (isFinished) return;
-                isFinished = true;
-                clearTimeout(watchdog);
-                if(isPlayingSequence && callback) callback(); 
-            };
-
-            msg.onend = finish;
-            msg.onerror = (e) => { 
-                console.log("TTS Error:", e);
-                finish();
-            };
-
-            // JARING KESELAMATAN (Watchdog Timer)
-            const estTime = (cleanText.length * 150) + 5000;
-            watchdog = setTimeout(() => {
-                if (!isFinished && isPlayingSequence) {
-                    console.log("Watchdog: Melangkau amaran TTS yang beku.");
-                    window.speechSynthesis.cancel();
-                    finish();
-                }
-            }, estTime);
-
-            if (window.speechSynthesis.paused) window.speechSynthesis.resume();
-            window.speechSynthesis.speak(msg);
-        }
-
-        function playAnnouncementSequence(tId, tEn, ytUrl = null, bellModel = 'nasional') {
-            stopCurrentAudio();
-            
-            setTimeout(() => {
-                isPlayingSequence = true;
-                setPlayingState(true);
-
-                playChime('start', bellModel, () => {
-                    if(!isPlayingSequence) return;
-                    speakSingleText(tId, 'id', () => {
-                        if(!isPlayingSequence) return;
-                        
-                        if(tEn && tEn.trim() !== '') {
-                            playSeparatorChime(() => {
-                                if(!isPlayingSequence) return;
-                                speakSingleText(tEn, 'en', () => { finishSequence(ytUrl, bellModel); });
-                            });
-                        } else {
-                            finishSequence(ytUrl, bellModel);
+        // GEMINI PREMIUM TTS FETCHER
+        async function fetchGeminiTTS(text, voiceName) {
+            if (!text || text.trim() === '') return null;
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: text }] }],
+                        generationConfig: {
+                            responseModalities: ["AUDIO"],
+                            speechConfig: {
+                                voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceName } }
+                            }
                         }
-                    });
+                    })
                 });
-            }, 50);
+                const data = await response.json();
+                const inlineData = data.candidates?.[0]?.content?.parts?.[0]?.inlineData;
+                if (inlineData) {
+                    const base64PCM = inlineData.data;
+                    let sampleRate = 24000;
+                    const mimeType = inlineData.mimeType || "";
+                    const rateMatch = mimeType.match(/rate=(\d+)/);
+                    if (rateMatch) sampleRate = parseInt(rateMatch[1]);
+                    
+                    const wavBlob = pcmToWav(base64PCM, sampleRate);
+                    return URL.createObjectURL(wavBlob);
+                }
+            } catch (e) {
+                console.error("Gemini TTS Error:", e);
+            }
+            return null;
         }
 
-        function finishSequence(ytUrl, bellModel) {
-            if(!isPlayingSequence) return;
-            playChime('end', bellModel, () => {
-                if(!isPlayingSequence) return;
-                
-                // PLAY YOUTUBE IF URL EXISTS
-                if(ytUrl && ytPlayerReady && ytPlayer && ytPlayer.loadVideoById) {
-                    const vidId = extractVideoID(ytUrl);
-                    if(vidId) {
-                        ytPlayer.setVolume(masterVolume * 100);
-                        ytPlayer.loadVideoById(vidId);
-                        return; 
-                    }
+        // NADA BEL ASINKRON
+        function playChimeAsync(type) {
+            return new Promise(resolve => {
+                unlockAudioSystems();
+                if(!audioCtx) { resolve(); return; }
+                const now = audioCtx.currentTime;
+                const model = document.getElementById('bell-model-select').value;
+                let waitTime = 0;
+
+                function playNote(freq, start, dur, type='sine', attack=0.05) {
+                    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                    osc.type = type; osc.frequency.setValueAtTime(freq, start);
+                    gain.gain.setValueAtTime(0, start);
+                    gain.gain.linearRampToValueAtTime(0.6 * masterVolume, start + attack);
+                    gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.start(start); osc.stop(start + dur + 0.1);
                 }
-                
-                isPlayingSequence = false;
-                setPlayingState(false);
-                updateNextBellDisplay();
+
+                function playRichNote(baseFreq, start, dur, harmonics) {
+                    harmonics.forEach(h => {
+                        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                        osc.type = 'sine'; osc.frequency.setValueAtTime(baseFreq * h.ratio, start);
+                        const peakVol = 0.4 * masterVolume * h.amp; const actualDur = dur * h.decay; 
+                        gain.gain.setValueAtTime(0, start);
+                        gain.gain.linearRampToValueAtTime(peakVol, start + 0.05); 
+                        gain.gain.exponentialRampToValueAtTime(0.001, start + actualDur); 
+                        osc.connect(gain); gain.connect(audioCtx.destination);
+                        osc.start(start); osc.stop(start + actualDur + 0.1);
+                    });
+                }
+
+                if(model === 'japan') {
+                    let seq = type === 'start' ? [{f:392, t:0}, {f:523.25, t:0.5}, {f:659.25, t:1.0}, {f:783.99, t:1.5}] : [{f:783.99, t:0}, {f:659.25, t:0.5}, {f:523.25, t:1.0}, {f:392, t:1.5}];
+                    seq.forEach(n => playNote(n.f, now + n.t, 2.0, 'sine', 0.01));
+                    waitTime = 3000;
+                } else if(model === 'airport') {
+                    let seq = type === 'start' ? [{f:523.25, t:0}, {f:392, t:1.5}] : [{f:392, t:0}, {f:523.25, t:1.5}];
+                    const h = [ {ratio:1, amp:1, decay:1}, {ratio:2, amp:0.3, decay:0.8}, {ratio:3, amp:0.1, decay:0.5} ];
+                    seq.forEach(n => playRichNote(n.f, now + n.t, 4.0, h));
+                    waitTime = 5000;
+                } else if(model === 'gamelan') {
+                    let seq = type === 'start' ? [{f:622.25, t:0}, {f:466.16, t:0.8}, {f:369.99, t:1.6}] : [{f:369.99, t:0}, {f:466.16, t:0.8}, {f:622.25, t:1.6}];
+                    const h = [ {ratio:1, amp:1, decay:1}, {ratio:2.76, amp:0.6, decay:0.7}, {ratio:5.4, amp:0.3, decay:0.4} ];
+                    seq.forEach(n => playRichNote(n.f, now + n.t, 4.0, h));
+                    waitTime = 4500;
+                } else if(model === 'future') {
+                    let seq = type === 'start' ? [{f:880, t:0}, {f:1318.51, t:0.2}, {f:1760, t:0.4}] : [{f:1760, t:0}, {f:1318.51, t:0.2}, {f:880, t:0.4}];
+                    seq.forEach(n => playNote(n.f, now + n.t, 1.5, 'triangle', 0.1));
+                    waitTime = 2000;
+                } else {
+                    let seq = type === 'start' ? [{f:659.25, t:0}, {f:523.25, t:1.0}, {f:587.33, t:2.0}, {f:392, t:3.0}] : [{f:392, t:0}, {f:587.33, t:1.0}, {f:659.25, t:2.0}, {f:523.25, t:3.0}];
+                    const h = [ {ratio:1, amp:1, decay:1}, {ratio:1.2, amp:0.5, decay:0.8}, {ratio:2, amp:0.4, decay:0.6}, {ratio:3, amp:0.2, decay:0.3} ];
+                    seq.forEach(n => playRichNote(n.f, now + n.t, n.t === 3.0 ? 6.0 : 3.0, h));
+                    waitTime = 6500;
+                }
+                setTimeout(resolve, waitTime);
             });
+        }
+
+        function playSeparatorChimeAsync() {
+            return new Promise(resolve => {
+                if(!audioCtx) { resolve(); return; }
+                const now = audioCtx.currentTime;
+                const osc1 = audioCtx.createOscillator(), gain1 = audioCtx.createGain();
+                osc1.type = 'sine'; osc1.frequency.setValueAtTime(1046.50, now);
+                gain1.gain.setValueAtTime(0, now); gain1.gain.linearRampToValueAtTime(0.6*masterVolume, now+0.02); gain1.gain.exponentialRampToValueAtTime(0.001, now+1.5);
+                osc1.connect(gain1); gain1.connect(audioCtx.destination);
+                osc1.start(now); osc1.stop(now+1.6);
+                
+                const osc2 = audioCtx.createOscillator(), gain2 = audioCtx.createGain();
+                osc2.type = 'sine'; osc2.frequency.setValueAtTime(1567.98, now+0.2);
+                gain2.gain.setValueAtTime(0, now+0.2); gain2.gain.linearRampToValueAtTime(0.6*masterVolume, now+0.22); gain2.gain.exponentialRampToValueAtTime(0.001, now+2.2);
+                osc2.connect(gain2); gain2.connect(audioCtx.destination);
+                osc2.start(now+0.2); osc2.stop(now+2.3);
+                
+                setTimeout(resolve, 1500);
+            });
+        }
+
+        // MEMAIN AUDIO Awan (Cloud Audio)
+        function playWavAudioAsync(url) {
+            return new Promise(resolve => {
+                currentTTSAudio = new Audio(url);
+                currentTTSAudio.volume = masterVolume;
+                currentTTSAudio.onended = () => { resolve(); };
+                currentTTSAudio.onerror = () => { console.error("Ralat Main Audio"); resolve(); };
+                currentTTSAudio.play().catch(e => { console.error("Autoplay disekat:", e); resolve(); });
+            });
+        }
+
+        // FALLBACK JIKA INTERNET TERPUTUS
+        function fallbackSpeakSingleText(text, langType) {
+            return new Promise(resolve => {
+                const cleanText = text.replace(/[*_~`#\[\]{}()<>|\\]/g, '');
+                if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+                const msg = new SpeechSynthesisUtterance(cleanText);
+                msg.lang = langType === 'id' ? 'id-ID' : 'en-US';
+                msg.volume = masterVolume;
+                msg.onend = () => resolve();
+                msg.onerror = () => resolve();
+                window.speechSynthesis.speak(msg);
+            });
+        }
+
+        // CORE SEQUENCE LOGIC (ASYNC/AWAIT TUNTAS)
+        async function playAnnouncementSequence(tId, tEn, ytUrl = null) {
+            stopCurrentAudio();
+            isPlayingSequence = true;
+            setPlayingState(true);
+            document.getElementById('ai-loading-status').classList.remove('hidden');
+            
+            currentSequenceId++;
+            let seqId = currentSequenceId;
+
+            // Muat Turun Suara TTS dari Gemini Awan serentak dengan bunyi loceng
+            let idVoice = document.getElementById('voice-id-select').value;
+            let enVoice = document.getElementById('voice-en-select').value;
+            
+            let pId = tId ? `Bacakan pengumuman ini dengan jelas dan formal: ${tId}` : null;
+            let pEn = tEn ? `Read this school announcement clearly and formally: ${tEn}` : null;
+
+            let idAudioPromise = pId ? fetchGeminiTTS(pId, idVoice) : Promise.resolve(null);
+            let enAudioPromise = pEn ? fetchGeminiTTS(pEn, enVoice) : Promise.resolve(null);
+
+            await playChimeAsync('start');
+            if (seqId !== currentSequenceId || !isPlayingSequence) return;
+
+            document.getElementById('ai-loading-status').classList.add('hidden');
+
+            const idAudioUrl = await idAudioPromise;
+            if (seqId !== currentSequenceId || !isPlayingSequence) return;
+
+            if (idAudioUrl) {
+                await playWavAudioAsync(idAudioUrl);
+            } else if (tId) {
+                await fallbackSpeakSingleText(tId, 'id');
+            }
+            
+            if (seqId !== currentSequenceId || !isPlayingSequence) return;
+
+            if (tEn && tEn.trim() !== '') {
+                await playSeparatorChimeAsync();
+                if (seqId !== currentSequenceId || !isPlayingSequence) return;
+                
+                const enAudioUrl = await enAudioPromise;
+                if (seqId !== currentSequenceId || !isPlayingSequence) return;
+                
+                if (enAudioUrl) {
+                    await playWavAudioAsync(enAudioUrl);
+                } else {
+                    await fallbackSpeakSingleText(tEn, 'en');
+                }
+            }
+
+            if (seqId !== currentSequenceId || !isPlayingSequence) return;
+            await delay(500);
+
+            if (seqId !== currentSequenceId || !isPlayingSequence) return;
+            await playChimeAsync('end');
+            
+            if (seqId !== currentSequenceId || !isPlayingSequence) return;
+
+            if(ytUrl && ytPlayerReady && ytPlayer && ytPlayer.loadVideoById) {
+                const vidId = extractVideoID(ytUrl);
+                if(vidId) {
+                    ytPlayer.setVolume(masterVolume * 100);
+                    ytPlayer.loadVideoById(vidId);
+                    return; // Biarkan playingState aktif supaya butang stop berfungsi
+                }
+            }
+
+            isPlayingSequence = false;
+            setPlayingState(false);
+            updateNextBellDisplay();
         }
 
         // --- SISTEM UTAMA (TOGGLE) ---
@@ -828,14 +765,14 @@
                 systemActive = true;
                 icon.innerHTML = `<span class="flex h-4 w-4 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-300 opacity-75"></span><span class="relative inline-flex rounded-full h-4 w-4 bg-white"></span></span>`;
                 text.innerText = "SISTEM AKTIF: MATIKAN";
-                btn.classList.replace('bg-blue-600', 'bg-slate-800'); btn.classList.replace('hover:bg-blue-700', 'hover:bg-slate-700'); btn.classList.replace('shadow-blue-600/30', 'shadow-slate-900/50');
-                isPlayingSequence = true; speakSingleText("Sistem bel automatik diaktifkan.", "id", () => { isPlayingSequence = false; });
+                btn.classList.replace('bg-blue-600', 'bg-slate-800'); btn.classList.replace('hover:bg-blue-700', 'hover:bg-slate-700'); btn.classList.replace('shadow-blue-600/30', 'shadow-slate-800/30');
+                playAnnouncementSequence("Sistem siar raya pintar diaktifkan.", null);
             } else {
                 systemActive = false;
                 stopCurrentAudio();
                 icon.innerHTML = `<span class="bg-white/20 p-1.5 rounded-lg"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg></span>`;
                 text.innerText = "AKTIFKAN SISTEM";
-                btn.classList.replace('bg-slate-800', 'bg-blue-600'); btn.classList.replace('hover:bg-slate-700', 'hover:bg-blue-700'); btn.classList.replace('shadow-slate-900/50', 'shadow-blue-600/30');
+                btn.classList.replace('bg-slate-800', 'bg-blue-600'); btn.classList.replace('hover:bg-slate-700', 'hover:bg-blue-700'); btn.classList.replace('shadow-slate-800/30', 'shadow-blue-600/30');
             }
             updateNextBellDisplay();
         }
@@ -849,7 +786,7 @@
                 const dayIdx = now.getDay(), currentTime = h + ":" + m;
                 if (s === '00' && currentTime !== lastPlayedMinute) {
                     const sched = schedules.find(s => s.time === currentTime && s.days.includes(dayIdx));
-                    if (sched) { lastPlayedMinute = currentTime; playAnnouncementSequence(sched.textId, sched.textEn, sched.ytUrl, sched.bellModel); }
+                    if (sched) { lastPlayedMinute = currentTime; playAnnouncementSequence(sched.textId, sched.textEn, sched.ytUrl); }
                     updateNextBellDisplay();
                 }
             }
@@ -860,7 +797,7 @@
             const tEl = document.getElementById('next-bell-time'), dEl = document.getElementById('next-bell-desc'), cEl = document.getElementById('next-bell-countdown'), pEl = document.getElementById('countdown-progress');
             if (!systemActive) {
                 if(tEl) tEl.innerText = "--:--"; if(dEl) dEl.innerText = "Sistem Offline";
-                if(cEl) { cEl.innerText = "TERHENTI"; cEl.className = "text-indigo-700 text-[10px] font-black uppercase bg-white px-3 py-1.5 rounded-lg shadow-sm inline-block"; }
+                if(cEl) { cEl.innerText = "TERHENTI"; cEl.className = "text-slate-500 text-[10px] font-black uppercase bg-white px-2.5 py-1 rounded shadow-sm inline-block"; }
                 if(pEl) pEl.style.width = "0%"; return;
             }
 
@@ -874,41 +811,26 @@
 
             if (next) {
                 if(tEl) tEl.innerText = next.time; if(dEl) dEl.innerText = `"${next.textId}"`;
-                if(cEl) { cEl.innerText = `${Math.floor(minDiff/60)}j ${minDiff%60}m LAGI`; cEl.className = "text-indigo-700 text-[10px] font-black uppercase bg-white px-3 py-1.5 rounded-lg shadow-sm inline-block"; }
+                if(cEl) { cEl.innerText = `${Math.floor(minDiff/60)}j ${minDiff%60}m LAGI`; cEl.className = "text-blue-600 text-[10px] font-black uppercase bg-white px-2.5 py-1 rounded shadow-sm inline-block"; }
                 if(pEl) pEl.style.width = `${(1 - minDiff/1440) * 100}%`;
             } else {
                 if(tEl) tEl.innerText = "--:--"; if(dEl) dEl.innerText = "Tidak ada jadwal"; 
-                if(cEl) { cEl.innerText = "ESOK"; cEl.className = "text-slate-500 text-[10px] font-black uppercase bg-white px-3 py-1.5 rounded-lg shadow-sm inline-block"; }
+                if(cEl) { cEl.innerText = "ESOK"; cEl.className = "text-slate-500 text-[10px] font-black uppercase bg-white px-2.5 py-1 rounded shadow-sm inline-block"; }
                 if(pEl) pEl.style.width = "0%";
             }
         }
 
-        // --- MAINKAN INSTAN (MAPPING BEL KHAS) ---
+        // --- MAINKAN INSTAN & PANGGILAN KHUSUS ---
         function playInstantBell(type) {
-            let tid = "", ten = "", model = "nasional";
-            if(type === 'upacara') { 
-                tid = "Perhatian. Upacara bendera akan segera dimulai. Seluruh peserta upacara dimohon segera merapat ke lapangan."; ten = "Attention please. The flag ceremony is about to begin. All participants please gather at the field immediately."; model = "nasional"; 
-            }
-            else if(type === 'apel') { 
-                tid = "Perhatian. Apel rutin akan segera dimulai. Seluruh siswa diharap segera berbaris di lapangan."; ten = "Attention please. The assembly is about to begin."; model = "modern"; 
-            }
-            else if(type === 'masuk') { 
-                tid = "Perhatian. Jam pelajaran akan segera dimulai. Seluruh siswa dipersilakan masuk ke ruangan kelas."; ten = "Attention please. The class will begin shortly. All students please proceed to your classrooms."; model = "westminster"; 
-            }
-            else if(type === 'istirahat') { 
-                tid = "Perhatian. Waktu istirahat telah tiba. Selamat beristirahat."; ten = "Attention please. Break time has arrived. Have a good rest."; model = "japan"; 
-            }
-            else if(type === 'ibadah') { 
-                tid = "Perhatian. Waktu istirahat dan ibadah telah tiba. Kepada seluruh siswa Muslim disilakan menuju masjid."; ten = "Attention please. It is time for break and prayer."; model = "gamelan"; 
-            }
-            else if(type === 'pulang') { 
-                tid = "Perhatian. Seluruh kegiatan belajar mengajar hari ini telah selesai. Selamat pulang dan hati-hati di jalan."; ten = "Attention please. All learning activities for today have ended."; model = "airport"; 
-            }
+            let tid = "", ten = "";
+            if(type === 'upacara') { tid = "Perhatian. Upacara bendera akan segera dimulai. Seluruh peserta upacara dimohon segera merapat ke lapangan."; ten = "Attention please. The flag ceremony is about to begin. All participants please gather at the field immediately."; }
+            else if(type === 'apel') { tid = "Perhatian. Apel rutin akan segera dimulai. Seluruh siswa diharap segera berbaris di lapangan."; ten = "Attention please. The assembly is about to begin."; }
+            else if(type === 'masuk') { tid = "Perhatian. Jam pelajaran akan segera dimulai. Seluruh siswa dipersilakan masuk ke ruangan kelas."; ten = "Attention please. The class will begin shortly. All students please proceed to your classrooms."; }
+            else if(type === 'istirahat') { tid = "Perhatian. Waktu istirahat telah tiba. Selamat beristirahat."; ten = "Attention please. Break time has arrived. Have a good rest."; }
+            else if(type === 'ibadah') { tid = "Perhatian. Waktu istirahat dan ibadah telah tiba. Kepada seluruh siswa Muslim disilakan menuju masjid."; ten = "Attention please. It is time for break and prayer."; }
+            else if(type === 'pulang') { tid = "Perhatian. Seluruh kegiatan belajar mengajar hari ini telah selesai. Selamat pulang dan hati-hati di jalan."; ten = "Attention please. All learning activities for today have ended."; }
             
-            showModal(`Membunyikan Loceng`, `Membaca: "${tid}"`, true, () => {
-                unlockAudioSystems();
-                playAnnouncementSequence(tid, ten, null, model);
-            });
+            playAnnouncementSequence(tid, ten);
         }
 
         function openCallModal() { const m = document.getElementById('call-modal'); m.classList.remove('opacity-0', 'pointer-events-none'); m.querySelector('div').classList.remove('scale-95'); }
@@ -921,58 +843,11 @@
             if (role === "guru") { idRole = "Bapak/Ibu Guru"; enRole = "Teacher"; }
             if (role === "staf") { idRole = "Staf atau Karyawan"; enRole = "Staff member"; }
             let enLocation = location;
-            if (location === "Meja Piket") enLocation = "the Picket Desk"; else if (location === "Ruang Tata Usaha") enLocation = "the Administration Office"; else if (location === "Ruang Kepala Sekolah") enLocation = "the Principal's Office"; else if (location === "Ruang Guru") enLocation = "the Teacher's Room"; else if (location === "Ruang Bimbingan Konseling") enLocation = "the Counseling Room"; else if (location === "Perpustakaan") enLocation = "the Library"; else if (location === "UKS") enLocation = "the School Clinic";
+            if (location === "Meja Piket") enLocation = "the Picket Desk"; else if (location === "Ruang Tata Usaha") enLocation = "the Administration Office"; else if (location === "Ruang Kepala Sekolah") enLocation = "the Principal's Office"; else if (location === "Ruang Majelis Guru") enLocation = "the Teacher's Room"; else if (location === "Ruang Bimbingan Konseling") enLocation = "the Counseling Room"; else if (location === "Perpustakaan") enLocation = "the Library"; else if (location === "UKS") enLocation = "the School Clinic";
             const textId = `Perhatian. Panggilan ditujukan kepada ${idRole} atas nama ${name}. Sekali lagi, kepada ${idRole} atas nama ${name}, harap segera menuju ke ${location} sekarang juga. Terima kasih.`;
             const textEn = `Attention please. Calling for ${enRole}, ${name}. Once again, ${enRole} ${name}, please proceed to ${enLocation} immediately. Thank you.`;
-            
             closeCallModal();
-            showModal(`Menyiarkan Panggilan`, `Membaca: "${textId}"`, true, () => { 
-                unlockAudioSystems();
-                playAnnouncementSequence(textId, textEn, null, 'modern'); 
-            });
-        }
-
-        // --- Ciri Baharu: AI BROADCAST (Siaran Cerdas AI) ---
-        function openAIBroadcastModal() { const m = document.getElementById('ai-broadcast-modal'); m.classList.remove('opacity-0', 'pointer-events-none'); m.querySelector('div').classList.remove('scale-95'); }
-        function closeAIBroadcastModal() { const m = document.getElementById('ai-broadcast-modal'); m.classList.add('opacity-0', 'pointer-events-none'); m.querySelector('div').classList.add('scale-95'); document.getElementById('ai-broadcast-prompt').value = ''; }
-        
-        async function executeAIBroadcast() {
-            const prompt = document.getElementById('ai-broadcast-prompt').value;
-            if(!prompt) { showModal("Perhatian", "Sila masukkan topik pesanan anda."); return; }
-            
-            document.getElementById('ai-broadcast-loading').classList.remove('hidden');
-            
-            try {
-                // 1. Generate ID Text
-                const sysId = "Anda adalah penyiar sekolah. Ubah arahan ringkas ini menjadi pengumuman rasmi sekolah dalam Bahasa Indonesia yang sangat sopan, profesional, dan ringkas. Mulakan dengan 'Perhatian.'. Tanpa markdown atau tanda bintang.";
-                const resId = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: sysId }] } })
-                });
-                const dataId = await resId.json(); 
-                const textId = dataId.candidates[0].content.parts[0].text.trim();
-
-                // 2. Translate to EN
-                const sysEn = "Translate the following Indonesian school announcement into formal, polite English. No markdown.";
-                const resEn = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: textId }] }], systemInstruction: { parts: [{ text: sysEn }] } })
-                });
-                const dataEn = await resEn.json(); 
-                const textEn = dataEn.candidates[0].content.parts[0].text.trim();
-
-                closeAIBroadcastModal();
-                showModal(`Siaran Cerdas Sedang Berlangsung`, `Membaca: "${textId}"`, true, () => { 
-                    unlockAudioSystems();
-                    playAnnouncementSequence(textId, textEn, null, 'modern'); 
-                });
-
-            } catch (error) {
-                console.error(error);
-                showModal("Ralat AI", "Gagal menghubungi pelayan AI. Pastikan internet anda stabil.");
-            } finally {
-                document.getElementById('ai-broadcast-loading').classList.add('hidden');
-            }
+            playAnnouncementSequence(textId, textEn);
         }
 
         // --- CRUD LOGIC ---
@@ -986,17 +861,7 @@
             schedules.sort((a,b) => a.time.localeCompare(b.time));
             document.getElementById('total-sched').innerText = schedules.length;
 
-            const bellIcons = {
-                'nasional': '🔔 Nasional',
-                'westminster': '🕰️ Westminster',
-                'modern': '🏢 Modern',
-                'gamelan': '🇮🇩 Gamelan',
-                'japan': '🇯🇵 Jepang',
-                'airport': '✈️ Bandara'
-            };
-
             schedules.forEach(s => {
-                const bModelStr = s.bellModel ? bellIcons[s.bellModel] : bellIcons['nasional'];
                 const card = document.createElement('div');
                 card.className = `bg-white border ${editingId === s.id ? 'border-blue-400 shadow-md ring-2 ring-blue-50' : 'border-slate-200 hover:border-blue-200 hover:shadow-sm'} rounded-[1.5rem] p-4 lg:p-5 transition-all flex flex-col justify-between`;
                 card.innerHTML = `
@@ -1006,16 +871,15 @@
                             <div class="flex gap-1 flex-wrap justify-end">${s.days.map(d => `<span class="px-1.5 py-0.5 rounded bg-slate-50 text-slate-500 border border-slate-100 text-[8px] font-bold">${hariSingkat[d]}</span>`).join('')}</div>
                         </div>
                         <div class="space-y-2 mb-4">
-                            <div class="flex gap-2 items-center mb-1"><span class="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded text-[8px] font-black">${bModelStr}</span></div>
                             <div class="flex gap-2 items-start"><span class="text-[10px] mt-0.5">🇮🇩</span><p class="text-[11px] font-bold text-slate-600 leading-snug line-clamp-2">"${s.textId || '-'}"</p></div>
                             <div class="flex gap-2 items-start"><span class="text-[10px] mt-0.5 opacity-60">🇬🇧</span><p class="text-[11px] font-medium text-slate-400 leading-snug line-clamp-2 italic">"${s.textEn || '-'}"</p></div>
                             ${s.ytUrl ? `<div class="flex gap-2 items-center"><span class="text-[10px]">🎵</span><p class="text-[10px] font-bold text-rose-500">Audio YouTube Disertakan</p></div>` : ''}
                         </div>
                     </div>
                     <div class="flex gap-2 mt-auto">
-                        <button onclick="previewSchedule(${s.id})" class="flex-1 py-2 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-extrabold hover:bg-blue-600 hover:text-white transition shadow-sm uppercase tracking-wider border border-transparent hover:border-blue-500">Tes</button>
-                        <button onclick="editSchedule(${s.id})" class="flex-1 py-2 bg-slate-100 text-slate-600 rounded-xl text-[10px] font-extrabold hover:bg-slate-800 hover:text-white transition shadow-sm uppercase tracking-wider border border-transparent hover:border-slate-700">Edit</button>
-                        <button onclick="confirmDelete(${s.id})" class="w-10 flex justify-center items-center bg-rose-50 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition shadow-sm border border-transparent hover:border-rose-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                        <button onclick="previewSchedule(${s.id})" class="flex-1 py-2 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-extrabold hover:bg-blue-600 hover:text-white transition shadow-sm uppercase tracking-wider">Tes</button>
+                        <button onclick="editSchedule(${s.id})" class="flex-1 py-2 bg-slate-100 text-slate-600 rounded-xl text-[10px] font-extrabold hover:bg-slate-800 hover:text-white transition shadow-sm uppercase tracking-wider">Edit</button>
+                        <button onclick="confirmDelete(${s.id})" class="w-10 flex justify-center items-center bg-rose-50 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                     </div>
                 `;
                 list.appendChild(card);
@@ -1024,7 +888,6 @@
 
         function saveSchedule() {
             const h = document.getElementById('hour-select').value, m = document.getElementById('minute-select').value;
-            const bModel = document.getElementById('input-bell-model').value;
             const tid = document.getElementById('input-text-id').value.trim(), ten = document.getElementById('input-text-en').value.trim(), yt = document.getElementById('input-yt-url').value.trim();
             const days = Array.from(document.querySelectorAll('.day-cb')).filter(cb => cb.checked).map(cb => parseInt(cb.value));
 
@@ -1033,33 +896,32 @@
 
             if (editingId) {
                 const i = schedules.findIndex(x => x.id === editingId);
-                schedules[i] = {...schedules[i], time: `${h}:${m}`, textId: tid, textEn: ten, ytUrl: yt, bellModel: bModel, days};
+                schedules[i] = {...schedules[i], time: `${h}:${m}`, textId: tid, textEn: ten, ytUrl: yt, days};
                 cancelEdit();
             } else {
-                schedules.push({ id: Date.now(), time: `${h}:${m}`, textId: tid, textEn: ten, ytUrl: yt, bellModel: bModel, days });
+                schedules.push({ id: Date.now(), time: `${h}:${m}`, textId: tid, textEn: ten, ytUrl: yt, days });
                 document.getElementById('input-text-id').value = ''; document.getElementById('input-text-en').value = ''; document.getElementById('input-yt-url').value = '';
             }
-            localStorage.setItem('SmartBell_V24_Stable', JSON.stringify(schedules));
+            localStorage.setItem('SmartBell_V19_Cloud', JSON.stringify(schedules));
             renderSchedules(); updateNextBellDisplay();
         }
 
         function editSchedule(id) {
             const s = schedules.find(x => x.id === id); editingId = id; const [h, m] = s.time.split(':');
             document.getElementById('hour-select').value = h; document.getElementById('minute-select').value = m;
-            document.getElementById('input-bell-model').value = s.bellModel || 'nasional';
             document.getElementById('input-text-id').value = s.textId; document.getElementById('input-text-en').value = s.textEn || ""; document.getElementById('input-yt-url').value = s.ytUrl || "";
             document.querySelectorAll('.day-cb').forEach(cb => cb.checked = s.days.includes(parseInt(cb.value)));
             
             document.getElementById('form-title').innerHTML = `<span class="p-1.5 bg-amber-100 text-amber-600 rounded-lg"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></span> Update Jadwal`;
-            document.getElementById('btn-save-schedule').innerText = "PERBARUI DATA"; document.getElementById('btn-save-schedule').classList.replace('bg-indigo-600', 'bg-amber-500'); document.getElementById('btn-save-schedule').classList.replace('hover:bg-indigo-700', 'hover:bg-amber-600'); document.getElementById('btn-save-schedule').classList.replace('shadow-indigo-600/30', 'shadow-amber-500/30'); document.getElementById('btn-cancel-edit').classList.remove('hidden');
+            document.getElementById('btn-save-schedule').innerText = "PERBARUI DATA"; document.getElementById('btn-save-schedule').classList.replace('bg-blue-600', 'bg-amber-500'); document.getElementById('btn-save-schedule').classList.replace('hover:bg-blue-700', 'hover:bg-amber-600'); document.getElementById('btn-save-schedule').classList.replace('shadow-blue-500/30', 'shadow-amber-500/30'); document.getElementById('btn-cancel-edit').classList.remove('hidden');
             document.getElementById('form-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
             renderSchedules();
         }
 
         function cancelEdit() {
             editingId = null; document.getElementById('input-text-id').value = ''; document.getElementById('input-text-en').value = ''; document.getElementById('input-yt-url').value = '';
-            document.getElementById('form-title').innerHTML = `<span class="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg></span> Buat Jadwal Baru`;
-            document.getElementById('btn-save-schedule').innerText = "SIMPAN JADWAL"; document.getElementById('btn-save-schedule').classList.replace('bg-amber-500', 'bg-indigo-600'); document.getElementById('btn-save-schedule').classList.replace('hover:bg-amber-600', 'hover:bg-indigo-700'); document.getElementById('btn-save-schedule').classList.replace('shadow-amber-500/30', 'shadow-indigo-600/30'); document.getElementById('btn-cancel-edit').classList.add('hidden');
+            document.getElementById('form-title').innerHTML = `<span class="p-1.5 bg-blue-100 text-blue-600 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg></span> Buat Jadwal Baru`;
+            document.getElementById('btn-save-schedule').innerText = "SIMPAN JADWAL"; document.getElementById('btn-save-schedule').classList.replace('bg-amber-500', 'bg-blue-600'); document.getElementById('btn-save-schedule').classList.replace('hover:bg-amber-600', 'hover:bg-blue-700'); document.getElementById('btn-save-schedule').classList.replace('shadow-amber-500/30', 'shadow-blue-500/30'); document.getElementById('btn-cancel-edit').classList.add('hidden');
             renderSchedules();
         }
 
@@ -1084,16 +946,12 @@
         async function generateAnnouncementWithAI() {
             const t = document.getElementById('input-text-id').value;
             if(!t) return;
-            document.getElementById('ai-loading-status').classList.remove('hidden');
-            try {
-                const sys = "Perbaiki teks pengumuman sekolah Indonesia ini agar resmi dan sopan. Mulai dengan 'Perhatian'. Tanpa markdown.";
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: t }] }], systemInstruction: { parts: [{ text: sys }] } })
-                });
-                const data = await res.json(); const revised = data.candidates[0].content.parts[0].text;
-                if(revised) document.getElementById('input-text-id').value = revised.trim();
-            } catch(e) {} finally { document.getElementById('ai-loading-status').classList.add('hidden'); }
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: t }] }], systemInstruction: { parts: [{ text: "Perbaiki teks pengumuman sekolah Indonesia ini agar resmi dan sopan. Mulai dengan 'Perhatian'. Tanpa markdown." }] } })
+            });
+            const data = await res.json(); const revised = data.candidates[0].content.parts[0].text;
+            if(revised) document.getElementById('input-text-id').value = revised.trim();
         }
 
         async function openSmartScheduleModal() {
@@ -1126,9 +984,9 @@
 
                 if(Array.isArray(newSchedules)) {
                     newSchedules.forEach(ns => {
-                        schedules.push({ id: Date.now() + Math.floor(Math.random() * 10000), time: ns.time || "00:00", textId: ns.textId || "Pengumuman", textEn: ns.textEn || "", ytUrl: "", bellModel: "nasional", days: ns.days || [1,2,3,4,5] });
+                        schedules.push({ id: Date.now() + Math.floor(Math.random() * 10000), time: ns.time || "00:00", textId: ns.textId || "Pengumuman", textEn: ns.textEn || "", ytUrl: "", days: ns.days || [1,2,3,4,5] });
                     });
-                    localStorage.setItem('SmartBell_V24_Stable', JSON.stringify(schedules));
+                    localStorage.setItem('SmartBell_V19_Cloud', JSON.stringify(schedules));
                     renderSchedules(); updateNextBellDisplay(); closeSmartScheduleModal(); document.getElementById('smart-schedule-prompt').value = '';
                     showModal("Berjaya!", `Menambahkan ${newSchedules.length} jadual baharu.`);
                 }
@@ -1140,18 +998,18 @@
         function showModal(title, msg, isConfirm = false, cb = null) {
             const m = document.getElementById('custom-modal'); document.getElementById('modal-title').innerText = title; document.getElementById('modal-message').innerText = msg; const acts = document.getElementById('modal-actions'); acts.innerHTML = '';
             if(isConfirm) {
-                const c = document.createElement('button'); c.className = "flex-1 py-3.5 text-[11px] font-bold text-slate-500 bg-slate-100 rounded-2xl hover:bg-slate-200 transition uppercase tracking-widest"; c.innerText = "BATAL"; c.onclick = () => m.classList.add('opacity-0', 'pointer-events-none');
-                const ok = document.createElement('button'); ok.className = "flex-1 py-3.5 text-[11px] font-bold text-white bg-indigo-600 rounded-2xl shadow-md shadow-indigo-500/30 hover:bg-indigo-700 transition uppercase tracking-widest"; ok.innerText = "YA"; ok.onclick = () => { if(cb) cb(); m.classList.add('opacity-0', 'pointer-events-none'); };
+                const c = document.createElement('button'); c.className = "flex-1 py-3 text-[10px] font-bold text-slate-500 bg-slate-100 rounded-xl hover:bg-slate-200 transition uppercase tracking-widest"; c.innerText = "BATAL"; c.onclick = () => m.classList.add('opacity-0', 'pointer-events-none');
+                const ok = document.createElement('button'); ok.className = "flex-1 py-3 text-[10px] font-bold text-white bg-blue-600 rounded-xl shadow-md shadow-blue-500/30 hover:bg-blue-700 transition uppercase tracking-widest"; ok.innerText = "YA"; ok.onclick = () => { if(cb) cb(); m.classList.add('opacity-0', 'pointer-events-none'); };
                 acts.append(c, ok);
             } else {
-                const ok = document.createElement('button'); ok.className = "w-full py-3.5 text-[11px] font-bold text-white bg-indigo-600 rounded-2xl shadow-md shadow-indigo-500/30 hover:bg-indigo-700 transition uppercase tracking-widest"; ok.innerText = "OK"; ok.onclick = () => m.classList.add('opacity-0', 'pointer-events-none'); acts.append(ok);
+                const ok = document.createElement('button'); ok.className = "w-full py-3 text-[10px] font-bold text-white bg-blue-600 rounded-xl shadow-md shadow-blue-500/30 hover:bg-blue-700 transition uppercase tracking-widest"; ok.innerText = "OK"; ok.onclick = () => m.classList.add('opacity-0', 'pointer-events-none'); acts.append(ok);
             }
             m.classList.remove('opacity-0', 'pointer-events-none');
         }
 
-        function confirmDelete(id) { showModal("Hapus?", "Data ini akan terhapus kekal.", true, () => { schedules = schedules.filter(x => x.id !== id); localStorage.setItem('SmartBell_V24_Stable', JSON.stringify(schedules)); renderSchedules(); updateNextBellDisplay(); }); }
-        function confirmReset() { showModal("Reset?", "Semua jadwal akan dikosongkan.", true, () => { localStorage.removeItem('SmartBell_V24_Stable'); location.reload(); }); }
-        function previewSchedule(id) { unlockAudioSystems(); const s = schedules.find(x => x.id === id); playAnnouncementSequence(s.textId, s.textEn, s.ytUrl, s.bellModel); }
+        function confirmDelete(id) { showModal("Hapus?", "Data ini akan terhapus kekal.", true, () => { schedules = schedules.filter(x => x.id !== id); localStorage.setItem('SmartBell_V19_Cloud', JSON.stringify(schedules)); renderSchedules(); updateNextBellDisplay(); }); }
+        function confirmReset() { showModal("Reset?", "Semua jadwal akan dikosongkan.", true, () => { localStorage.removeItem('SmartBell_V19_Cloud'); location.reload(); }); }
+        function previewSchedule(id) { const s = schedules.find(x => x.id === id); playAnnouncementSequence(s.textId, s.textEn, s.ytUrl); }
         function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
         function useTemplate(type) {
             const h = document.getElementById('hour-select'), m = document.getElementById('minute-select'); const tid = document.getElementById('input-text-id'), ten = document.getElementById('input-text-en');
@@ -1160,7 +1018,6 @@
 
         window.onload = () => {
             initUI(); renderSchedules(); updateClock(); updateNextBellDisplay();
-            if ('speechSynthesis' in window) { window.speechSynthesis.onvoiceschanged = loadVoices; setTimeout(loadVoices, 100); }
             document.getElementById('current-day-display').innerText = hariIndo[new Date().getDay()].toUpperCase();
         };
     </script>
