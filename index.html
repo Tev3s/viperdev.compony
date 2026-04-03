@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartBell v10.0 - Clean Light Edition</title>
+    <title>SmartBell v11.0 - AI Integration Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap');
@@ -75,7 +75,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-extrabold tracking-tight text-slate-800 leading-none">SmartBell</h1>
-                    <p class="text-blue-600 text-[10px] font-bold uppercase tracking-widest mt-1">Light Edition v10.0</p>
+                    <p class="text-blue-600 text-[10px] font-bold uppercase tracking-widest mt-1">Light Edition v11.0</p>
                 </div>
             </div>
             <button onclick="toggleFullScreen()" class="lg:hidden p-3 bg-slate-50 hover:bg-slate-100 rounded-xl text-slate-500 transition border border-slate-200">
@@ -184,8 +184,12 @@
                         <span class="p-1.5 bg-blue-100 text-blue-600 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg></span>
                         Buat Jadwal Baru
                     </h3>
-                    <!-- Form Templates -->
-                    <div class="flex gap-1.5">
+                    <!-- Form Templates & AI -->
+                    <div class="flex gap-1.5 items-center">
+                        <button onclick="openSmartScheduleModal()" class="px-2.5 py-1.5 bg-purple-50 border border-purple-200 rounded-lg text-[9px] font-bold text-purple-600 hover:bg-purple-600 hover:text-white transition flex items-center gap-1 shadow-sm">
+                            ✨ GENERATOR JADWAL
+                        </button>
+                        <div class="w-px h-4 bg-slate-200 mx-1"></div>
                         <button onclick="useTemplate('masuk')" class="px-2.5 py-1.5 bg-slate-50 hover:bg-blue-50 border border-slate-200 rounded-lg text-[9px] font-bold text-slate-500 hover:text-blue-600 transition">MASUK</button>
                         <button onclick="useTemplate('istirahat')" class="px-2.5 py-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 rounded-lg text-[9px] font-bold text-slate-500 hover:text-amber-600 transition">REHAT</button>
                         <button onclick="useTemplate('pulang')" class="px-2.5 py-1.5 bg-slate-50 hover:bg-rose-50 border border-slate-200 rounded-lg text-[9px] font-bold text-slate-500 hover:text-rose-600 transition">PULANG</button>
@@ -207,21 +211,24 @@
                     <div class="relative">
                         <div class="flex justify-between items-center mb-2 px-1">
                             <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">INDONESIA 🇮🇩</label>
-                            <button onclick="generateAnnouncementWithAI()" class="text-[9px] font-bold text-blue-600 hover:text-white bg-blue-50 hover:bg-blue-600 px-3 py-1 rounded-md transition border border-blue-100">✨ Rapikan AI</button>
+                            <div class="flex gap-1">
+                                <button onclick="generateAnnouncementWithAI()" class="text-[9px] font-bold text-blue-600 hover:text-white bg-blue-50 hover:bg-blue-600 px-2 py-1 rounded transition border border-blue-100 shadow-sm">✨ Rapikan</button>
+                                <button onclick="generatePantunAnnouncement()" class="text-[9px] font-bold text-teal-600 hover:text-white bg-teal-50 hover:bg-teal-600 px-2 py-1 rounded transition border border-teal-100 shadow-sm">✨ Gaya Pantun</button>
+                            </div>
                         </div>
                         <textarea id="input-text-id" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs font-medium text-slate-700 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none placeholder-slate-400" placeholder="Ketik pengumuman di sini..."></textarea>
                     </div>
                     
                     <div class="relative">
                         <div class="flex justify-between items-center mb-2 px-1">
-                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">ENGLISH 🇬🇧</label>
+                            <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">ENGLISH 🇬🇧</label>
                             <button onclick="autoTranslateToEnglish()" class="text-[9px] font-bold text-indigo-600 hover:text-white bg-indigo-50 hover:bg-indigo-600 px-3 py-1 rounded-md transition border border-indigo-100">🔤 Translate AI</button>
                         </div>
                         <textarea id="input-text-en" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs font-medium text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none placeholder-slate-400" placeholder="Terjemahan (Boleh Kosong)..."></textarea>
                     </div>
 
                     <div id="ai-loading-status" class="hidden text-center py-2.5 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black border border-blue-100">
-                        GEMINI AI SEDANG MEMPROSES<span class="ai-loading-dots"></span>
+                        GEMINI AI SEDANG MEMPROSES TEKS<span class="ai-loading-dots"></span>
                     </div>
 
                     <!-- Days & Save -->
@@ -268,7 +275,7 @@
 
     </main>
 
-    <!-- Modals -->
+    <!-- Modals (Information) -->
     <div id="custom-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 p-4">
         <div class="bg-white border border-slate-200 rounded-[2rem] p-8 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300">
             <h3 id="modal-title" class="text-xl font-black text-slate-900 mb-2 tracking-tight text-center">Pemberitahuan</h3>
@@ -277,12 +284,39 @@
         </div>
     </div>
 
+    <!-- Modal (Smart Schedule Generator) -->
+    <div id="smart-schedule-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 p-4">
+        <div class="bg-white border border-slate-200 rounded-[2rem] p-8 max-w-lg w-full shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-14 h-14 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center shadow-inner border border-purple-200">
+                    <span class="text-2xl">✨</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-black text-slate-900 tracking-tight">Generator Jadwal Pintar</h3>
+                    <p class="text-purple-600 text-[10px] font-bold uppercase tracking-widest">Dikuasakan oleh Gemini AI</p>
+                </div>
+            </div>
+            <p class="text-slate-500 text-xs mb-5 font-medium leading-relaxed">Deskripsikan jadwal sekolah harian Anda secara santai. AI akan mengkonversi teks Anda menjadi jadwal dan menerjemahkannya ke Bahasa Inggris secara otomatis!</p>
+            
+            <textarea id="smart-schedule-prompt" rows="5" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs font-medium text-slate-700 focus:bg-white focus:ring-2 focus:ring-purple-500 outline-none transition-all resize-none mb-4 shadow-sm" placeholder="Contoh: Buatkan jadwal untuk hari Senin-Kamis. Jam 07:00 apel pagi, 10:15 istirahat pertama, 12:00 istirahat kedua dan sholat zuhur, lalu 14:30 pulang sekolah."></textarea>
+            
+            <div id="smart-loading" class="hidden text-center py-3 bg-purple-50 text-purple-600 rounded-xl text-[10px] font-black border border-purple-100 mb-4 animate-pulse">
+                GEMINI SEDANG MENGANALISIS JADWAL ANDA<span class="ai-loading-dots"></span>
+            </div>
+
+            <div class="flex gap-3 justify-end">
+                <button onclick="closeSmartScheduleModal()" class="px-6 py-3 text-[11px] font-bold text-slate-500 bg-slate-100 rounded-xl hover:bg-slate-200 transition uppercase tracking-widest">Batal</button>
+                <button onclick="generateBulkSchedule()" class="px-6 py-3 text-[11px] font-bold text-white bg-purple-600 rounded-xl shadow-md shadow-purple-500/30 hover:bg-purple-700 transition uppercase tracking-widest flex items-center gap-2">✨ JANA JADUAL</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const apiKey = ""; 
         const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
         const hariSingkat = ["MIN", "SEN", "SEL", "RAB", "KAM", "JUM", "SAB"];
         
-        let savedData = localStorage.getItem('SmartBell_V10_Light');
+        let savedData = localStorage.getItem('SmartBell_V11_AI');
         let schedules = savedData ? JSON.parse(savedData) : [
             { id: 1, time: "07:00", textId: "Perhatian, jam pelajaran pertama segera dimulai. Kepada seluruh siswa, silakan masuk ke dalam kelas.", textEn: "Attention please. The first period is about to begin.", days: [1,2,3,4,5] },
             { id: 2, time: "10:00", textId: "Perhatian, waktu istirahat telah tiba. Selamat beristirahat.", textEn: "Attention please. Break time has arrived.", days: [1,2,3,4,5] }
@@ -342,8 +376,8 @@
             const sid = document.getElementById('voice-id-select');
             const sen = document.getElementById('voice-en-select');
             
-            const currId = sid.value || localStorage.getItem('SmartBell_V10_VoiceID');
-            const currEn = sen.value || localStorage.getItem('SmartBell_V10_VoiceEN');
+            const currId = sid.value || localStorage.getItem('SmartBell_V11_VoiceID');
+            const currEn = sen.value || localStorage.getItem('SmartBell_V11_VoiceEN');
 
             sid.innerHTML = ''; sen.innerHTML = '';
 
@@ -395,8 +429,8 @@
                 if(googleEn) sen.value = googleEn.value;
             }
 
-            sid.addEventListener('change', (e) => localStorage.setItem('SmartBell_V10_VoiceID', e.target.value));
-            sen.addEventListener('change', (e) => localStorage.setItem('SmartBell_V10_VoiceEN', e.target.value));
+            sid.addEventListener('change', (e) => localStorage.setItem('SmartBell_V11_VoiceID', e.target.value));
+            sen.addEventListener('change', (e) => localStorage.setItem('SmartBell_V11_VoiceEN', e.target.value));
         }
 
         // --- SISTEM AUDIO (NADA BEL & TTS) ---
@@ -673,7 +707,7 @@
             else if(type === 'ibadah') { tid = "Perhatian. Waktu istirahat dan ibadah telah tiba. Kepada seluruh siswa Muslim disilakan menuju masjid."; ten = "Attention please. It is time for break and prayer."; }
             else if(type === 'pulang') { tid = "Perhatian. Seluruh kegiatan belajar mengajar hari ini telah selesai. Selamat pulang dan hati-hati di jalan."; ten = "Attention please. All learning activities for today have ended."; }
             
-            showModal(`Mainkan Audio`, `Membaca: "${tid}"`, true, () => {
+            showModal(`Membunyikan Loceng`, `Membaca: "${tid}"`, true, () => {
                 playAnnouncementSequence(tid, ten);
             });
         }
@@ -696,7 +730,7 @@
                         </div>
                         <div class="space-y-2 mb-5">
                             <div class="flex gap-2 items-start"><span class="text-[10px] mt-0.5">🇮🇩</span><p class="text-xs font-medium text-slate-600 leading-relaxed line-clamp-2">"${s.textId || '-'}"</p></div>
-                            <div class="flex gap-2 items-start"><span class="text-[10px] mt-0.5">🇬🇧</span><p class="text-xs font-medium text-slate-400 leading-relaxed line-clamp-2">"${s.textEn || '-'}"</p></div>
+                            <div class="flex gap-2 items-start"><span class="text-[10px] mt-0.5">🇬🇧</span><p class="text-[10px] font-medium text-slate-400 leading-relaxed line-clamp-2">"${s.textEn || '-'}"</p></div>
                         </div>
                     </div>
                     <div class="flex gap-2">
@@ -726,7 +760,7 @@
                 document.getElementById('input-text-id').value = '';
                 document.getElementById('input-text-en').value = '';
             }
-            localStorage.setItem('SmartBell_V10_Light', JSON.stringify(schedules));
+            localStorage.setItem('SmartBell_V11_AI', JSON.stringify(schedules));
             renderSchedules(); updateNextBellDisplay();
         }
 
@@ -765,7 +799,28 @@
             renderSchedules();
         }
 
-        // --- UTILS ---
+        // --- NEW TEMPLATES & AI LOGIC ---
+        function useTemplate(type) {
+            const h = document.getElementById('hour-select'), m = document.getElementById('minute-select');
+            const tid = document.getElementById('input-text-id'), ten = document.getElementById('input-text-en');
+            if(type === 'masuk') { h.value = "07"; m.value="15"; tid.value = "Perhatian. Jam pelajaran akan segera dimulai. Seluruh siswa silakan masuk ke kelas."; ten.value = "Attention please. The class will begin shortly. All students please proceed to your classrooms."; }
+            else if(type === 'istirahat') { h.value = "10"; m.value="00"; tid.value = "Perhatian. Waktu istirahat telah tiba. Selamat beristirahat."; ten.value = "Attention please. Break time has arrived. Have a good rest."; }
+            else if(type === 'pulang') { h.value = "14"; m.value="00"; tid.value = "Perhatian. Jam pelajaran telah usai. Selamat pulang dan hati-hati di jalan."; ten.value = "Attention please. School is over for today. Have a safe trip home."; }
+        }
+
+        function openSmartScheduleModal() {
+            const m = document.getElementById('smart-schedule-modal');
+            m.classList.remove('opacity-0', 'pointer-events-none');
+            m.querySelector('div').classList.remove('scale-95');
+        }
+
+        function closeSmartScheduleModal() {
+            const m = document.getElementById('smart-schedule-modal');
+            m.classList.add('opacity-0', 'pointer-events-none');
+            m.querySelector('div').classList.add('scale-95');
+        }
+
+        // --- UTILS & AI API ---
         function showModal(title, msg, isConfirm = false, cb = null) {
             const m = document.getElementById('custom-modal');
             document.getElementById('modal-title').innerText = title;
@@ -796,8 +851,8 @@
             m.classList.remove('opacity-0', 'pointer-events-none');
         }
 
-        function confirmDelete(id) { showModal("Hapus?", "Data ini akan terhapus.", true, () => { schedules = schedules.filter(x => x.id !== id); localStorage.setItem('SmartBell_V10_Light', JSON.stringify(schedules)); renderSchedules(); updateNextBellDisplay(); }); }
-        function confirmReset() { showModal("Reset?", "Semua jadwal akan dikosongkan.", true, () => { localStorage.removeItem('SmartBell_V10_Light'); location.reload(); }); }
+        function confirmDelete(id) { showModal("Hapus?", "Data ini akan terhapus.", true, () => { schedules = schedules.filter(x => x.id !== id); localStorage.setItem('SmartBell_V11_AI', JSON.stringify(schedules)); renderSchedules(); updateNextBellDisplay(); }); }
+        function confirmReset() { showModal("Reset?", "Semua jadwal akan dikosongkan.", true, () => { localStorage.removeItem('SmartBell_V11_AI'); location.reload(); }); }
         function previewSchedule(id) { 
             const s = schedules.find(x => x.id === id); 
             showModal("Membunyikan Loceng", `Membaca: "${s.textId}"`, true, () => {
@@ -805,32 +860,109 @@
             });
         }
 
-        async function callGemini(sys, prompt) {
-            document.getElementById('ai-loading-status').classList.remove('hidden');
+        async function callGemini(sys, prompt, isJson = false) {
             try {
+                let payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                    systemInstruction: { parts: [{ text: sys }] }
+                };
+                if(isJson) {
+                    payload.generationConfig = { responseMimeType: "application/json" };
+                }
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: sys }] } })
+                    body: JSON.stringify(payload)
                 });
                 const data = await res.json();
                 return data.candidates[0].content.parts[0].text;
-            } catch(e) { showModal("AI Error", "Gagal menghubungi Gemini AI. Periksa internet."); return ""; }
-            finally { document.getElementById('ai-loading-status').classList.add('hidden'); }
+            } catch(e) { 
+                console.error(e);
+                showModal("AI Error", "Gagal menghubungi Gemini AI. Periksa internet anda."); 
+                return ""; 
+            }
         }
 
         async function autoTranslateToEnglish() {
             const t = document.getElementById('input-text-id').value;
             if(!t) return;
+            document.getElementById('ai-loading-status').classList.remove('hidden');
             const res = await callGemini("Terjemahkan pengumuman sekolah ini ke English formal. Pendek dan padat. Tanpa markdown.", t);
             if(res) document.getElementById('input-text-en').value = res.trim();
+            document.getElementById('ai-loading-status').classList.add('hidden');
         }
 
         async function generateAnnouncementWithAI() {
             const t = document.getElementById('input-text-id').value;
             if(!t) return;
+            document.getElementById('ai-loading-status').classList.remove('hidden');
             const res = await callGemini("Perbaiki teks pengumuman sekolah Indonesia ini agar resmi dan sopan. Mulai dengan 'Perhatian'. Tanpa markdown.", t);
             if(res) document.getElementById('input-text-id').value = res.trim();
+            document.getElementById('ai-loading-status').classList.add('hidden');
+        }
+
+        async function generatePantunAnnouncement() {
+            const t = document.getElementById('input-text-id').value;
+            if(!t) {
+                showModal("Info", "Sila masukkan pesanan ringkas sebelum ditukar menjadi Pantun.");
+                return;
+            }
+            document.getElementById('ai-loading-status').classList.remove('hidden');
+            const res = await callGemini("Ubah pengumuman/pesanan ini menjadi sebuah PANTUN (terdiri daripada sampiran dan isi) yang sopan dan relevan. Hanya berikan pantunnya sahaja tanpa huraian tambahan.", t);
+            if(res) document.getElementById('input-text-id').value = res.trim();
+            document.getElementById('ai-loading-status').classList.add('hidden');
+        }
+
+        async function generateBulkSchedule() {
+            const prompt = document.getElementById('smart-schedule-prompt').value;
+            if(!prompt) {
+                showModal("Perhatian", "Sila masukkan penerangan jadual anda.");
+                return;
+            }
+
+            document.getElementById('smart-loading').classList.remove('hidden');
+            const sysPrompt = `Anda adalah asisten pembuat jadwal bel sekolah pintar.
+Tugas Anda adalah menghasilkan daftar jadwal dalam format array JSON murni.
+Properti wajib setiap objek:
+- "time": string waktu (format "HH:MM", contoh: "07:00")
+- "textId": string teks pengumuman bahasa Indonesia yang sopan dan formal. (Cth: "Perhatian, waktu istirahat telah tiba...")
+- "textEn": string terjemahan bahasa Inggris dari textId. (Cth: "Attention please, break time has arrived...")
+- "days": array angka hari aktif (1=Senin, 2=Selasa, 3=Rabu, 4=Kamis, 5=Jumat, 6=Sabtu, 0=Minggu)
+
+Berikan HANYA JSON array yang valid. Jika pengguna tidak menyebutkan hari spesifik, gunakan [1,2,3,4,5].`;
+
+            const res = await callGemini(sysPrompt, prompt, true);
+            document.getElementById('smart-loading').classList.add('hidden');
+
+            if(res) {
+                try {
+                    let cleanJson = res.replace(/```json/gi, '').replace(/```/gi, '').trim();
+                    let newSchedules = JSON.parse(cleanJson);
+
+                    if(Array.isArray(newSchedules)) {
+                        newSchedules.forEach(ns => {
+                            schedules.push({
+                                id: Date.now() + Math.floor(Math.random() * 10000),
+                                time: ns.time || "00:00",
+                                textId: ns.textId || "Pengumuman",
+                                textEn: ns.textEn || "",
+                                days: ns.days || [1,2,3,4,5]
+                            });
+                        });
+                        localStorage.setItem('SmartBell_V11_AI', JSON.stringify(schedules));
+                        renderSchedules();
+                        updateNextBellDisplay();
+                        closeSmartScheduleModal();
+                        document.getElementById('smart-schedule-prompt').value = '';
+                        showModal("Berjaya!", `Menambahkan ${newSchedules.length} jadual baharu secara automatik melalui AI.`);
+                    } else {
+                        throw new Error("Format JSON tidak sesuai.");
+                    }
+                } catch(e) {
+                    console.error("AI Bulk Generator Error:", e);
+                    showModal("Gagal", "Gagal memproses susunan jadual. Pastikan deskripsi anda jelas dan logik.");
+                }
+            }
         }
 
         function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
