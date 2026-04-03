@@ -1,594 +1,736 @@
-<!-- 
-  Vipercell Web Update v3.6
-  Feature: PDF Ghost-Rendering Fix, Visible-Capture Method, & A4 Layout Hard-Lock
-  Developer: Senior AI Developer Partner (Vipercell Project)
--->
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viper Bingo Digital v3.6</title>
+    <title>SmartBell v8.3 - Audio Sync Fix</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- PDF Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        :root {
-            --viper-blue: #2563eb;
-            --bg-gradient: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --border-color: #e2e8f0;
-            --cell-bg: #f1f5f9;
-        }
-
-        .dark-theme {
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #020617 100%);
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --border-color: #334155;
-            --cell-bg: #0f172a;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap');
+        
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: var(--bg-gradient);
-            min-height: 100vh;
-            color: var(--text-main);
-            transition: background 0.3s ease, color 0.3s ease;
+            background: #f1f5f9;
+            color: #0f172a;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .clock-font { font-family: 'JetBrains Mono', monospace; }
+        .blink { animation: blinker 1s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes blinker { 50% { opacity: 0.15; } }
+
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .playing-wave { animation: wave 0.8s infinite ease-in-out alternate; }
+        @keyframes wave { 0% { transform: scaleY(0.3); opacity: 0.5; } 100% { transform: scaleY(1.2); opacity: 1; } }
+
+        .ai-loading-dots::after { content: ''; animation: dots 1.5s steps(5, end) infinite; }
+        @keyframes dots { 0%, 20% { content: ''; } 40% { content: '.'; } 60% { content: '..'; } 80%, 100% { content: '...'; } }
+
+        input[type=range] {
+            -webkit-appearance: none; background: #e2e8f0; border-radius: 8px; height: 6px; width: 100%;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%;
+            background: #2563eb; cursor: pointer; box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
         }
 
-        .bingo-card {
-            background: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-
-        .cell {
-            aspect-ratio: 1/1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-weight: 800;
-            font-size: 1.4rem;
-            background: var(--cell-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
-
-        .cell.marked {
-            background: var(--viper-blue) !important;
-            color: white !important;
-            border-radius: 50%;
-            transform: scale(0.85);
-            border: none;
-            box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
-        }
-
-        .cell.free {
-            background: #f59e0b;
-            color: #ffffff;
-            font-size: 0.7rem;
-            font-weight: 900;
-        }
-
-        .header-col {
-            background: var(--viper-blue);
-            color: white;
-            font-weight: 900;
-            padding: 10px 0;
-            font-size: 1.1rem;
-        }
-
-        #fullscreen-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: var(--card-bg);
-            z-index: 9999;
-            padding: 1rem;
-            overflow-y: auto;
-        }
-
-        body.is-fullscreen #fullscreen-overlay { display: block; }
-
-        .tab-btn.active {
-            background: var(--viper-blue);
-            color: white;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(8px);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal.active { display: flex; }
-
-        /* Print Container Fix: Visible but behind everything during process */
-        #print-temp-area {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 794px; /* A4 Width */
-            background: white;
-            color: black;
-            z-index: -50;
-            opacity: 0.01;
-            pointer-events: none;
-        }
-
-        .theme-toggle-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
+        .day-cb:checked + div {
+            background-color: #2563eb; color: white; border-color: #2563eb;
+            box-shadow: 0 4px 10px rgba(37,99,235,0.3);
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="min-h-screen bg-slate-200 lg:p-4 flex justify-center items-start lg:items-center">
 
-    <!-- AREA CETAK SEMENTARA -->
-    <div id="print-temp-area"></div>
-
-    <!-- MODAL: SIMPAN NAMA BUKU -->
-    <div id="modal-save" class="modal px-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-md p-8 rounded-3xl shadow-2xl">
-            <h3 class="text-xl font-extrabold mb-2 text-slate-800 dark:text-white text-center">Simpan Koleksi</h3>
-            <p class="text-slate-500 dark:text-slate-400 text-sm mb-6 text-center">Beri nama untuk paket 4 kartu ini.</p>
-            <input type="text" id="input-book-name" placeholder="Nama Buku..." class="w-full bg-slate-100 dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 p-4 rounded-2xl mb-6 focus:border-blue-500 outline-none font-bold text-slate-700 dark:text-white">
-            <div class="flex gap-3">
-                <button onclick="closeModal('modal-save')" class="flex-1 py-4 font-bold text-slate-500 bg-slate-100 dark:bg-slate-700 rounded-2xl">Batal</button>
-                <button onclick="confirmSave()" class="flex-1 py-4 font-bold text-white bg-blue-600 rounded-2xl shadow-lg">Simpan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: KONFIRMASI -->
-    <div id="modal-confirm" class="modal px-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-md p-8 rounded-3xl shadow-2xl text-center">
-            <div id="confirm-icon" class="w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto bg-amber-100 text-amber-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-            </div>
-            <h3 id="confirm-title" class="text-xl font-extrabold mb-2 text-slate-800 dark:text-white">Konfirmasi</h3>
-            <p id="confirm-msg" class="text-slate-500 dark:text-slate-400 text-sm mb-8">Apakah Anda yakin?</p>
-            <div class="flex gap-3">
-                <button onclick="closeModal('modal-confirm')" class="flex-1 py-4 font-bold text-slate-500 bg-slate-100 dark:bg-slate-700 rounded-2xl">Batal</button>
-                <button id="confirm-action-btn" class="flex-1 py-4 font-bold text-white bg-blue-600 rounded-2xl">Lanjutkan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- FULLSCREEN OVERLAY -->
-    <div id="fullscreen-overlay">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 gap-4">
-            <div class="flex flex-wrap items-center gap-3">
-                <div id="fs-title" class="font-extrabold text-blue-600 text-lg uppercase mr-2">Main Bingo</div>
-                <button onclick="handleClearMarks('fullscreen')" class="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-4 py-2 rounded-xl text-xs font-bold active:scale-95 transition-all">Bersihkan Tanda</button>
-                <button onclick="downloadPDF(currentFullscreenBookId)" class="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold active:scale-95 transition-all shadow-md">Cetak PDF</button>
-            </div>
-            <button onclick="handleExitFullscreen()" class="bg-red-500 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 active:scale-95 shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                Keluar
-            </button>
-        </div>
-        <div id="fs-content" class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20"></div>
-    </div>
-
-    <div id="main-ui" class="max-w-7xl mx-auto">
-        <!-- Main Header -->
-        <header class="flex flex-col lg:flex-row justify-between items-center mb-8 gap-6 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-            <div class="text-center lg:text-left">
-                <h1 class="text-3xl font-extrabold tracking-tighter text-blue-600 leading-none">
-                    VIPER <span class="text-slate-800 dark:text-white">BINGO DIGITAL</span>
-                </h1>
-                <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mt-2">Vipercell Pro v3.6 • Ambon</p>
-            </div>
+    <div id="app-container" class="bg-white w-full max-w-7xl min-h-screen lg:min-h-[85vh] lg:h-[90vh] lg:rounded-3xl lg:shadow-2xl flex flex-col lg:flex-row overflow-hidden relative">
+        
+        <div class="bg-slate-900 text-slate-300 w-full lg:w-[350px] xl:w-[400px] flex flex-col shrink-0 z-20 shadow-xl overflow-y-auto max-h-[50vh] lg:max-h-full">
             
-            <div class="flex flex-wrap justify-center items-center gap-4">
-                <button onclick="toggleTheme()" class="theme-toggle-btn p-3 rounded-2xl shadow-sm active:scale-95">
-                    <svg id="theme-icon-sun" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.95 16.95l.707.707M7.05 7.05l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
-                    <svg id="theme-icon-moon" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-                </button>
-
-                <div class="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
-                    <button id="tab-saved-btn" onclick="switchTab('saved')" class="tab-btn px-6 py-3 rounded-xl font-bold text-slate-500 active">Koleksi</button>
-                    <button id="tab-new-btn" onclick="switchTab('new')" class="tab-btn px-6 py-3 rounded-xl font-bold text-slate-500">Buat Baru</button>
-                </div>
-            </div>
-        </header>
-
-        <!-- VIEW: BUKU TERSIMPAN -->
-        <section id="view-saved" class="mb-10">
-            <div id="saved-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-            <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 bg-white/30 dark:bg-slate-800/30 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-3xl text-slate-400 text-center">
-                <p class="font-bold">Belum ada koleksi buku bingo</p>
-            </div>
-        </section>
-
-        <!-- VIEW: DRAFT BARU -->
-        <section id="view-new" class="hidden">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <div class="p-5 lg:p-8 flex justify-between items-center border-b border-slate-800 sticky top-0 bg-slate-900 z-10">
                 <div class="flex items-center gap-3">
-                    <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-lg text-[10px] font-black uppercase">Draft Mode</span>
-                    <button onclick="handleClearMarks('draft')" class="text-blue-600 text-xs font-bold hover:underline">Bersihkan Tanda</button>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="handleRequestNew()" class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-xl font-bold text-sm">Acak Baru</button>
-                    <button onclick="openSaveModal()" class="bg-green-600 text-white px-6 py-2 rounded-xl font-bold text-sm shadow-md">Simpan Koleksi</button>
+                    <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/40">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-white leading-none">SmartBell</h1>
+                        <p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest mt-1">v8.3 Audio Sync</p>
+                    </div>
                 </div>
             </div>
-            <div id="new-draft-container" class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12"></div>
-        </section>
+
+            <div class="p-5 lg:p-8 space-y-6 flex-grow">
+                <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 relative text-center">
+                    <div id="playing-indicator" class="hidden absolute top-4 right-4 flex items-end gap-1 h-3">
+                        <div class="w-1 bg-blue-400 rounded-t-full playing-wave" style="animation-delay: 0s"></div>
+                        <div class="w-1 bg-blue-400 rounded-t-full playing-wave" style="animation-delay: 0.2s"></div>
+                        <div class="w-1 bg-blue-400 rounded-t-full playing-wave" style="animation-delay: 0.1s"></div>
+                    </div>
+                    <p id="current-day-display" class="text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-1">HARI INI</p>
+                    <div class="text-4xl lg:text-5xl clock-font text-white font-bold tracking-tight" id="current-time">
+                        00<span class="blink text-slate-500">:</span>00
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-600 to-blue-800 p-5 rounded-2xl shadow-lg shadow-blue-900/30">
+                    <p class="text-blue-200 text-[9px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Bel Selanjutnya
+                    </p>
+                    <div class="text-white font-bold text-2xl mb-1 clock-font" id="next-bell-time">--:--</div>
+                    <div class="text-blue-100 text-[11px] font-medium line-clamp-1 mb-3" id="next-bell-desc">Menunggu aktif...</div>
+                    <div class="w-full h-1 bg-white/20 rounded-full overflow-hidden mb-3">
+                        <div id="countdown-progress" class="h-full bg-white transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                    <div class="text-white text-[10px] font-bold uppercase bg-black/20 px-3 py-1.5 rounded-lg inline-block" id="next-bell-countdown">STANDBY</div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-2 flex justify-between">
+                            <span>Volume Master</span>
+                            <span id="vol-val" class="text-blue-400">80%</span>
+                        </label>
+                        <input type="range" id="volume-slider" min="0" max="100" value="80">
+                    </div>
+                    
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                        <div>
+                            <label class="block text-slate-400 text-[9px] font-bold uppercase mb-1">Suara Indonesia 🇮🇩</label>
+                            <select id="voice-id-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-2 text-[10px] text-slate-300 font-medium outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 text-[9px] font-bold uppercase mb-1">Suara English 🇬🇧</label>
+                            <select id="voice-en-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-2 text-[10px] text-slate-300 font-medium outline-none"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5 lg:p-8 border-t border-slate-800 sticky bottom-0 bg-slate-900 z-10 flex flex-col gap-3">
+                <button id="btn-toggle-system" onclick="toggleSystem()" class="w-full py-4 rounded-xl font-bold text-[11px] uppercase tracking-widest text-white bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-600/30 transition-all active:scale-95 flex justify-center items-center gap-2">
+                    <span id="btn-icon"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg></span>
+                    <span id="btn-text">AKTIFKAN SISTEM</span>
+                </button>
+                <button id="btn-stop-audio" onclick="stopCurrentAudio()" class="hidden w-full py-3 rounded-xl font-bold text-[10px] uppercase text-red-400 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all flex justify-center items-center gap-2">
+                    ⏹ HENTIKAN SUARA
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-1 flex flex-col h-full bg-slate-50 relative z-10 overflow-y-auto">
+            
+            <div class="bg-white p-5 lg:px-8 border-b border-slate-200 flex flex-col gap-4 sticky top-0 z-30">
+                <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <span class="w-1.5 h-5 bg-blue-600 rounded-full"></span>
+                    Mainkan Instan (Akses Cepat)
+                </h2>
+                
+                <div class="flex items-center gap-2 overflow-x-auto w-full pb-2 scroll-smooth">
+                    <button onclick="playInstantBell('upacara')" class="shrink-0 px-4 py-2.5 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-xl text-[11px] font-bold transition flex items-center gap-1 border border-rose-100 shadow-sm">🇲🇨 Upacara</button>
+                    <button onclick="playInstantBell('apel')" class="shrink-0 px-4 py-2.5 bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white rounded-xl text-[11px] font-bold transition flex items-center gap-1 border border-orange-100 shadow-sm">📢 Apel</button>
+                    <button onclick="playInstantBell('masuk')" class="shrink-0 px-4 py-2.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl text-[11px] font-bold transition flex items-center gap-1 border border-blue-100 shadow-sm">🏫 Masuk</button>
+                    <button onclick="playInstantBell('istirahat')" class="shrink-0 px-4 py-2.5 bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white rounded-xl text-[11px] font-bold transition flex items-center gap-1 border border-amber-100 shadow-sm">☕ Istirahat</button>
+                    <button onclick="playInstantBell('ibadah')" class="shrink-0 px-4 py-2.5 bg-teal-50 text-teal-600 hover:bg-teal-600 hover:text-white rounded-xl text-[11px] font-bold transition flex items-center gap-1 border border-teal-100 shadow-sm">🕌 Ibadah</button>
+                    <button onclick="playInstantBell('pulang')" class="shrink-0 px-4 py-2.5 bg-slate-100 text-slate-600 hover:bg-slate-700 hover:text-white rounded-xl text-[11px] font-bold transition flex items-center gap-1 border border-slate-200 shadow-sm">🏠 Pulang</button>
+                </div>
+            </div>
+
+            <div class="p-5 lg:p-8 space-y-6">
+                <div id="form-container" class="bg-white p-5 lg:p-8 rounded-3xl shadow-sm border border-slate-200 transition-all">
+                    
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 id="form-title" class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <span class="p-1.5 bg-blue-100 text-blue-600 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg></span>
+                            Buat Jadwal Baru
+                        </h3>
+                    </div>
+
+                    <div class="flex flex-col xl:flex-row gap-6">
+                        <div class="w-full xl:w-40 flex flex-col justify-center">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 text-center">Waktu Bel</label>
+                            <div class="flex items-center justify-center gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                                <select id="hour-select" class="w-full bg-white border border-slate-200 rounded-xl py-2 text-center text-xl font-bold text-slate-800 clock-font focus:ring-2 focus:ring-blue-500 outline-none"></select>
+                                <span class="text-slate-400 font-bold text-xl">:</span>
+                                <select id="minute-select" class="w-full bg-white border border-slate-200 rounded-xl py-2 text-center text-xl font-bold text-slate-800 clock-font focus:ring-2 focus:ring-blue-500 outline-none"></select>
+                            </div>
+                        </div>
+
+                        <div class="flex-grow flex flex-col gap-4">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1.5 px-1">
+                                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Teks Indonesia 🇮🇩</label>
+                                    </div>
+                                    <textarea id="input-text-id" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all resize-none placeholder-slate-400" placeholder="Ketik pengumuman di sini..."></textarea>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between items-center mb-1.5 px-1">
+                                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Teks English 🇬🇧</label>
+                                    </div>
+                                    <textarea id="input-text-en" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all resize-none placeholder-slate-400" placeholder="Terjemahan (Boleh Kosong)..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row gap-4 items-center">
+                                <div class="flex flex-wrap gap-1.5 flex-grow w-full bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
+                                    <label class="cursor-pointer flex-1"><input type="checkbox" value="1" class="day-cb peer sr-only" checked><div class="py-2.5 rounded-xl text-[10px] font-bold text-center bg-white text-slate-400 border border-slate-200 transition">SEN</div></label>
+                                    <label class="cursor-pointer flex-1"><input type="checkbox" value="2" class="day-cb peer sr-only" checked><div class="py-2.5 rounded-xl text-[10px] font-bold text-center bg-white text-slate-400 border border-slate-200 transition">SEL</div></label>
+                                    <label class="cursor-pointer flex-1"><input type="checkbox" value="3" class="day-cb peer sr-only" checked><div class="py-2.5 rounded-xl text-[10px] font-bold text-center bg-white text-slate-400 border border-slate-200 transition">RAB</div></label>
+                                    <label class="cursor-pointer flex-1"><input type="checkbox" value="4" class="day-cb peer sr-only" checked><div class="py-2.5 rounded-xl text-[10px] font-bold text-center bg-white text-slate-400 border border-slate-200 transition">KAM</div></label>
+                                    <label class="cursor-pointer flex-1"><input type="checkbox" value="5" class="day-cb peer sr-only" checked><div class="py-2.5 rounded-xl text-[10px] font-bold text-center bg-white text-slate-400 border border-slate-200 transition">JUM</div></label>
+                                    <label class="cursor-pointer flex-1"><input type="checkbox" value="6" class="day-cb peer sr-only"><div class="py-2.5 rounded-xl text-[10px] font-bold text-center bg-white text-slate-400 border border-slate-200 transition">SAB</div></label>
+                                    <label class="cursor-pointer flex-1"><input type="checkbox" value="0" class="day-cb peer sr-only"><div class="py-2.5 rounded-xl text-[10px] font-bold text-center bg-white text-slate-400 border border-slate-200 transition text-rose-400">MIN</div></label>
+                                </div>
+                                <div class="flex gap-2 w-full md:w-auto shrink-0">
+                                    <button id="btn-cancel-edit" onclick="cancelEdit()" class="hidden w-full md:w-auto px-6 py-3 rounded-xl bg-slate-200 text-slate-600 font-bold text-[11px] hover:bg-slate-300 transition uppercase">Batal</button>
+                                    <button id="btn-save-schedule" onclick="saveSchedule()" class="w-full md:w-auto px-8 py-3 bg-blue-600 text-white font-bold text-[11px] rounded-xl shadow-md shadow-blue-200 hover:bg-blue-700 transition active:scale-95 uppercase tracking-wide">Simpan Jadwal</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-end mb-4 border-b border-slate-200 pb-3">
+                        <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                            Daftar Jadwal
+                            <span id="total-sched" class="bg-blue-100 text-blue-600 px-2 py-0.5 rounded-md text-[10px] font-bold">0</span>
+                        </h3>
+                        <button onclick="confirmReset()" class="text-[10px] font-bold text-rose-500 hover:bg-rose-50 px-3 py-1.5 rounded-lg transition border border-rose-100">
+                            Reset Pabrik
+                        </button>
+                    </div>
+                    
+                    <div id="schedule-list" class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                        <!-- Cards injected by JS -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-8 py-4 rounded-2xl shadow-2xl opacity-0 pointer-events-none transition-all duration-300 font-black z-[10001] uppercase tracking-widest text-xs">Notifikasi</div>
+    <div id="custom-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 p-4">
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 lg:p-8 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300">
+            <h3 id="modal-title" class="text-lg lg:text-xl font-bold text-slate-900 mb-2">Pemberitahuan</h3>
+            <p id="modal-message" class="text-slate-600 text-xs lg:text-sm mb-6 leading-relaxed font-medium"></p>
+            <div class="flex gap-2 justify-end" id="modal-actions"></div>
+        </div>
+    </div>
 
     <script>
-        const STORAGE_KEY = 'viper_bingo_v3_6';
-        const THEME_KEY = 'viper_bingo_theme';
-        const SESSION_KEY = 'viper_bingo_active_session';
+        const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        const hariSingkat = ["MIN", "SEN", "SEL", "RAB", "KAM", "JUM", "SAB"];
         
-        let savedCollection = [];
-        let currentDraft = [];
-        let toastTimeout = null;
-        let activeTab = 'saved';
-        let currentFullscreenBookId = null;
+        let savedData = localStorage.getItem('SmartBell_V8_Fix');
+        let schedules = savedData ? JSON.parse(savedData) : [
+            { id: 1, time: "07:00", textId: "Perhatian, jam pelajaran pertama segera dimulai. Kepada seluruh siswa, silakan masuk ke dalam kelas masing-masing.", textEn: "Attention please. The first period is about to begin.", days: [1,2,3,4,5] },
+            { id: 2, time: "10:00", textId: "Perhatian, waktu istirahat telah tiba. Selamat beristirahat.", textEn: "Attention please. Break time has arrived.", days: [1,2,3,4,5] }
+        ];
+
+        let systemActive = false;
+        let audioCtx = null;
+        let isPlayingSequence = false;
+        let editingId = null;
+        let masterVolume = 0.8;
+        let lastPlayedMinute = "";
+        let pendingTimeouts = [];
+        let activeOscillators = [];
+        
+        // --- SOLUSI TTS TUNTAS ---
+        window.activeUtterances = []; 
+        let audioUnlocked = false;
+
+        function unlockAudioSystems() {
+            if (audioUnlocked) return;
+            
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            let silentMsg = new SpeechSynthesisUtterance(' ');
+            silentMsg.volume = 0; 
+            silentMsg.rate = 10;
+            silentMsg.onerror = function() {}; 
+            window.speechSynthesis.speak(silentMsg);
+            
+            audioUnlocked = true;
+
+            document.body.removeEventListener('click', unlockAudioSystems);
+            document.body.removeEventListener('touchstart', unlockAudioSystems);
+        }
+
+        document.body.addEventListener('click', unlockAudioSystems);
+        document.body.addEventListener('touchstart', unlockAudioSystems);
+
+        function initUI() {
+            const hSel = document.getElementById('hour-select');
+            const mSel = document.getElementById('minute-select');
+            for(let i=0; i<24; i++) hSel.add(new Option(i.toString().padStart(2, '0'), i.toString().padStart(2, '0')));
+            for(let i=0; i<60; i++) mSel.add(new Option(i.toString().padStart(2, '0'), i.toString().padStart(2, '0')));
+            
+            hSel.value = String(new Date().getHours()).padStart(2, '0');
+            mSel.value = "00";
+
+            document.getElementById('volume-slider').addEventListener('input', (e) => {
+                masterVolume = e.target.value / 100;
+                document.getElementById('vol-val').innerText = `${e.target.value}%`;
+            });
+        }
+
+        function loadVoices() {
+            const v = window.speechSynthesis.getVoices();
+            if (!v || v.length === 0) return;
+
+            const sid = document.getElementById('voice-id-select');
+            const sen = document.getElementById('voice-en-select');
+            
+            const currId = sid.value || localStorage.getItem('SmartBell_V8_VoiceID');
+            const currEn = sen.value || localStorage.getItem('SmartBell_V8_VoiceEN');
+
+            sid.innerHTML = ''; sen.innerHTML = '';
+
+            const gId = document.createElement('optgroup'); gId.label = "🇮🇩 Indonesia / Melayu";
+            const gEn = document.createElement('optgroup'); gEn.label = "🇬🇧 English";
+            const gOt = document.createElement('optgroup'); gOt.label = "🌐 Lainnya";
+            
+            const gId2 = document.createElement('optgroup'); gId2.label = "🇮🇩 Indonesia / Melayu";
+            const gEn2 = document.createElement('optgroup'); gEn2.label = "🇬🇧 English";
+            const gOt2 = document.createElement('optgroup'); gOt2.label = "🌐 Lainnya";
+
+            let hasIdVoices = false;
+
+            v.forEach(voice => {
+                const name = `${voice.name} (${voice.lang})`;
+                const opt1 = new Option(name, voice.name);
+                const opt2 = new Option(name, voice.name);
+                
+                const lang = voice.lang.toLowerCase();
+                const vname = voice.name.toLowerCase();
+
+                if (lang.includes('id') || lang.includes('in') || lang.includes('ms') || vname.includes('indonesia') || vname.includes('melayu')) {
+                    gId.appendChild(opt1); gId2.appendChild(opt2); hasIdVoices = true;
+                } else if (lang.includes('en')) {
+                    gEn.appendChild(opt1); gEn2.appendChild(opt2);
+                } else {
+                    gOt.appendChild(opt1); gOt2.appendChild(opt2);
+                }
+            });
+
+            if (!hasIdVoices) {
+                gId.appendChild(new Option("⚠️ Tidak ada Suara Indonesia", ""));
+                gId2.appendChild(new Option("⚠️ Tidak ada Suara Indonesia", ""));
+            }
+
+            if (gId.childNodes.length > 0) { sid.appendChild(gId); sen.appendChild(gId2); }
+            if (gEn.childNodes.length > 0) { sid.appendChild(gEn); sen.appendChild(gEn2); }
+            if (gOt.childNodes.length > 0) { sid.appendChild(gOt); sen.appendChild(gOt2); }
+
+            if (currId && Array.from(sid.options).some(o => o.value === currId)) sid.value = currId;
+            else if (hasIdVoices) {
+                const googleVoice = Array.from(gId.childNodes).find(o => o.text.toLowerCase().includes('google'));
+                if(googleVoice) sid.value = googleVoice.value;
+            }
+
+            if (currEn && Array.from(sen.options).some(o => o.value === currEn)) sen.value = currEn;
+            else {
+                const googleEn = Array.from(gEn2.childNodes).find(o => o.text.toLowerCase().includes('google'));
+                if(googleEn) sen.value = googleEn.value;
+            }
+
+            sid.addEventListener('change', (e) => localStorage.setItem('SmartBell_V8_VoiceID', e.target.value));
+            sen.addEventListener('change', (e) => localStorage.setItem('SmartBell_V8_VoiceEN', e.target.value));
+        }
+
+        // --- SISTEM AUDIO ---
+        function clearAllTimeouts() {
+            pendingTimeouts.forEach(t => clearTimeout(t));
+            pendingTimeouts = [];
+        }
+
+        function stopCurrentAudio() {
+            clearAllTimeouts();
+            isPlayingSequence = false;
+            activeOscillators.forEach(osc => { try { osc.stop(); } catch(e){} });
+            activeOscillators = [];
+            
+            if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+                window.speechSynthesis.cancel();
+            }
+            window.activeUtterances = []; 
+            setPlayingState(false);
+        }
+
+        function setPlayingState(playing) {
+            const ind = document.getElementById('playing-indicator');
+            const btn = document.getElementById('btn-stop-audio');
+            if(playing) { 
+                if(ind) ind.classList.remove('hidden'); 
+                if(btn) btn.classList.remove('hidden'); 
+            } else { 
+                if(ind) ind.classList.add('hidden'); 
+                if(btn) btn.classList.add('hidden'); 
+            }
+        }
+
+        function playBellNote(freq, start, dur) {
+            if(!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0, start);
+            gain.gain.linearRampToValueAtTime(0.6 * masterVolume, start + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(start);
+            osc.stop(start + dur + 0.1);
+            activeOscillators.push(osc);
+        }
+
+        function playChime(type, callback) {
+            unlockAudioSystems();
+            if(!audioCtx) { if(callback) callback(); return; }
+            
+            const now = audioCtx.currentTime;
+            
+            // Dipendekkan lagi agar selamat dari sekatan 5 saat pelayar
+            let seq = type === 'start' ? 
+                [{f:659.25, t:0}, {f:523.25, t:0.5}, {f:587.33, t:1.0}, {f:392, t:1.5}] :
+                [{f:392, t:0}, {f:587.33, t:0.5}, {f:659.25, t:1.0}, {f:523.25, t:1.5}];
+
+            seq.forEach(n => playBellNote(n.f, now + n.t, n.t === 1.5 ? 2.5 : 1.5));
+            
+            let t = setTimeout(() => { if(isPlayingSequence && callback) callback(); }, 2800);
+            pendingTimeouts.push(t);
+        }
+
+        function speakSingleText(text, langType, callback) {
+            if (!text || text.trim() === '') { 
+                if(isPlayingSequence && callback) callback(); 
+                return; 
+            }
+            if (!isPlayingSequence) return;
+
+            // Membuang simbol yang mengganggu enjin TTS
+            const cleanText = text.replace(/[*_~`#\[\]{}()<>|\\]/g, '');
+
+            if (window.speechSynthesis.paused) {
+                window.speechSynthesis.resume();
+            }
+            
+            const msg = new SpeechSynthesisUtterance(cleanText);
+            window.activeUtterances.push(msg);
+
+            const selectId = langType === 'id' ? 'voice-id-select' : 'voice-en-select';
+            const selectEl = document.getElementById(selectId);
+            const vName = selectEl ? selectEl.value : "";
+            const voices = window.speechSynthesis.getVoices();
+            const selectedVoice = voices.find(v => v.name === vName);
+
+            if(selectedVoice) { msg.voice = selectedVoice; msg.lang = selectedVoice.lang; }
+            else { msg.lang = langType === 'id' ? 'id-ID' : 'en-US'; }
+
+            msg.rate = 0.85; msg.pitch = 1; msg.volume = masterVolume;
+
+            msg.onend = () => { 
+                window.activeUtterances = window.activeUtterances.filter(item => item !== msg);
+                if(isPlayingSequence && callback) callback(); 
+            };
+            
+            msg.onerror = (e) => { 
+                console.error("Ralat TTS:", e.error);
+                window.activeUtterances = window.activeUtterances.filter(item => item !== msg);
+                if(isPlayingSequence && callback) callback(); 
+            };
+
+            // Memanggil speak secara langsung tanpa setTimeout mengelakkan isTrusted error
+            window.speechSynthesis.speak(msg);
+        }
+
+        function playAnnouncementSequence(tId, tEn) {
+            stopCurrentAudio();
+            isPlayingSequence = true;
+            setPlayingState(true);
+            
+            // Pancingan awal agar sistem enjin suara tidak "tidur"
+            let wakeMsg = new SpeechSynthesisUtterance('');
+            wakeMsg.volume = 0;
+            window.speechSynthesis.speak(wakeMsg);
+
+            playChime('start', () => {
+                if(!isPlayingSequence) return;
+                speakSingleText(tId, 'id', () => {
+                    if(!isPlayingSequence) return;
+                    let t1 = setTimeout(() => {
+                        if(!isPlayingSequence) return;
+                        speakSingleText(tEn, 'en', () => {
+                            if(!isPlayingSequence) return;
+                            let t2 = setTimeout(() => {
+                                if(!isPlayingSequence) return;
+                                playChime('end', () => {
+                                    isPlayingSequence = false;
+                                    setPlayingState(false);
+                                    updateNextBellDisplay();
+                                });
+                            }, 300);
+                            pendingTimeouts.push(t2);
+                        });
+                    }, 300);
+                    pendingTimeouts.push(t1);
+                });
+            });
+        }
+
+        // --- SISTEM UTAMA (TOGGLE) ---
+        function toggleSystem() {
+            unlockAudioSystems();
+            const btn = document.getElementById('btn-toggle-system');
+            const icon = document.getElementById('btn-icon');
+            const text = document.getElementById('btn-text');
+
+            if (!systemActive) {
+                systemActive = true;
+                icon.innerHTML = `<span class="flex h-3 w-3 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span></span>`;
+                text.innerText = "MATIKAN SISTEM";
+                btn.classList.replace('bg-blue-600', 'bg-emerald-600');
+                btn.classList.replace('hover:bg-blue-500', 'hover:bg-emerald-500');
+                btn.classList.replace('shadow-blue-600/30', 'shadow-emerald-600/30');
+                
+                isPlayingSequence = true;
+                speakSingleText("Sistem bel cerdas diaktifkan.", "id", () => { isPlayingSequence = false; });
+            } else {
+                systemActive = false;
+                stopCurrentAudio();
+                icon.innerHTML = `<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>`;
+                text.innerText = "AKTIFKAN SISTEM";
+                btn.classList.replace('bg-emerald-600', 'bg-blue-600');
+                btn.classList.replace('hover:bg-emerald-500', 'hover:bg-blue-500');
+                btn.classList.replace('shadow-emerald-600/30', 'shadow-blue-600/30');
+            }
+            updateNextBellDisplay();
+        }
+
+        function updateClock() {
+            const now = new Date();
+            let h = String(now.getHours()).padStart(2, '0');
+            let m = String(now.getMinutes()).padStart(2, '0');
+            let s = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('current-time').innerHTML = `${h}<span class="blink text-slate-600">:</span>${m}`;
+            
+            if (systemActive) {
+                const dayIdx = now.getDay();
+                const currentTime = h + ":" + m;
+                if (s === '00' && currentTime !== lastPlayedMinute) {
+                    const sched = schedules.find(s => s.time === currentTime && s.days.includes(dayIdx));
+                    if (sched) {
+                        lastPlayedMinute = currentTime;
+                        playAnnouncementSequence(sched.textId, sched.textEn);
+                    }
+                    updateNextBellDisplay();
+                }
+            }
+        }
+        setInterval(updateClock, 1000);
+
+        function updateNextBellDisplay() {
+            const tEl = document.getElementById('next-bell-time'), 
+                  dEl = document.getElementById('next-bell-desc'), 
+                  cEl = document.getElementById('next-bell-countdown'), 
+                  pEl = document.getElementById('countdown-progress');
+
+            if (!systemActive) {
+                if(tEl) tEl.innerText = "--:--"; 
+                if(dEl) dEl.innerText = "Sistem Sedang Dimatikan";
+                if(cEl) {
+                    cEl.innerText = "OFFLINE"; 
+                    cEl.className = "text-white text-[10px] font-bold uppercase bg-slate-800 px-3 py-1.5 rounded-lg inline-block";
+                }
+                if(pEl) pEl.style.width = "0%";
+                return;
+            }
+
+            const now = new Date();
+            const currMins = now.getHours() * 60 + now.getMinutes();
+            const dayIdx = now.getDay();
+            let todayScheds = schedules.filter(s => s.days.includes(dayIdx));
+            
+            let next = null;
+            let minDiff = 9999;
+            todayScheds.forEach(s => {
+                let [sh, sm] = s.time.split(':').map(Number);
+                let sTotal = sh * 60 + sm;
+                if (sTotal > currMins && (sTotal - currMins) < minDiff) { minDiff = sTotal - currMins; next = s; }
+            });
+
+            if (next) {
+                if(tEl) tEl.innerText = next.time; 
+                if(dEl) dEl.innerText = `"${next.textId}"`;
+                if(cEl) {
+                    cEl.innerText = `${Math.floor(minDiff/60)}j ${minDiff%60}m LAGI`;
+                    cEl.className = "text-white text-[10px] font-bold uppercase bg-blue-500/50 px-3 py-1.5 rounded-lg inline-block";
+                }
+                if(pEl) pEl.style.width = `${(1 - minDiff/1440) * 100}%`;
+            } else {
+                if(tEl) tEl.innerText = "--:--"; 
+                if(dEl) dEl.innerText = "Tidak ada jadwal"; 
+                if(cEl) {
+                    cEl.innerText = "ESOK"; 
+                    cEl.className = "text-white text-[10px] font-bold uppercase bg-slate-800 px-3 py-1.5 rounded-lg inline-block";
+                }
+                if(pEl) pEl.style.width = "0%";
+            }
+        }
+
+        // --- MAINKAN INSTAN ---
+        function playInstantBell(type) {
+            let tid = "", ten = "";
+            if(type === 'upacara') { tid = "Perhatian. Upacara bendera akan segera dimulai. Seluruh peserta upacara dimohon segera merapat ke lapangan."; ten = "Attention please. The flag ceremony is about to begin."; }
+            else if(type === 'apel') { tid = "Perhatian. Apel rutin akan segera dimulai. Seluruh siswa diharap segera berbaris di lapangan."; ten = "Attention please. The assembly is about to begin."; }
+            else if(type === 'masuk') { tid = "Perhatian. Jam pelajaran akan segera dimulai. Seluruh siswa dipersilakan masuk ke ruangan kelas."; ten = "Attention please. The class will begin shortly."; }
+            else if(type === 'istirahat') { tid = "Perhatian. Waktu istirahat telah tiba. Selamat beristirahat."; ten = "Attention please. Break time has arrived. Have a good rest."; }
+            else if(type === 'ibadah') { tid = "Perhatian. Waktu istirahat dan ibadah telah tiba. Kepada seluruh siswa Muslim disilakan menuju masjid."; ten = "Attention please. It is time for break and prayer."; }
+            else if(type === 'pulang') { tid = "Perhatian. Seluruh kegiatan belajar mengajar hari ini telah selesai. Selamat pulang dan hati-hati di jalan."; ten = "Attention please. All learning activities for today have ended."; }
+            
+            showModal(`Membunyikan Loceng`, `Membaca: "${tid}"`, true, () => {
+                playAnnouncementSequence(tid, ten);
+            });
+        }
+
+        // --- CRUD LOGIC ---
+        function renderSchedules() {
+            const list = document.getElementById('schedule-list');
+            list.innerHTML = '';
+            schedules.sort((a,b) => a.time.localeCompare(b.time));
+            document.getElementById('total-sched').innerText = schedules.length;
+
+            schedules.forEach(s => {
+                const card = document.createElement('div');
+                card.className = `bg-white border ${editingId === s.id ? 'border-blue-500 ring-2 ring-blue-100 shadow-md' : 'border-slate-200'} rounded-2xl p-4 lg:p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between`;
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-center mb-3 pb-3 border-b border-slate-100">
+                            <div class="text-xl lg:text-2xl font-black text-slate-800 clock-font tracking-tight">${s.time}</div>
+                            <div class="flex gap-1 flex-wrap justify-end">${s.days.map(d => `<span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[8px] font-bold">${hariSingkat[d]}</span>`).join('')}</div>
+                        </div>
+                        <div class="space-y-2 mb-4">
+                            <div class="flex gap-2 items-start"><span class="text-[10px] mt-0.5">🇮🇩</span><p class="text-[11px] font-medium text-slate-700 leading-snug line-clamp-2">"${s.textId || '-'}"</p></div>
+                            <div class="flex gap-2 items-start"><span class="text-[10px] mt-0.5">🇬🇧</span><p class="text-[11px] font-medium text-slate-400 leading-snug line-clamp-2">"${s.textEn || '-'}"</p></div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="previewSchedule(${s.id})" class="flex-1 py-2 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-bold hover:bg-blue-600 hover:text-white transition">TES</button>
+                        <button onclick="editSchedule(${s.id})" class="flex-1 py-2 bg-slate-100 text-slate-600 rounded-xl text-[10px] font-bold hover:bg-slate-800 hover:text-white transition">EDIT</button>
+                        <button onclick="confirmDelete(${s.id})" class="w-10 flex justify-center items-center bg-rose-50 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function saveSchedule() {
+            const h = document.getElementById('hour-select').value, m = document.getElementById('minute-select').value;
+            const tid = document.getElementById('input-text-id').value.trim(), ten = document.getElementById('input-text-en').value.trim();
+            const days = Array.from(document.querySelectorAll('.day-cb')).filter(cb => cb.checked).map(cb => parseInt(cb.value));
+
+            if (!tid && !ten) { showModal("Gagal", "Teks tidak boleh kosong."); return; }
+            if (days.length === 0) { showModal("Gagal", "Pilih hari aktif."); return; }
+
+            if (editingId) {
+                const i = schedules.findIndex(x => x.id === editingId);
+                schedules[i] = {...schedules[i], time: `${h}:${m}`, textId: tid, textEn: ten, days};
+                cancelEdit();
+            } else {
+                schedules.push({ id: Date.now(), time: `${h}:${m}`, textId: tid, textEn: ten, days });
+                document.getElementById('input-text-id').value = '';
+                document.getElementById('input-text-en').value = '';
+            }
+            localStorage.setItem('SmartBell_V8_Fix', JSON.stringify(schedules));
+            renderSchedules(); updateNextBellDisplay();
+        }
+
+        function editSchedule(id) {
+            const s = schedules.find(x => x.id === id);
+            editingId = id;
+            const [h, m] = s.time.split(':');
+            document.getElementById('hour-select').value = h;
+            document.getElementById('minute-select').value = m;
+            document.getElementById('input-text-id').value = s.textId;
+            document.getElementById('input-text-en').value = s.textEn;
+            document.querySelectorAll('.day-cb').forEach(cb => cb.checked = s.days.includes(parseInt(cb.value)));
+            
+            document.getElementById('form-title').innerHTML = `<span class="p-1.5 bg-amber-100 text-amber-600 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></span> Update Jadwal`;
+            document.getElementById('btn-save-schedule').innerText = "PERBARUI DATA";
+            document.getElementById('btn-cancel-edit').classList.remove('hidden');
+            
+            document.getElementById('form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            renderSchedules();
+        }
+
+        function cancelEdit() {
+            editingId = null;
+            document.getElementById('input-text-id').value = '';
+            document.getElementById('input-text-en').value = '';
+            document.getElementById('form-title').innerHTML = `<span class="p-1.5 bg-blue-100 text-blue-600 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg></span> Buat Jadwal Baru`;
+            document.getElementById('btn-save-schedule').innerText = "SIMPAN JADWAL";
+            document.getElementById('btn-cancel-edit').classList.add('hidden');
+            renderSchedules();
+        }
+
+        // --- UTILS ---
+        function showModal(title, msg, isConfirm = false, cb = null) {
+            const m = document.getElementById('custom-modal');
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = msg;
+            const acts = document.getElementById('modal-actions');
+            acts.innerHTML = '';
+            if(isConfirm) {
+                const c = document.createElement('button'); 
+                c.className = "flex-1 py-2.5 text-xs font-bold text-slate-500 bg-slate-100 rounded-xl hover:bg-slate-200 transition"; 
+                c.innerText = "BATAL"; 
+                c.onclick = () => m.classList.add('opacity-0', 'pointer-events-none');
+                
+                const ok = document.createElement('button'); 
+                ok.className = "flex-1 py-2.5 text-xs font-bold text-white bg-blue-600 rounded-xl shadow-md hover:bg-blue-700 transition"; 
+                ok.innerText = "YA"; 
+                ok.onclick = () => { 
+                    if(cb) cb(); 
+                    m.classList.add('opacity-0', 'pointer-events-none'); 
+                };
+                acts.append(c, ok);
+            } else {
+                const ok = document.createElement('button'); 
+                ok.className = "w-full py-2.5 text-xs font-bold text-white bg-blue-600 rounded-xl shadow-md hover:bg-blue-700 transition"; 
+                ok.innerText = "OK"; 
+                ok.onclick = () => m.classList.add('opacity-0', 'pointer-events-none');
+                acts.append(ok);
+            }
+            m.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function confirmDelete(id) { showModal("Hapus?", "Data ini akan terhapus.", true, () => { schedules = schedules.filter(x => x.id !== id); localStorage.setItem('SmartBell_V8_Fix', JSON.stringify(schedules)); renderSchedules(); updateNextBellDisplay(); }); }
+        function confirmReset() { showModal("Reset?", "Semua jadwal akan dikosongkan.", true, () => { localStorage.removeItem('SmartBell_V8_Fix'); location.reload(); }); }
+        function previewSchedule(id) { 
+            const s = schedules.find(x => x.id === id); 
+            showModal("Membunyikan Loceng", `Membaca: "${s.textId}"`, true, () => {
+                playAnnouncementSequence(s.textId, s.textEn); 
+            });
+        }
 
         window.onload = () => {
-            initTheme();
-            loadCollection();
-            const session = localStorage.getItem(SESSION_KEY);
-            if (session) playBookFullscreen(session);
-            else switchTab('saved');
+            initUI(); renderSchedules(); updateClock(); updateNextBellDisplay();
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.onvoiceschanged = loadVoices;
+                setTimeout(loadVoices, 100);
+            }
+            document.getElementById('current-day-display').innerText = hariIndo[new Date().getDay()].toUpperCase();
         };
-
-        function initTheme() {
-            const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
-            if (savedTheme === 'dark') document.body.classList.add('dark-theme');
-            updateThemeIcons();
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle('dark-theme');
-            localStorage.setItem(THEME_KEY, document.body.classList.contains('dark-theme') ? 'dark' : 'light');
-            updateThemeIcons();
-        }
-
-        function updateThemeIcons() {
-            const isDark = document.body.classList.contains('dark-theme');
-            document.getElementById('theme-icon-sun').classList.toggle('hidden', !isDark);
-            document.getElementById('theme-icon-moon').classList.toggle('hidden', isDark);
-        }
-
-        function loadCollection() {
-            const data = localStorage.getItem(STORAGE_KEY);
-            savedCollection = data ? JSON.parse(data) : [];
-            renderSavedList();
-        }
-
-        function saveToLocalStorage() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(savedCollection));
-        }
-
-        function showToast(msg, color = 'bg-blue-600') {
-            const toast = document.getElementById('toast');
-            if (toastTimeout) clearTimeout(toastTimeout);
-            toast.innerText = msg;
-            toast.className = `fixed bottom-10 left-1/2 -translate-x-1/2 ${color} text-white px-8 py-4 rounded-2xl shadow-2xl transition-all duration-300 font-black z-[10001] opacity-100 uppercase tracking-widest text-xs`;
-            toastTimeout = setTimeout(() => { toast.classList.add('opacity-0'); }, 2000);
-        }
-
-        function switchTab(tab) {
-            activeTab = tab;
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`tab-${tab}-btn`).classList.add('active');
-            document.getElementById('view-saved').classList.toggle('hidden', tab !== 'saved');
-            document.getElementById('view-new').classList.toggle('hidden', tab !== 'new');
-            if (tab === 'new' && currentDraft.length === 0) generateNewDraft();
-            if (tab === 'saved') renderSavedList();
-        }
-
-        function getRandomNumbers(min, max, count) {
-            const nums = [];
-            while (nums.length < count) {
-                const r = Math.floor(Math.random() * (max - min + 1)) + min;
-                if (!nums.includes(r)) nums.push(r);
-            }
-            return nums.sort((a, b) => a - b);
-        }
-
-        function generateCardData() {
-            return {
-                'B': getRandomNumbers(1, 15, 5),
-                'I': getRandomNumbers(16, 30, 5),
-                'N': getRandomNumbers(31, 45, 5),
-                'G': getRandomNumbers(46, 60, 5),
-                'O': getRandomNumbers(61, 75, 5),
-                'marks': []
-            };
-        }
-
-        function generateNewDraft() {
-            currentDraft = [generateCardData(), generateCardData(), generateCardData(), generateCardData()];
-            renderDraft();
-        }
-
-        function renderDraft() {
-            const container = document.getElementById('new-draft-container');
-            container.innerHTML = '';
-            currentDraft.forEach((data, i) => { container.appendChild(createCardHTML(data, i, false)); });
-        }
-
-        function createCardHTML(data, cardIndex, isSavedBook, bookId = null) {
-            const cardWrapper = document.createElement('div');
-            cardWrapper.className = 'bingo-card p-6 shadow-xl';
-            let html = `
-                <div class="flex justify-between items-center mb-5">
-                    <span class="text-xs font-black text-slate-400 uppercase tracking-widest">KARTU #${cardIndex + 1}</span>
-                    <span class="text-[9px] font-black text-white bg-blue-600 px-2 py-0.5 rounded-full">VIPER PRO</span>
-                </div>
-                <div class="grid grid-cols-5 gap-1.5 text-center overflow-hidden rounded-2xl border-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-inner">
-                    <div class="header-col">B</div><div class="header-col">I</div><div class="header-col">N</div><div class="header-col">G</div><div class="header-col">O</div>
-            `;
-            for (let row = 0; row < 5; row++) {
-                ['B', 'I', 'N', 'G', 'O'].forEach(col => {
-                    const cellId = `cell-${isSavedBook ? bookId : 'draft'}-${cardIndex}-${col}-${row}`;
-                    const isMarked = data.marks && data.marks.includes(cellId);
-                    if (col === 'N' && row === 2) {
-                        html += `<div class="cell free">FREE</div>`;
-                    } else {
-                        const num = data[col][row];
-                        html += `<div id="${cellId}" class="cell ${isMarked ? 'marked' : ''}" onclick="toggleMark('${cellId}', ${cardIndex}, ${isSavedBook}, '${bookId}')">${num}</div>`;
-                    }
-                });
-            }
-            html += `</div>`;
-            cardWrapper.innerHTML = html;
-            return cardWrapper;
-        }
-
-        function toggleMark(id, cardIdx, isSavedBook, bookId) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.classList.toggle('marked');
-            let targetSource = isSavedBook ? savedCollection.find(b => b.id === bookId).cards : currentDraft;
-            if (!targetSource[cardIdx].marks) targetSource[cardIdx].marks = [];
-            if (el.classList.contains('marked')) {
-                if (!targetSource[cardIdx].marks.includes(id)) targetSource[cardIdx].marks.push(id);
-            } else {
-                targetSource[cardIdx].marks = targetSource[cardIdx].marks.filter(m => m !== id);
-            }
-            if (isSavedBook) saveToLocalStorage();
-        }
-
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-        function showConfirmModal(title, msg, btnText, btnColor, onConfirm) {
-            const modal = document.getElementById('modal-confirm');
-            document.getElementById('confirm-title').innerText = title;
-            document.getElementById('confirm-msg').innerText = msg;
-            const btn = document.getElementById('confirm-action-btn');
-            btn.innerText = btnText;
-            btn.className = `flex-1 py-4 font-bold text-white rounded-2xl shadow-lg ${btnColor}`;
-            btn.onclick = () => { onConfirm(); closeModal('modal-confirm'); };
-            openModal('modal-confirm');
-        }
-
-        function handleClearMarks(type) {
-            showConfirmModal("Bersihkan Tanda?", "Semua nomor yang ditandai akan dibuka kembali.", "Ya, Bersihkan", "bg-amber-600", () => {
-                if (type === 'draft') { currentDraft.forEach(card => card.marks = []); renderDraft(); }
-                else if (currentFullscreenBookId) {
-                    const book = savedCollection.find(b => b.id === currentFullscreenBookId);
-                    if (book) { book.cards.forEach(card => card.marks = []); saveToLocalStorage(); playBookFullscreen(currentFullscreenBookId); }
-                }
-                showToast("Tanda Dibersihkan", "bg-slate-600");
-            });
-        }
-
-        function handleRequestNew() {
-            showConfirmModal("Buku Baru?", "Data draft saat ini akan hilang.", "Ya, Acak Baru", "bg-blue-600", () => { generateNewDraft(); showToast("Draft Baru Diacak!", "bg-blue-600"); });
-        }
-
-        function handleExitFullscreen() {
-            showConfirmModal("Keluar?", "Kembali ke menu utama.", "Ya, Keluar", "bg-red-500", () => { exitFullscreenMode(); });
-        }
-
-        function openSaveModal() { document.getElementById('input-book-name').value = ''; openModal('modal-save'); }
-
-        function confirmSave() {
-            const name = document.getElementById('input-book-name').value.trim();
-            if (!name) return showToast("Nama buku kosong!", "bg-red-500");
-            const newBook = { id: 'book-' + Date.now(), name: name, date: new Date().toLocaleDateString('id-ID'), cards: JSON.parse(JSON.stringify(currentDraft)) };
-            savedCollection.unshift(newBook);
-            saveToLocalStorage();
-            closeModal('modal-save');
-            showToast("Berhasil Disimpan!", "bg-green-600");
-            switchTab('saved');
-        }
-
-        function renderSavedList() {
-            const list = document.getElementById('saved-list');
-            const empty = document.getElementById('empty-state');
-            list.innerHTML = '';
-            if (savedCollection.length === 0) { empty.classList.remove('hidden'); return; }
-            empty.classList.add('hidden');
-            savedCollection.forEach(book => {
-                const item = document.createElement('div');
-                item.className = 'bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-4';
-                item.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h4 class="font-extrabold text-slate-800 dark:text-white text-lg leading-tight">${book.name}</h4>
-                            <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">${book.date}</p>
-                        </div>
-                        <div class="flex gap-1">
-                            <button onclick="downloadPDF('${book.id}')" class="text-slate-300 hover:text-blue-500 p-2 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            </button>
-                            <button onclick="deleteBook('${book.id}')" class="text-slate-300 hover:text-red-500 p-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <button onclick="playBookFullscreen('${book.id}')" class="bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg active:scale-95 transition-all">Mainkan Sekarang</button>
-                `;
-                list.appendChild(item);
-            });
-        }
-
-        function deleteBook(id) {
-            showConfirmModal("Hapus Buku?", "Tindakan ini permanen.", "Ya, Hapus", "bg-red-600", () => {
-                savedCollection = savedCollection.filter(b => b.id !== id);
-                saveToLocalStorage();
-                renderSavedList();
-                showToast("Buku Dihapus", "bg-slate-700");
-            });
-        }
-
-        function playBookFullscreen(bookId) {
-            currentFullscreenBookId = bookId;
-            const book = savedCollection.find(b => b.id === bookId);
-            if (!book) return;
-            localStorage.setItem(SESSION_KEY, bookId);
-            document.getElementById('fs-title').innerText = book.name;
-            const content = document.getElementById('fs-content');
-            content.innerHTML = '';
-            book.cards.forEach((card, i) => content.appendChild(createCardHTML(card, i, true, bookId)));
-            document.body.classList.add('is-fullscreen');
-            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
-        }
-
-        function exitFullscreenMode() {
-            document.body.classList.remove('is-fullscreen');
-            localStorage.removeItem(SESSION_KEY);
-            if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
-            currentFullscreenBookId = null;
-            renderSavedList();
-        }
-
-        // --- HARD-FIX PDF DOWNLOAD v3.6 ---
-        async function downloadPDF(bookId) {
-            const book = savedCollection.find(b => b.id === bookId);
-            if (!book) return;
-
-            showToast("Membangun PDF... Tunggu sebentar", "bg-blue-600");
-            
-            const printArea = document.getElementById('print-temp-area');
-            printArea.innerHTML = '';
-            // Force it to be in the render tree
-            printArea.style.opacity = '1';
-            printArea.style.zIndex = '99999'; // Bring to very front temporarily
-            printArea.style.background = 'white';
-
-            let pdfContent = `
-                <div style="padding: 40px; background: white; width: 794px; min-height: 1123px; box-sizing: border-box;">
-                    <div style="border-bottom: 8px solid #2563eb; padding-bottom: 20px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end;">
-                        <div style="width: 65%;">
-                            <h1 style="margin: 0; color: #2563eb; font-size: 36px; font-weight: 800; text-transform: uppercase;">Viper Bingo Digital</h1>
-                            <p style="margin: 5px 0 0 0; color: #475569; font-size: 16px; font-weight: 700;">KOLEKSI: ${book.name.toUpperCase()}</p>
-                        </div>
-                        <div style="width: 35%; text-align: right;">
-                            <p style="margin: 0; color: #94a3b8; font-size: 12px; font-weight: 800;">TANGGAL: ${book.date}</p>
-                            <p style="margin: 2px 0 0 0; color: #2563eb; font-size: 12px; font-weight: 900;">AMBON • INDONESIA</p>
-                        </div>
-                    </div>
-
-                    <table style="width: 100%; border-collapse: separate; border-spacing: 30px;">
-                        <tr>
-            `;
-
-            book.cards.forEach((card, idx) => {
-                if (idx > 0 && idx % 2 === 0) pdfContent += `</tr><tr>`;
-
-                pdfContent += `
-                    <td style="width: 50%; vertical-align: top; border: 4px solid #000; border-radius: 25px; padding: 20px; background: white;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                            <span style="font-size: 14px; font-weight: 800; color: #64748b;">KARTU #${idx + 1}</span>
-                            <span style="font-size: 12px; font-weight: 900; color: #2563eb;">VIPERCELL PRO</span>
-                        </div>
-                        <table style="width: 100%; border-collapse: collapse; border: 4px solid #000;">
-                            <tr style="background: #2563eb;">
-                                ${['B','I','N','G','O'].map(h => `
-                                    <th style="color: white; padding: 15px; font-size: 22px; font-weight: 900; text-align: center; border: 2.5px solid #000;">${h}</th>
-                                `).join('')}
-                            </tr>
-                `;
-
-                for (let row = 0; row < 5; row++) {
-                    pdfContent += `<tr>`;
-                    ['B','I','N','G','O'].forEach(col => {
-                        if (col === 'N' && row === 2) {
-                            pdfContent += `<td style="background: #f59e0b; color: white; padding: 16px 0; text-align: center; font-size: 14px; font-weight: 900; border: 2.5px solid #000;">FREE</td>`;
-                        } else {
-                            const val = card[col][row];
-                            pdfContent += `<td style="padding: 16px 0; text-align: center; font-size: 28px; font-weight: 800; color: #000; background: #fff; border: 2.5px solid #000;">${val}</td>`;
-                        }
-                    });
-                    pdfContent += `</tr>`;
-                }
-                pdfContent += `</table></td>`;
-            });
-
-            pdfContent += `
-                        </tr>
-                    </table>
-
-                    <div style="margin-top: 60px; padding-top: 25px; border-top: 3px dashed #cbd5e1; text-align: center;">
-                        <p style="color: #94a3b8; font-size: 14px; font-weight: 800; letter-spacing: 2px;">© 2024 VIPERCELL DIGITAL ENTERTAINMENT • AMBON PROUD</p>
-                    </div>
-                </div>
-            `;
-
-            printArea.innerHTML = pdfContent;
-
-            // Wait for DOM to actually draw
-            await new Promise(r => setTimeout(r, 800));
-
-            const opt = {
-                margin: 0,
-                filename: `Viper_Bingo_${book.name.replace(/\s+/g, '_')}.pdf`,
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: { 
-                    scale: 1, // High precision but standard size
-                    useCORS: true,
-                    backgroundColor: '#ffffff',
-                    scrollX: 0,
-                    scrollY: 0
-                },
-                jsPDF: { unit: 'px', format: [794, 1123], orientation: 'portrait' }
-            };
-
-            try {
-                const worker = html2pdf().set(opt).from(printArea);
-                await worker.save();
-                showToast("PDF Berhasil Diunduh!", "bg-green-600");
-            } catch (error) {
-                showToast("Gagal memproses PDF", "bg-red-600");
-                console.error(error);
-            } finally {
-                printArea.style.opacity = '0.01';
-                printArea.style.zIndex = '-50';
-                printArea.innerHTML = '';
-            }
-        }
-
-        document.addEventListener('fullscreenchange', () => {
-            if (!document.fullscreenElement) {
-                document.body.classList.remove('is-fullscreen');
-                localStorage.removeItem(SESSION_KEY);
-                currentFullscreenBookId = null;
-            }
-        });
     </script>
 </body>
 </html>
