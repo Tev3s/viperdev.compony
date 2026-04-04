@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartBell v19.1 - Standalone Cloud TTS</title>
+    <title>SmartBell v20.1 - API Fix Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
@@ -86,12 +86,12 @@
             </div>
             <div>
                 <h1 class="text-2xl font-extrabold tracking-tight text-slate-800 leading-none">SmartBell</h1>
-                <p class="text-blue-600 text-[10px] font-black uppercase tracking-widest mt-1">Cloud Studio TTS</p>
+                <p class="text-blue-600 text-[10px] font-black uppercase tracking-widest mt-1">Universal PA System</p>
             </div>
         </div>
 
         <div class="flex flex-col md:flex-row items-center gap-3 w-full lg:w-auto bg-slate-50/50 p-2 lg:p-0 lg:bg-transparent rounded-2xl">
-            <div class="w-full md:w-36">
+            <div class="w-full md:w-40">
                 <label class="text-slate-500 text-[9px] font-bold uppercase tracking-widest ml-1 mb-1 block">Model Bel</label>
                 <select id="bell-model-select" class="w-full smooth-input rounded-xl px-3 py-2 text-[11px] font-bold text-indigo-700 outline-none">
                     <option value="classic">🇬🇧 Westminster (Klasik)</option>
@@ -102,7 +102,7 @@
                 </select>
             </div>
             
-            <div class="w-full md:w-36 flex flex-col gap-1.5 px-2 justify-center">
+            <div class="w-full md:w-32 flex flex-col gap-1.5 px-2 justify-center">
                 <label class="text-slate-500 text-[9px] font-bold uppercase tracking-widest flex justify-between">
                     <span>Volume</span><span id="vol-val" class="text-blue-600 font-black">80%</span>
                 </label>
@@ -111,26 +111,25 @@
             
             <div class="w-full md:w-auto flex gap-2">
                 <div class="w-full md:w-32">
-                    <label class="text-slate-500 text-[9px] font-bold uppercase tracking-widest ml-1 mb-1 block">Suara Cloud ID</label>
+                    <label class="text-slate-500 text-[9px] font-bold uppercase tracking-widest ml-1 mb-1 block">Suara ID</label>
                     <select id="voice-id-select" class="w-full smooth-input rounded-xl px-3 py-2 text-[10px] font-bold text-slate-700 outline-none">
-                        <option value="Aoede">👩🏻 Aoede (Sopan/Dewasa)</option>
-                        <option value="Kore">👧🏻 Kore (Ceria/Muda)</option>
+                        <option value="Aoede">👩🏻 Aoede (Dewasa)</option>
+                        <option value="Kore">👧🏻 Kore (Ceria)</option>
                         <option value="Charon">👨🏻 Charon (Berwibawa)</option>
                         <option value="Fenrir">👨🏻‍🦰 Fenrir (Tegas)</option>
                     </select>
                 </div>
                 <div class="w-full md:w-32">
-                    <label class="text-slate-500 text-[9px] font-bold uppercase tracking-widest ml-1 mb-1 block">Suara Cloud EN</label>
+                    <label class="text-slate-500 text-[9px] font-bold uppercase tracking-widest ml-1 mb-1 block">Suara EN</label>
                     <select id="voice-en-select" class="w-full smooth-input rounded-xl px-3 py-2 text-[10px] font-bold text-slate-700 outline-none">
                         <option value="Puck">👨🏼 Puck (Friendly)</option>
                         <option value="Aoede">👩🏼 Aoede (Formal)</option>
                         <option value="Kore">👧🏼 Kore (Bright)</option>
-                        <option value="Fenrir">👨🏻‍🦰 Fenrir (Authoritative)</option>
+                        <option value="Fenrir">👨🏻‍🦰 Fenrir (Firm)</option>
                     </select>
                 </div>
             </div>
             <div class="flex items-center mt-3 lg:mt-0 gap-2">
-                <!-- API KEY BUTTON -->
                 <button onclick="openApiKeyModal()" class="p-2.5 bg-yellow-50 hover:bg-yellow-100 rounded-xl text-yellow-600 transition border border-yellow-200 shadow-sm" title="Pengaturan Kunci API Gemini">
                     🔑
                 </button>
@@ -196,18 +195,21 @@
             
             <div class="premium-card p-5 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shrink-0 overflow-hidden">
                 <div class="flex items-center gap-2 overflow-x-auto w-full pb-2 lg:pb-0 scroll-smooth">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2 shrink-0">Instan:</span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2 shrink-0">Sekolah:</span>
                     <button onclick="playInstantBell('upacara')" class="shrink-0 px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-rose-100 shadow-sm flex items-center gap-1.5">🇲🇨 Upacara</button>
                     <button onclick="playInstantBell('apel')" class="shrink-0 px-4 py-2 bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-orange-100 shadow-sm flex items-center gap-1.5">📢 Apel</button>
                     <button onclick="playInstantBell('masuk')" class="shrink-0 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-blue-100 shadow-sm flex items-center gap-1.5">🏫 Masuk</button>
                     <button onclick="playInstantBell('istirahat')" class="shrink-0 px-4 py-2 bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white rounded-xl text-[11px] font-bold transition border border-amber-100 shadow-sm flex items-center gap-1.5">☕ Rehat</button>
                     <button onclick="playInstantBell('pulang')" class="shrink-0 px-4 py-2 bg-slate-50 text-slate-600 hover:bg-slate-700 hover:text-white rounded-xl text-[11px] font-bold transition border border-slate-200 shadow-sm flex items-center gap-1.5">🏠 Pulang</button>
-                    
-                    <div class="w-px h-6 bg-slate-200 mx-1 hidden lg:block shrink-0"></div>
-                    
-                    <button onclick="openCallModal()" class="shrink-0 px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-indigo-200 shadow-sm flex items-center gap-1.5 ml-auto lg:ml-0">
-                        🎙️ Panggilan
-                    </button>
+                    <button onclick="openCallModal()" class="shrink-0 px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-indigo-200 shadow-sm flex items-center gap-1.5">🎙️ Panggilan Guru/Siswa</button>
+                </div>
+                
+                <div class="flex items-center gap-2 overflow-x-auto w-full pb-2 scroll-smooth border-t border-slate-100 pt-3">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2 shrink-0">Publik / Bandara:</span>
+                    <button onclick="playInstantBell('boarding')" class="shrink-0 px-4 py-2 bg-cyan-50 text-cyan-700 hover:bg-cyan-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-cyan-200 shadow-sm flex items-center gap-1.5">✈️ Boarding (Naik Pesawat)</button>
+                    <button onclick="playInstantBell('delay')" class="shrink-0 px-4 py-2 bg-yellow-50 text-yellow-700 hover:bg-yellow-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-yellow-200 shadow-sm flex items-center gap-1.5">⏳ Delay (Keterlambatan)</button>
+                    <button onclick="openAirportModal()" class="shrink-0 px-4 py-2 bg-sky-50 text-sky-700 hover:bg-sky-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-sky-200 shadow-sm flex items-center gap-1.5">🛫 Panggil Penumpang</button>
+                    <button onclick="openQueueModal()" class="shrink-0 px-4 py-2 bg-teal-50 text-teal-700 hover:bg-teal-600 hover:text-white rounded-xl text-[11px] font-bold transition border border-teal-200 shadow-sm flex items-center gap-1.5">🎫 Panggil Antrian</button>
                 </div>
             </div>
 
@@ -215,7 +217,7 @@
             <div class="premium-card p-6 lg:p-8 flex flex-col shrink-0" id="form-container">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 border-b border-slate-100 pb-4">
                     <h3 id="form-title" class="text-lg font-black text-slate-800 flex items-center gap-2">
-                        <span class="p-1.5 bg-blue-100 text-blue-600 rounded-xl"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg></span>
+                        <span class="p-1.5 bg-blue-100 text-blue-600 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg></span>
                         Buat Jadwal Baru
                     </h3>
                     <div class="flex gap-2 items-center">
@@ -223,9 +225,9 @@
                             ✨ AI GENERATOR
                         </button>
                         <div class="w-px h-4 bg-slate-200 mx-1"></div>
-                        <button onclick="useTemplate('masuk')" class="px-2.5 py-1.5 bg-slate-50 hover:bg-blue-50 border border-slate-200 rounded-lg text-[9px] font-bold text-slate-500 hover:text-blue-600 transition">MASUK</button>
-                        <button onclick="useTemplate('istirahat')" class="px-2.5 py-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 rounded-lg text-[9px] font-bold text-slate-500 hover:text-amber-600 transition">REHAT</button>
-                        <button onclick="useTemplate('pulang')" class="px-2.5 py-1.5 bg-slate-50 hover:bg-rose-50 border border-slate-200 rounded-lg text-[9px] font-bold text-slate-500 hover:text-rose-600 transition">PULANG</button>
+                        <button onclick="useTemplate('masuk')" class="px-2.5 py-1.5 bg-slate-50 hover:bg-blue-50 border border-slate-200 rounded-lg text-[9px] font-bold text-slate-500 hover:text-blue-600 transition">TMP: MASUK</button>
+                        <button onclick="useTemplate('istirahat')" class="px-2.5 py-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 rounded-lg text-[9px] font-bold text-slate-500 hover:text-amber-600 transition">TMP: REHAT</button>
+                        <button onclick="useTemplate('boarding')" class="px-2.5 py-1.5 bg-slate-50 hover:bg-cyan-50 border border-slate-200 rounded-lg text-[9px] font-bold text-slate-500 hover:text-cyan-600 transition">TMP: BOARDING</button>
                     </div>
                 </div>
 
@@ -335,7 +337,7 @@
         </div>
     </div>
 
-    <!-- Modal (Panggilan Khusus) -->
+    <!-- Modal Panggilan Guru/Staf/Siswa -->
     <div id="call-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 p-4">
         <div class="bg-white border border-slate-200 rounded-[2rem] p-8 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300">
             <div class="flex items-center gap-4 mb-6">
@@ -344,7 +346,7 @@
                 </div>
                 <div>
                     <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">Panggilan Khusus</h3>
-                    <p class="text-indigo-600 text-[10px] font-bold uppercase tracking-widest">Pusat Informasi</p>
+                    <p class="text-indigo-600 text-[10px] font-bold uppercase tracking-widest">Sekolah & Kantor</p>
                 </div>
             </div>
             
@@ -381,6 +383,78 @@
         </div>
     </div>
 
+    <!-- Modal Panggilan Bandara -->
+    <div id="airport-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 p-4">
+        <div class="bg-white border border-slate-200 rounded-[2rem] p-8 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shadow-inner border border-sky-100 shrink-0">
+                    <span class="text-2xl">🛫</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">Panggilan Penumpang</h3>
+                    <p class="text-sky-600 text-[10px] font-bold uppercase tracking-widest">Sistem Bandara</p>
+                </div>
+            </div>
+            
+            <div class="space-y-3 mb-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 ml-1">Nama Penumpang</label>
+                    <input type="text" id="apt-name" placeholder="Cth: Budi Santoso" class="w-full smooth-input rounded-xl px-4 py-2.5 text-xs font-medium text-slate-700 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 ml-1">Penerbangan</label>
+                        <input type="text" id="apt-flight" placeholder="Cth: GA-123" class="w-full smooth-input rounded-xl px-4 py-2.5 text-xs font-medium text-slate-700 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 ml-1">Pintu / Gate</label>
+                        <input type="text" id="apt-gate" placeholder="Cth: 4A" class="w-full smooth-input rounded-xl px-4 py-2.5 text-xs font-medium text-slate-700 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 ml-1">Tujuan / Destination</label>
+                    <input type="text" id="apt-dest" placeholder="Cth: Jakarta" class="w-full smooth-input rounded-xl px-4 py-2.5 text-xs font-medium text-slate-700 outline-none">
+                </div>
+            </div>
+            
+            <div class="flex gap-2 justify-end mt-4 pt-4 border-t border-slate-100">
+                <button onclick="closeAirportModal()" class="px-5 py-2.5 text-xs font-bold text-slate-500 bg-slate-100 rounded-xl hover:bg-slate-200 transition">Batal</button>
+                <button onclick="executeAirportCall()" class="px-6 py-2.5 text-xs font-bold text-white bg-sky-600 rounded-xl shadow-md hover:bg-sky-700 transition flex items-center gap-2">🔊 Panggil</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Panggilan Antrian -->
+    <div id="queue-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 p-4">
+        <div class="bg-white border border-slate-200 rounded-[2rem] p-8 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center shadow-inner border border-teal-100 shrink-0">
+                    <span class="text-2xl">🎫</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">Panggilan Antrian</h3>
+                    <p class="text-teal-600 text-[10px] font-bold uppercase tracking-widest">Layanan Publik</p>
+                </div>
+            </div>
+            
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 ml-1">Nomor Antrian</label>
+                    <input type="text" id="q-num" placeholder="Cth: A 0 1 5 (Beri spasi)" class="w-full smooth-input rounded-xl px-4 py-3 text-xs font-bold text-slate-700 outline-none placeholder-slate-400">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 ml-1">Menuju Loket/Ruang</label>
+                    <input type="text" id="q-loc" placeholder="Cth: Loket 3 / Kasir 1" class="w-full smooth-input rounded-xl px-4 py-3 text-xs font-bold text-slate-700 outline-none placeholder-slate-400">
+                </div>
+            </div>
+            
+            <div class="flex gap-2 justify-end mt-4 pt-4 border-t border-slate-100">
+                <button onclick="closeQueueModal()" class="px-5 py-2.5 text-xs font-bold text-slate-500 bg-slate-100 rounded-xl hover:bg-slate-200 transition">Batal</button>
+                <button onclick="executeQueueCall()" class="px-6 py-2.5 text-xs font-bold text-white bg-teal-600 rounded-xl shadow-md hover:bg-teal-700 transition flex items-center gap-2">🔊 Panggil</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal (Smart Schedule Generator) -->
     <div id="smart-schedule-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 p-4">
         <div class="bg-white border border-slate-200 rounded-[2rem] p-8 max-w-lg w-full shadow-2xl transform scale-95 transition-transform duration-300">
@@ -393,9 +467,9 @@
                     <p class="text-purple-600 text-[10px] font-bold uppercase tracking-widest">Dikuasakan oleh Gemini AI</p>
                 </div>
             </div>
-            <p class="text-slate-500 text-xs mb-5 font-medium leading-relaxed">Gunakan bahasa santai untuk memberitahu jadual sekolah. AI akan automatik set jam dan teks pengumuman dalam 2 bahasa!</p>
+            <p class="text-slate-500 text-xs mb-5 font-medium leading-relaxed">Gunakan bahasa santai untuk memberitahu jadual sekolah/bandara. AI akan automatik set jam dan teks pengumuman dalam 2 bahasa!</p>
             
-            <textarea id="smart-schedule-prompt" rows="5" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs font-medium text-slate-700 focus:bg-white focus:ring-2 focus:ring-purple-500 outline-none transition-all resize-none mb-4 shadow-sm" placeholder="Contoh: Buatkan jadwal Isnin. Jam 7 pagi apel, 10 pagi rehat pertama, jam 2 petang waktu pulang..."></textarea>
+            <textarea id="smart-schedule-prompt" rows="5" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs font-medium text-slate-700 focus:bg-white focus:ring-2 focus:ring-purple-500 outline-none transition-all resize-none mb-4 shadow-sm" placeholder="Contoh: Buatkan jadwal Isnin. Jam 7 pagi apel, 10 pagi rehat pertama..."></textarea>
             
             <div id="smart-loading" class="hidden text-center py-3 bg-purple-50 text-purple-600 rounded-xl text-[10px] font-black border border-purple-100 mb-4 animate-pulse">
                 GEMINI SEDANG MENGANALISIS JADUAL ANDA<span class="ai-loading-dots"></span>
@@ -418,13 +492,12 @@
     </div>
 
     <script>
-        // API KEY LOGIC DITAMBAH UNTUK STANDALONE
         let userApiKey = localStorage.getItem('SmartBell_API_Key') || "";
         
         const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
         const hariSingkat = ["MIN", "SEN", "SEL", "RAB", "KAM", "JUM", "SAB"];
         
-        let savedData = localStorage.getItem('SmartBell_V19_Cloud');
+        let savedData = localStorage.getItem('SmartBell_V20_Universal');
         let schedules = savedData ? JSON.parse(savedData) : [
             { id: 1, time: "07:00", textId: "Perhatian, jam pelajaran pertama segera dimulai. Kepada seluruh siswa, silakan masuk ke dalam kelas.", textEn: "Attention please. The first period is about to begin.", ytUrl: "", days: [1,2,3,4,5] }
         ];
@@ -442,58 +515,26 @@
         let ytPlayerReady = false;
         let ytPlayer;
 
-        // --- API KEY MODAL ---
-        function openApiKeyModal() {
-            const m = document.getElementById('apikey-modal');
-            document.getElementById('input-api-key').value = userApiKey;
-            m.classList.remove('opacity-0', 'pointer-events-none');
-            m.querySelector('div').classList.remove('scale-95');
-        }
+        function openApiKeyModal() { const m = document.getElementById('apikey-modal'); document.getElementById('input-api-key').value = userApiKey; m.classList.remove('opacity-0', 'pointer-events-none'); m.querySelector('div').classList.remove('scale-95'); }
+        function closeApiKeyModal() { const m = document.getElementById('apikey-modal'); m.classList.add('opacity-0', 'pointer-events-none'); m.querySelector('div').classList.add('scale-95'); }
+        function saveApiKey() { userApiKey = document.getElementById('input-api-key').value.trim(); localStorage.setItem('SmartBell_API_Key', userApiKey); closeApiKeyModal(); showModal("Berjaya", "API Key anda telah disimpan. Ciri AI Cloud sedia digunakan."); }
 
-        function closeApiKeyModal() {
-            const m = document.getElementById('apikey-modal');
-            m.classList.add('opacity-0', 'pointer-events-none');
-            m.querySelector('div').classList.add('scale-95');
-        }
-
-        function saveApiKey() {
-            userApiKey = document.getElementById('input-api-key').value.trim();
-            localStorage.setItem('SmartBell_API_Key', userApiKey);
-            closeApiKeyModal();
-            showModal("Berjaya", "API Key anda telah disimpan. Ciri AI Cloud sedia digunakan.");
-        }
-
-        // --- YOUTUBE IFRAME API ---
         function onYouTubeIframeAPIReady() {
-            ytPlayer = new YT.Player('yt-player-container', {
-                height: '0', width: '0',
-                playerVars: { 'autoplay': 1, 'controls': 0, 'playsinline': 1 },
-                events: { 'onReady': () => { ytPlayerReady = true; } }
-            });
+            ytPlayer = new YT.Player('yt-player-container', { height: '0', width: '0', playerVars: { 'autoplay': 1, 'controls': 0, 'playsinline': 1 }, events: { 'onReady': () => { ytPlayerReady = true; } } });
         }
 
         function extractVideoID(url) {
             if(!url) return null;
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
+            const match = url.match(regExp); return (match && match[2].length === 11) ? match[2] : null;
         }
 
-        // --- MANAJEMEN LOGO CUSTOM ---
-        function loadCustomLogo() {
-            const savedLogo = localStorage.getItem('SmartBell_Logo');
-            if(savedLogo) document.getElementById('school-logo').src = savedLogo;
-        }
-
+        function loadCustomLogo() { const savedLogo = localStorage.getItem('SmartBell_Logo'); if(savedLogo) document.getElementById('school-logo').src = savedLogo; }
         function handleLogoUpload(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    const dataUrl = e.target.result;
-                    document.getElementById('school-logo').src = dataUrl;
-                    localStorage.setItem('SmartBell_Logo', dataUrl);
-                }
+                reader.onload = function(e) { const dataUrl = e.target.result; document.getElementById('school-logo').src = dataUrl; localStorage.setItem('SmartBell_Logo', dataUrl); }
                 reader.readAsDataURL(file);
             }
         }
@@ -502,10 +543,11 @@
             if (audioUnlocked) return;
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') audioCtx.resume();
+            let silentMsg = new SpeechSynthesisUtterance('a'); silentMsg.volume = 0; silentMsg.rate = 10; silentMsg.onerror = function() {}; window.speechSynthesis.speak(silentMsg);
             audioUnlocked = true;
+            document.body.removeEventListener('click', unlockAudioSystems); document.body.removeEventListener('touchstart', unlockAudioSystems);
         }
-        document.body.addEventListener('click', unlockAudioSystems, { once: true });
-        document.body.addEventListener('touchstart', unlockAudioSystems, { once: true });
+        document.body.addEventListener('click', unlockAudioSystems, { once: true }); document.body.addEventListener('touchstart', unlockAudioSystems, { once: true });
 
         function initUI() {
             const hSel = document.getElementById('hour-select'), mSel = document.getElementById('minute-select');
@@ -514,23 +556,18 @@
             hSel.value = String(new Date().getHours()).padStart(2, '0'); mSel.value = "00";
 
             document.getElementById('volume-slider').addEventListener('input', (e) => {
-                masterVolume = e.target.value / 100;
-                document.getElementById('vol-val').innerText = `${e.target.value}%`;
+                masterVolume = e.target.value / 100; document.getElementById('vol-val').innerText = `${e.target.value}%`;
                 if(ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(e.target.value);
                 if(currentTTSAudio) currentTTSAudio.volume = masterVolume;
             });
             loadCustomLogo();
         }
 
-        // --- CLOUD AUDIO & CHIME ENGINE ---
+        function clearAllTimeouts() { pendingTimeouts.forEach(t => clearTimeout(t)); pendingTimeouts = []; }
+
         function stopCurrentAudio() {
-            isPlayingSequence = false;
-            currentSequenceId++; 
-            
-            if (currentTTSAudio) {
-                currentTTSAudio.pause();
-                currentTTSAudio.currentTime = 0;
-            }
+            isPlayingSequence = false; currentSequenceId++; 
+            if (currentTTSAudio) { currentTTSAudio.pause(); currentTTSAudio.currentTime = 0; }
             if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
             if(ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
             setPlayingState(false);
@@ -542,18 +579,12 @@
             else { if(ind) ind.classList.add('hidden'); if(btn) btn.classList.add('hidden'); }
         }
 
-        function delay(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
+        function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
         function pcmToWav(base64PCM, sampleRate = 24000) {
-            const binaryString = window.atob(base64PCM);
-            const len = binaryString.length;
-            const bytes = new Uint8Array(len);
+            const binaryString = window.atob(base64PCM); const len = binaryString.length; const bytes = new Uint8Array(len);
             for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i);
-            const pcm16 = new Int16Array(bytes.buffer);
-            const wavBuffer = new ArrayBuffer(44 + pcm16.byteLength);
-            const view = new DataView(wavBuffer);
+            const pcm16 = new Int16Array(bytes.buffer); const wavBuffer = new ArrayBuffer(44 + pcm16.byteLength); const view = new DataView(wavBuffer);
             writeString(view, 0, 'RIFF'); view.setUint32(4, 36 + pcm16.byteLength, true); writeString(view, 8, 'WAVE');
             writeString(view, 12, 'fmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true);
             view.setUint32(24, sampleRate, true); view.setUint32(28, sampleRate * 2, true); view.setUint16(32, 2, true); view.setUint16(34, 16, true);
@@ -562,58 +593,47 @@
             return new Blob([view], { type: 'audio/wav' });
         }
 
-        function writeString(view, offset, string) {
-            for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
-        }
+        function writeString(view, offset, string) { for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i)); }
 
-        // GEMINI PREMIUM TTS FETCHER
         async function fetchGeminiTTS(text, voiceName) {
             if (!text || text.trim() === '' || !userApiKey) return null;
             try {
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${userApiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: text }] }],
-                        generationConfig: {
-                            responseModalities: ["AUDIO"],
-                            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceName } } }
-                        }
-                    })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: text }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceName } } } } })
                 });
-                if(!response.ok) return null;
-                const data = await response.json();
-                const inlineData = data.candidates?.[0]?.content?.parts?.[0]?.inlineData;
-                if (inlineData) {
-                    const base64PCM = inlineData.data;
-                    let sampleRate = 24000;
-                    const mimeType = inlineData.mimeType || "";
-                    const rateMatch = mimeType.match(/rate=(\d+)/);
-                    if (rateMatch) sampleRate = parseInt(rateMatch[1]);
-                    const wavBlob = pcmToWav(base64PCM, sampleRate);
-                    return URL.createObjectURL(wavBlob);
+                
+                // PENAMBAHBAIKAN: Paparkan mesej jika kuota atau API salah
+                if(!response.ok) {
+                    if(response.status === 429) throw new Error("Kuota API Habis (Terlalu Banyak Permintaan / Rate Limit)");
+                    if(response.status === 400) throw new Error("API Key Tidak Sah (Cek semula kunci anda)");
+                    throw new Error(`Ralat Pelayan: ${response.status}`);
                 }
-            } catch (e) { console.error("Gemini TTS Error:", e); }
+                
+                const data = await response.json(); const inlineData = data.candidates?.[0]?.content?.parts?.[0]?.inlineData;
+                if (inlineData) {
+                    const base64PCM = inlineData.data; let sampleRate = 24000; const mimeType = inlineData.mimeType || "";
+                    const rateMatch = mimeType.match(/rate=(\d+)/); if (rateMatch) sampleRate = parseInt(rateMatch[1]);
+                    const wavBlob = pcmToWav(base64PCM, sampleRate); return URL.createObjectURL(wavBlob);
+                }
+            } catch (e) { 
+                console.error("Gemini TTS Error:", e); 
+                showModal("Ralat API", e.message || "Gagal menghubungi pelayan suara.");
+            }
             return null;
         }
 
-        // NADA BEL ASINKRON
         function playChimeAsync(type) {
             return new Promise(resolve => {
                 unlockAudioSystems();
                 if(!audioCtx) { resolve(); return; }
-                const now = audioCtx.currentTime;
-                const model = document.getElementById('bell-model-select').value;
-                let waitTime = 0;
+                const now = audioCtx.currentTime; const model = document.getElementById('bell-model-select').value; let waitTime = 0;
 
                 function playNote(freq, start, dur, type='sine', attack=0.05) {
                     const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
                     osc.type = type; osc.frequency.setValueAtTime(freq, start);
-                    gain.gain.setValueAtTime(0, start);
-                    gain.gain.linearRampToValueAtTime(0.6 * masterVolume, start + attack);
-                    gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
-                    osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.start(start); osc.stop(start + dur + 0.1);
+                    gain.gain.setValueAtTime(0, start); gain.gain.linearRampToValueAtTime(0.6 * masterVolume, start + attack); gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+                    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(start); osc.stop(start + dur + 0.1);
                 }
 
                 function playRichNote(baseFreq, start, dur, harmonics) {
@@ -621,11 +641,8 @@
                         const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
                         osc.type = 'sine'; osc.frequency.setValueAtTime(baseFreq * h.ratio, start);
                         const peakVol = 0.4 * masterVolume * h.amp; const actualDur = dur * h.decay; 
-                        gain.gain.setValueAtTime(0, start);
-                        gain.gain.linearRampToValueAtTime(peakVol, start + 0.05); 
-                        gain.gain.exponentialRampToValueAtTime(0.001, start + actualDur); 
-                        osc.connect(gain); gain.connect(audioCtx.destination);
-                        osc.start(start); osc.stop(start + actualDur + 0.1);
+                        gain.gain.setValueAtTime(0, start); gain.gain.linearRampToValueAtTime(peakVol, start + 0.05); gain.gain.exponentialRampToValueAtTime(0.001, start + actualDur); 
+                        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(start); osc.stop(start + actualDur + 0.1);
                     });
                 }
 
@@ -659,14 +676,12 @@
                 const osc1 = audioCtx.createOscillator(), gain1 = audioCtx.createGain();
                 osc1.type = 'sine'; osc1.frequency.setValueAtTime(1046.50, now);
                 gain1.gain.setValueAtTime(0, now); gain1.gain.linearRampToValueAtTime(0.6*masterVolume, now+0.02); gain1.gain.exponentialRampToValueAtTime(0.001, now+1.5);
-                osc1.connect(gain1); gain1.connect(audioCtx.destination);
-                osc1.start(now); osc1.stop(now+1.6);
+                osc1.connect(gain1); gain1.connect(audioCtx.destination); osc1.start(now); osc1.stop(now+1.6);
                 
                 const osc2 = audioCtx.createOscillator(), gain2 = audioCtx.createGain();
                 osc2.type = 'sine'; osc2.frequency.setValueAtTime(1567.98, now+0.2);
                 gain2.gain.setValueAtTime(0, now+0.2); gain2.gain.linearRampToValueAtTime(0.6*masterVolume, now+0.22); gain2.gain.exponentialRampToValueAtTime(0.001, now+2.2);
-                osc2.connect(gain2); gain2.connect(audioCtx.destination);
-                osc2.start(now+0.2); osc2.stop(now+2.3);
+                osc2.connect(gain2); gain2.connect(audioCtx.destination); osc2.start(now+0.2); osc2.stop(now+2.3);
                 
                 setTimeout(resolve, 1500);
             });
@@ -674,10 +689,8 @@
 
         function playWavAudioAsync(url) {
             return new Promise(resolve => {
-                currentTTSAudio = new Audio(url);
-                currentTTSAudio.volume = masterVolume;
-                currentTTSAudio.onended = () => { resolve(); };
-                currentTTSAudio.onerror = () => { console.error("Ralat Main Audio"); resolve(); };
+                currentTTSAudio = new Audio(url); currentTTSAudio.volume = masterVolume;
+                currentTTSAudio.onended = () => { resolve(); }; currentTTSAudio.onerror = () => { console.error("Ralat Main Audio"); resolve(); };
                 currentTTSAudio.play().catch(e => { console.error("Autoplay disekat:", e); resolve(); });
             });
         }
@@ -687,41 +700,46 @@
                 const cleanText = text.replace(/[*_~`#\[\]{}()<>|\\]/g, '');
                 if (window.speechSynthesis.paused) window.speechSynthesis.resume();
                 const msg = new SpeechSynthesisUtterance(cleanText);
-                msg.lang = langType === 'id' ? 'id-ID' : 'en-US';
-                msg.volume = masterVolume;
-                msg.onend = () => resolve();
-                msg.onerror = () => resolve();
+                msg.lang = langType === 'id' ? 'id-ID' : 'en-US'; msg.volume = masterVolume;
+                msg.onend = () => resolve(); msg.onerror = () => resolve();
                 window.speechSynthesis.speak(msg);
             });
         }
 
-        // CORE SEQUENCE LOGIC 
         async function playAnnouncementSequence(tId, tEn, ytUrl = null) {
-            stopCurrentAudio();
-            isPlayingSequence = true;
-            setPlayingState(true);
-            
-            currentSequenceId++;
-            let seqId = currentSequenceId;
+            stopCurrentAudio(); isPlayingSequence = true; setPlayingState(true);
+            currentSequenceId++; let seqId = currentSequenceId;
 
             let idVoice = document.getElementById('voice-id-select').value;
             let enVoice = document.getElementById('voice-en-select').value;
             
             let pId = tId ? `Bacakan pengumuman ini dengan jelas dan formal: ${tId}` : null;
-            let pEn = tEn ? `Read this school announcement clearly and formally: ${tEn}` : null;
+            let pEn = tEn ? `Read this announcement clearly and formally: ${tEn}` : null;
 
-            let idAudioPromise = pId ? fetchGeminiTTS(pId, idVoice) : Promise.resolve(null);
-            let enAudioPromise = pEn ? fetchGeminiTTS(pEn, enVoice) : Promise.resolve(null);
+            document.getElementById('ai-loading-status').classList.remove('hidden');
+            
+            // PENAMBAHBAIKAN: Fetch secara bergilir untuk elak had kuota (Rate Limit) percuma
+            let idAudioUrl = null;
+            if (pId) {
+                idAudioUrl = await fetchGeminiTTS(pId, idVoice);
+            }
+            
+            // Jeda 1 saat antara permintaan API untuk elak ralat "429 Too Many Requests"
+            if (pId && pEn && isPlayingSequence) {
+                await delay(1000); 
+            }
+
+            let enAudioUrl = null;
+            if (pEn && isPlayingSequence) {
+                enAudioUrl = await fetchGeminiTTS(pEn, enVoice);
+            }
 
             await playChimeAsync('start');
             if (seqId !== currentSequenceId || !isPlayingSequence) return;
+            document.getElementById('ai-loading-status').classList.add('hidden');
 
-            const idAudioUrl = await idAudioPromise;
-            if (seqId !== currentSequenceId || !isPlayingSequence) return;
-
-            if (idAudioUrl) {
-                await playWavAudioAsync(idAudioUrl);
-            } else if (tId) {
+            if (idAudioUrl) { await playWavAudioAsync(idAudioUrl); } 
+            else if (tId) {
                 if(!userApiKey) showModal("Pemberitahuan", "Memainkan suara offline kerana API Key tiada.");
                 await fallbackSpeakSingleText(tId, 'id');
             }
@@ -732,14 +750,8 @@
                 await playSeparatorChimeAsync();
                 if (seqId !== currentSequenceId || !isPlayingSequence) return;
                 
-                const enAudioUrl = await enAudioPromise;
-                if (seqId !== currentSequenceId || !isPlayingSequence) return;
-                
-                if (enAudioUrl) {
-                    await playWavAudioAsync(enAudioUrl);
-                } else {
-                    await fallbackSpeakSingleText(tEn, 'en');
-                }
+                if (enAudioUrl) { await playWavAudioAsync(enAudioUrl); } 
+                else { await fallbackSpeakSingleText(tEn, 'en'); }
             }
 
             if (seqId !== currentSequenceId || !isPlayingSequence) return;
@@ -774,10 +786,9 @@
                 icon.innerHTML = `<span class="flex h-4 w-4 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-300 opacity-75"></span><span class="relative inline-flex rounded-full h-4 w-4 bg-white"></span></span>`;
                 text.innerText = "SISTEM AKTIF: MATIKAN";
                 btn.classList.replace('bg-blue-600', 'bg-slate-800'); btn.classList.replace('hover:bg-blue-700', 'hover:bg-slate-700'); btn.classList.replace('shadow-blue-600/30', 'shadow-slate-800/30');
-                playAnnouncementSequence("Sistem siar raya pintar diaktifkan.", null);
+                playAnnouncementSequence("Sistem siar raya universal diaktifkan.", null);
             } else {
-                systemActive = false;
-                stopCurrentAudio();
+                systemActive = false; stopCurrentAudio();
                 icon.innerHTML = `<span class="bg-white/20 p-1.5 rounded-lg"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg></span>`;
                 text.innerText = "AKTIFKAN SISTEM";
                 btn.classList.replace('bg-slate-800', 'bg-blue-600'); btn.classList.replace('hover:bg-slate-700', 'hover:bg-blue-700'); btn.classList.replace('shadow-slate-800/30', 'shadow-blue-600/30');
@@ -837,6 +848,8 @@
             else if(type === 'istirahat') { tid = "Perhatian. Waktu istirahat telah tiba. Selamat beristirahat."; ten = "Attention please. Break time has arrived. Have a good rest."; }
             else if(type === 'ibadah') { tid = "Perhatian. Waktu istirahat dan ibadah telah tiba. Kepada seluruh siswa Muslim disilakan menuju masjid."; ten = "Attention please. It is time for break and prayer."; }
             else if(type === 'pulang') { tid = "Perhatian. Seluruh kegiatan belajar mengajar hari ini telah selesai. Selamat pulang dan hati-hati di jalan."; ten = "Attention please. All learning activities for today have ended."; }
+            else if(type === 'boarding') { tid = "Perhatian. Para penumpang pesawat udara yang telah memiliki pas masuk, dipersilakan naik ke pesawat udara sekarang."; ten = "Your attention please. Passengers with boarding passes are now invited to board the aircraft."; }
+            else if(type === 'delay') { tid = "Mohon maaf atas ketidaknyamanan ini. Terdapat keterlambatan keberangkatan untuk penerbangan selanjutnya karena alasan operasional."; ten = "We apologize for the inconvenience. There is a departure delay for the next flight due to operational reasons."; }
             
             playAnnouncementSequence(tid, ten);
         }
@@ -848,14 +861,34 @@
             const role = document.getElementById('call-role').value, name = document.getElementById('call-name').value.trim(), location = document.getElementById('call-location').value;
             if (!name) { showModal("Perhatian", "Silakan masukkan nama yang ingin dipanggil."); return; }
             let idRole = "Siswa", enRole = "Student";
-            if (role === "guru") { idRole = "Bapak/Ibu Guru"; enRole = "Teacher"; }
-            if (role === "staf") { idRole = "Staf atau Karyawan"; enRole = "Staff member"; }
+            if (role === "guru") { idRole = "Bapak/Ibu Guru"; enRole = "Teacher"; } else if (role === "staf") { idRole = "Staf atau Karyawan"; enRole = "Staff member"; }
             let enLocation = location;
             if (location === "Meja Piket") enLocation = "the Picket Desk"; else if (location === "Ruang Tata Usaha") enLocation = "the Administration Office"; else if (location === "Ruang Kepala Sekolah") enLocation = "the Principal's Office"; else if (location === "Ruang Majelis Guru") enLocation = "the Teacher's Room"; else if (location === "Ruang Bimbingan Konseling") enLocation = "the Counseling Room"; else if (location === "Perpustakaan") enLocation = "the Library"; else if (location === "UKS") enLocation = "the School Clinic";
             const textId = `Perhatian. Panggilan ditujukan kepada ${idRole} atas nama ${name}. Sekali lagi, kepada ${idRole} atas nama ${name}, harap segera menuju ke ${location} sekarang juga. Terima kasih.`;
             const textEn = `Attention please. Calling for ${enRole}, ${name}. Once again, ${enRole} ${name}, please proceed to ${enLocation} immediately. Thank you.`;
-            closeCallModal();
-            playAnnouncementSequence(textId, textEn);
+            closeCallModal(); playAnnouncementSequence(textId, textEn);
+        }
+
+        function openAirportModal() { const m = document.getElementById('airport-modal'); m.classList.remove('opacity-0', 'pointer-events-none'); m.querySelector('div').classList.remove('scale-95'); }
+        function closeAirportModal() { const m = document.getElementById('airport-modal'); m.classList.add('opacity-0', 'pointer-events-none'); m.querySelector('div').classList.add('scale-95'); }
+        
+        function executeAirportCall() {
+            const name = document.getElementById('apt-name').value.trim(), flight = document.getElementById('apt-flight').value.trim(), dest = document.getElementById('apt-dest').value.trim(), gate = document.getElementById('apt-gate').value.trim();
+            if (!name || !flight || !dest || !gate) { showModal("Perhatian", "Sila lengkapkan semua butiran penerbangan."); return; }
+            const textId = `Panggilan penumpang. Kepada penumpang atas nama ${name}, penumpang pesawat udara ${flight} tujuan ${dest}. Dimohon segera menuju ke pintu keberangkatan ${gate} sekarang juga. Terima kasih.`;
+            const textEn = `Passenger announcement. Passenger ${name}, traveling on flight ${flight} to ${dest}. Please proceed to departure gate ${gate} immediately. Thank you.`;
+            closeAirportModal(); playAnnouncementSequence(textId, textEn);
+        }
+
+        function openQueueModal() { const m = document.getElementById('queue-modal'); m.classList.remove('opacity-0', 'pointer-events-none'); m.querySelector('div').classList.remove('scale-95'); }
+        function closeQueueModal() { const m = document.getElementById('queue-modal'); m.classList.add('opacity-0', 'pointer-events-none'); m.querySelector('div').classList.add('scale-95'); }
+        
+        function executeQueueCall() {
+            const qNum = document.getElementById('q-num').value.trim(), qLoc = document.getElementById('q-loc').value.trim();
+            if (!qNum || !qLoc) { showModal("Perhatian", "Sila masukkan nombor giliran dan lokasi loket."); return; }
+            const textId = `Nomor antrean, ${qNum}. Silakan menuju ke, ${qLoc}.`;
+            const textEn = `Queue number, ${qNum}. Please proceed to, ${qLoc}.`;
+            closeQueueModal(); playAnnouncementSequence(textId, textEn);
         }
 
         // --- CRUD LOGIC ---
@@ -910,7 +943,7 @@
                 schedules.push({ id: Date.now(), time: `${h}:${m}`, textId: tid, textEn: ten, ytUrl: yt, days });
                 document.getElementById('input-text-id').value = ''; document.getElementById('input-text-en').value = ''; document.getElementById('input-yt-url').value = '';
             }
-            localStorage.setItem('SmartBell_V19_Cloud', JSON.stringify(schedules));
+            localStorage.setItem('SmartBell_V20_Universal', JSON.stringify(schedules));
             renderSchedules(); updateNextBellDisplay();
         }
 
@@ -941,7 +974,7 @@
             const btn = document.getElementById('btn-translate'); const originalHtml = btn.innerHTML;
             btn.innerHTML = "Memproses..."; btn.disabled = true; btn.classList.add('opacity-70');
             try {
-                const sys = "Terjemahkan pengumuman sekolah ini ke English formal. Pendek dan padat. Tanpa markdown.";
+                const sys = "Terjemahkan pengumuman ke English formal. Pendek dan padat. Tanpa markdown.";
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${userApiKey}`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: t }] }], systemInstruction: { parts: [{ text: sys }] } })
@@ -960,30 +993,34 @@
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${userApiKey}`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: t }] }], systemInstruction: { parts: [{ text: "Perbaiki teks pengumuman sekolah Indonesia ini agar resmi dan sopan. Mulai dengan 'Perhatian'. Tanpa markdown." }] } })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: t }] }], systemInstruction: { parts: [{ text: "Perbaiki teks pengumuman agar resmi dan sopan. Tanpa markdown." }] } })
                 });
                 const data = await res.json(); const revised = data.candidates[0].content.parts[0].text;
                 if(revised) document.getElementById('input-text-id').value = revised.trim();
             } catch(e) { console.error(e); } finally { document.getElementById('ai-loading-status').classList.add('hidden'); }
         }
 
+        function useTemplate(type) {
+            const h = document.getElementById('hour-select'), m = document.getElementById('minute-select'); const tid = document.getElementById('input-text-id'), ten = document.getElementById('input-text-en');
+            if(type === 'masuk') { h.value = "07"; m.value="15"; tid.value = "Perhatian. Jam pelajaran akan segera dimulai. Seluruh siswa silakan masuk ke kelas."; ten.value = "Attention please. The class will begin shortly. All students please proceed to your classrooms."; } 
+            else if(type === 'istirahat') { h.value = "10"; m.value="00"; tid.value = "Perhatian. Waktu istirahat telah tiba. Selamat beristirahat."; ten.value = "Attention please. Break time has arrived. Have a good rest."; } 
+            else if(type === 'pulang') { h.value = "14"; m.value="00"; tid.value = "Perhatian. Jam pelajaran telah usai. Selamat pulang dan hati-hati di jalan."; ten.value = "Attention please. School is over for today. Have a safe trip home."; }
+            else if(type === 'boarding') { h.value = "10"; m.value="30"; tid.value = "Perhatian. Para penumpang pesawat udara yang telah memiliki pas masuk, dipersilakan naik ke pesawat udara sekarang."; ten.value = "Your attention please. Passengers with boarding passes are now invited to board the aircraft."; }
+        }
+
         async function openSmartScheduleModal() {
             const m = document.getElementById('smart-schedule-modal');
-            m.classList.remove('opacity-0', 'pointer-events-none');
-            m.querySelector('div').classList.remove('scale-95');
+            m.classList.remove('opacity-0', 'pointer-events-none'); m.querySelector('div').classList.remove('scale-95');
         }
 
         function closeSmartScheduleModal() {
             const m = document.getElementById('smart-schedule-modal');
-            m.classList.add('opacity-0', 'pointer-events-none');
-            m.querySelector('div').classList.add('scale-95');
+            m.classList.add('opacity-0', 'pointer-events-none'); m.querySelector('div').classList.add('scale-95');
         }
 
         async function generateBulkSchedule() {
             if(!userApiKey) { 
-                closeSmartScheduleModal();
-                showModal("API Key Diperlukan", "Sila masukkan Gemini API Key di bahagian tetapan (Ikon Kunci) untuk menggunakan AI Generator."); 
-                return; 
+                closeSmartScheduleModal(); showModal("API Key Diperlukan", "Sila masukkan Gemini API Key di bahagian tetapan (Ikon Kunci) untuk menggunakan AI Generator."); return; 
             }
             const prompt = document.getElementById('smart-schedule-prompt').value;
             if(!prompt) { showModal("Perhatian", "Sila masukkan penerangan jadual anda."); return; }
@@ -1004,7 +1041,7 @@
                     newSchedules.forEach(ns => {
                         schedules.push({ id: Date.now() + Math.floor(Math.random() * 10000), time: ns.time || "00:00", textId: ns.textId || "Pengumuman", textEn: ns.textEn || "", ytUrl: "", days: ns.days || [1,2,3,4,5] });
                     });
-                    localStorage.setItem('SmartBell_V19_Cloud', JSON.stringify(schedules));
+                    localStorage.setItem('SmartBell_V20_Universal', JSON.stringify(schedules));
                     renderSchedules(); updateNextBellDisplay(); closeSmartScheduleModal(); document.getElementById('smart-schedule-prompt').value = '';
                     showModal("Berjaya!", `Menambahkan ${newSchedules.length} jadual baharu.`);
                 }
@@ -1025,15 +1062,11 @@
             m.classList.remove('opacity-0', 'pointer-events-none');
         }
 
-        function confirmDelete(id) { showModal("Hapus?", "Data ini akan terhapus kekal.", true, () => { schedules = schedules.filter(x => x.id !== id); localStorage.setItem('SmartBell_V19_Cloud', JSON.stringify(schedules)); renderSchedules(); updateNextBellDisplay(); }); }
-        function confirmReset() { showModal("Reset?", "Semua jadwal akan dikosongkan.", true, () => { localStorage.removeItem('SmartBell_V19_Cloud'); location.reload(); }); }
+        function confirmDelete(id) { showModal("Hapus?", "Data ini akan terhapus kekal.", true, () => { schedules = schedules.filter(x => x.id !== id); localStorage.setItem('SmartBell_V20_Universal', JSON.stringify(schedules)); renderSchedules(); updateNextBellDisplay(); }); }
+        function confirmReset() { showModal("Reset?", "Semua jadwal akan dikosongkan.", true, () => { localStorage.removeItem('SmartBell_V20_Universal'); location.reload(); }); }
         function previewSchedule(id) { const s = schedules.find(x => x.id === id); playAnnouncementSequence(s.textId, s.textEn, s.ytUrl); }
         function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-        function useTemplate(type) {
-            const h = document.getElementById('hour-select'), m = document.getElementById('minute-select'); const tid = document.getElementById('input-text-id'), ten = document.getElementById('input-text-en');
-            if(type === 'masuk') { h.value = "07"; m.value="15"; tid.value = "Perhatian. Jam pelajaran akan segera dimulai. Seluruh siswa silakan masuk ke kelas."; ten.value = "Attention please. The class will begin shortly. All students please proceed to your classrooms."; } else if(type === 'istirahat') { h.value = "10"; m.value="00"; tid.value = "Perhatian. Waktu istirahat telah tiba. Selamat beristirahat."; ten.value = "Attention please. Break time has arrived. Have a good rest."; } else if(type === 'pulang') { h.value = "14"; m.value="00"; tid.value = "Perhatian. Jam pelajaran telah usai. Selamat pulang dan hati-hati di jalan."; ten.value = "Attention please. School is over for today. Have a safe trip home."; }
-        }
-
+        
         window.onload = () => {
             initUI(); renderSchedules(); updateClock(); updateNextBellDisplay();
             document.getElementById('current-day-display').innerText = hariIndo[new Date().getDay()].toUpperCase();
