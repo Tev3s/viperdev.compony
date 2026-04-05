@@ -366,7 +366,28 @@
                 }
             } catch (error) {
                 console.error("Gagal Login:", error);
-                if(error.code !== 'auth/popup-closed-by-user') {
+                
+                // Penanganan Khusus Error Domain Tidak Dikenal
+                if (error.code === 'auth/unauthorized-domain') {
+                    const domain = window.location.hostname || "domain saat ini";
+                    showGlobalToast(`Akses Diblokir Firebase: Domain belum diizinkan.`, 'error');
+                    
+                    // Tampilkan instruksi langkah-demi-langkah langsung di bawah tombol login
+                    const existingInstruction = document.getElementById('domain-instruction');
+                    if (!existingInstruction) {
+                        btnGoogleLogin.insertAdjacentHTML('afterend', `
+                            <div id="domain-instruction" class="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-left text-xs text-red-200 leading-relaxed">
+                                <strong class="text-red-400 text-sm block mb-1">⚠️ Tindakan Diperlukan:</strong>
+                                Firebase memblokir login. Anda wajib mendaftarkan alamat web ini ke sistem keamanan Firebase Anda.<br><br>
+                                1. Buka <b>Firebase Console</b>.<br>
+                                2. Masuk ke menu <b>Authentication</b> > <b>Settings</b>.<br>
+                                3. Klik menu <b>Authorized domains</b>.<br>
+                                4. Klik "Add domain" dan masukkan teks (copy) di bawah ini:<br>
+                                <code class="text-white bg-black/60 px-2 py-1.5 rounded mt-2 block font-mono text-center select-all">${domain}</code>
+                            </div>
+                        `);
+                    }
+                } else if(error.code !== 'auth/popup-closed-by-user') {
                     showGlobalToast(`Terjadi kesalahan sistem: ${error.message}`, 'error');
                 }
             } finally {
