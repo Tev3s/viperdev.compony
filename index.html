@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viperdev Company | Portal Klien & Admin</title>
+    <title>Viperdev Company | Portal Klien & Web Agency</title>
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -39,9 +39,12 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         
-        /* Animasi Tabel/List */
+        /* Animasi */
         .list-item-enter { animation: fadeUp 0.3s ease-out forwards; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scroll Margin untuk Navbar Fixed */
+        section { scroll-margin-top: 5rem; }
     </style>
 </head>
 <body class="antialiased font-sans selection:bg-primary selection:text-white">
@@ -53,45 +56,247 @@
     <!-- VIEW 1: LANDING PAGE -->
     <!-- ========================================== -->
     <div id="landing-view" class="view-section active-view transition-opacity duration-500">
-        <nav class="fixed w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-gray-200">
+        
+        <!-- NAVBAR PUBLIC -->
+        <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-gray-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-20">
                     <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
                         <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center"><i class="fa-solid fa-code text-primary text-xl"></i></div>
                         <span class="font-bold text-2xl tracking-wider text-slate-800">VIPER<span class="text-primary">DEV</span></span>
                     </div>
-                    <div>
+                    
+                    <div class="hidden md:flex items-center space-x-8">
+                        <a href="#tentang" class="text-sm font-bold text-slate-600 hover:text-primary transition-colors">Tentang Kami</a>
+                        <a href="#layanan" class="text-sm font-bold text-slate-600 hover:text-primary transition-colors">Layanan</a>
+                        <a href="#portofolio" class="text-sm font-bold text-slate-600 hover:text-primary transition-colors">Portofolio</a>
                         <button onclick="triggerLogin()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg flex items-center gap-2 transition-transform hover:-translate-y-0.5">
                             <i class="fa-brands fa-google text-red-400"></i> Client Portal
                         </button>
+                    </div>
+
+                    <div class="md:hidden flex items-center">
+                        <button onclick="triggerLogin()" class="bg-primary text-white p-2.5 rounded-lg text-sm font-bold shadow-md"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
                     </div>
                 </div>
             </div>
         </nav>
 
-        <section class="pt-32 pb-20 md:pt-48 md:pb-32 px-4 flex flex-col items-center justify-center min-h-screen text-center relative overflow-hidden bg-slate-50">
+        <!-- HERO SECTION -->
+        <section id="beranda" class="pt-32 pb-20 md:pt-48 md:pb-32 px-4 flex flex-col items-center justify-center min-h-[90vh] text-center relative overflow-hidden bg-slate-50">
             <div class="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[80px] -z-10"></div>
             <div class="absolute bottom-10 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] -z-10"></div>
             
             <div class="max-w-4xl mx-auto z-10">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 text-slate-600 text-xs md:text-sm font-semibold mb-8 shadow-sm">
-                    <span class="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span> Sistem Portal Terintegrasi
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 text-slate-600 text-xs md:text-sm font-semibold mb-8 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    <span class="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span> Agensi Digital & Pengembangan Web
                 </div>
                 <h1 class="text-4xl md:text-7xl font-extrabold mb-6 leading-tight text-slate-900 tracking-tight">
-                    Ekosistem Digital <br /> <span class="text-gradient">Eksklusif</span>
+                    Eksekusi Digital <br /> <span class="text-gradient">Tanpa Batas</span>
                 </h1>
                 <p class="text-slate-500 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
-                    Masuk ke portal Viperdev untuk mengajukan proyek, melacak progress pengembangan web, dan berdiskusi langsung dengan tim ahli kami.
+                    Kami merancang dan membangun platform website performa tinggi. Mulai dari Company Profile hingga Sistem Top-Up Game otomatis yang kompleks.
                 </p>
-                <button onclick="triggerLogin()" class="bg-primary hover:bg-emerald-600 text-white px-8 py-4 rounded-full font-bold transition-all shadow-xl shadow-primary/30 hover:-translate-y-1 flex items-center gap-3 text-lg mx-auto">
-                    <i class="fa-solid fa-right-to-bracket"></i> Masuk ke Dashboard
-                </button>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button onclick="triggerLogin()" class="w-full sm:w-auto bg-primary hover:bg-emerald-600 text-white px-8 py-4 rounded-full font-bold transition-all shadow-xl shadow-primary/30 hover:-translate-y-1 flex justify-center items-center gap-3 text-lg">
+                        Mulai Konsultasi <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <a href="#portofolio" class="w-full sm:w-auto bg-white hover:bg-slate-50 border border-gray-200 text-slate-700 px-8 py-4 rounded-full font-bold transition-all shadow-sm flex justify-center items-center">
+                        Lihat Karya Kami
+                    </a>
+                </div>
             </div>
         </section>
+
+        <!-- TENTANG KAMI (NEW) -->
+        <section id="tentang" class="py-24 bg-white border-y border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 class="text-sm font-bold text-primary tracking-widest uppercase mb-2">Tentang Viperdev</h2>
+                        <h3 class="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">Lebih Dari Sekadar Programmer. Kami Arsitek Digital Anda.</h3>
+                        <p class="text-slate-600 mb-6 leading-relaxed text-lg">
+                            Didirikan dengan visi untuk menghadirkan teknologi *enterprise* kepada bisnis skala menengah dan *startup*. Viperdev dipimpin oleh ahli teknologi yang memahami bahwa website bukan sekadar pajangan, melainkan mesin pencetak profit.
+                        </p>
+                        <p class="text-slate-600 mb-8 leading-relaxed">
+                            Kami berspesialisasi dalam membangun arsitektur website yang tangguh, sistem pembayaran otomatis (QRIS), dan antarmuka pengguna yang memukau. Dengan pendekatan *Single Page Application*, kami memastikan platform Anda memuat dalam hitungan milidetik.
+                        </p>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="border-l-4 border-primary pl-4">
+                                <div class="text-3xl font-extrabold text-slate-900 mb-1">100%</div>
+                                <div class="text-sm font-bold text-slate-500">Kode Teroptimasi</div>
+                            </div>
+                            <div class="border-l-4 border-blue-500 pl-4">
+                                <div class="text-3xl font-extrabold text-slate-900 mb-1">24/7</div>
+                                <div class="text-sm font-bold text-slate-500">Dukungan Klien</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <!-- Abstrak Dekorasi -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-blue-500/20 rounded-3xl transform rotate-3 scale-105 -z-10"></div>
+                        <div class="bg-slate-900 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+                            <div class="absolute -right-10 -top-10 text-9xl text-white/5"><i class="fa-solid fa-fingerprint"></i></div>
+                            <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-white text-2xl mb-8 backdrop-blur-sm"><i class="fa-solid fa-shield-halved"></i></div>
+                            <h4 class="text-2xl font-bold text-white mb-4">Filosofi Keamanan</h4>
+                            <p class="text-slate-400 mb-6 leading-relaxed">Sistem klien dan database diamankan menggunakan infrastruktur Google Cloud & Firebase. Data terenkripsi End-to-End.</p>
+                            <div class="flex items-center gap-3 border-t border-white/10 pt-6">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-emerald-800 flex items-center justify-center text-white font-bold border-2 border-slate-900">T</div>
+                                <div>
+                                    <div class="text-white font-bold">Teves</div>
+                                    <div class="text-primary text-xs font-semibold">Lead Developer & Founder</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LAYANAN (RESTORED & ENHANCED) -->
+        <section id="layanan" class="py-24 bg-slate-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-sm font-bold text-primary tracking-widest uppercase mb-2">Spesialisasi Kami</h2>
+                    <h3 class="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4">Solusi Teknologi Tepat Guna</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Service 1 -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+                        <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-primary text-3xl mb-6 border border-emerald-100"><i class="fa-solid fa-code"></i></div>
+                        <h3 class="text-xl font-bold mb-3 text-slate-800">Web App Development</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-4">Pengembangan sistem berbasis web kustom yang ringan, responsif, dan mudah dikelola dengan CMS terintegrasi.</p>
+                        <ul class="text-xs text-slate-400 space-y-2 font-semibold">
+                            <li><i class="fa-solid fa-check text-primary mr-2"></i> Company Profile</li>
+                            <li><i class="fa-solid fa-check text-primary mr-2"></i> Sistem Manajemen Data (SaaS)</li>
+                        </ul>
+                    </div>
+                    <!-- Service 2 -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+                        <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 text-3xl mb-6 border border-blue-100"><i class="fa-solid fa-wallet"></i></div>
+                        <h3 class="text-xl font-bold mb-3 text-slate-800">Top-Up & PPOB System</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-4">Pembuatan platform transaksi digital otomasi tinggi dengan integrasi API Game dan Payment Gateway.</p>
+                        <ul class="text-xs text-slate-400 space-y-2 font-semibold">
+                            <li><i class="fa-solid fa-check text-blue-500 mr-2"></i> Auto Payment QRIS</li>
+                            <li><i class="fa-solid fa-check text-blue-500 mr-2"></i> Sistem Reseller & Saldo</li>
+                        </ul>
+                    </div>
+                    <!-- Service 3 -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+                        <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-500 text-3xl mb-6 border border-purple-100"><i class="fa-solid fa-pen-nib"></i></div>
+                        <h3 class="text-xl font-bold mb-3 text-slate-800">Premium UI/UX Design</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-4">Desain antarmuka pengguna yang tidak hanya menawan secara visual, tetapi juga intuitif untuk meningkatkan konversi.</p>
+                        <ul class="text-xs text-slate-400 space-y-2 font-semibold">
+                            <li><i class="fa-solid fa-check text-purple-500 mr-2"></i> Wireframing & Prototyping</li>
+                            <li><i class="fa-solid fa-check text-purple-500 mr-2"></i> Mobile-First Approach</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PORTOFOLIO (MATANG & PROFESSIONAL) -->
+        <section id="portofolio" class="py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-16">
+                    <div class="max-w-2xl">
+                        <h2 class="text-sm font-bold text-primary tracking-widest uppercase mb-2">Karya Unggulan</h2>
+                        <h3 class="text-3xl md:text-5xl font-extrabold text-slate-900">Portofolio Viperdev</h3>
+                    </div>
+                    <button onclick="triggerLogin()" class="hidden md:inline-flex items-center gap-2 text-primary font-bold hover:text-emerald-700 transition-colors mt-4 md:mt-0">
+                        Mulai Proyek Serupa <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    
+                    <!-- Proyek 1: Vipercell -->
+                    <div class="group rounded-3xl bg-slate-50 border border-gray-200 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500">
+                        <div class="h-64 bg-slate-200 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] relative overflow-hidden flex items-center justify-center">
+                            <!-- Mockup Abstrak -->
+                            <div class="w-3/4 h-48 bg-white rounded-t-2xl shadow-lg border border-gray-200 transform translate-y-8 group-hover:translate-y-4 transition-transform duration-500 p-4">
+                                <div class="flex justify-between items-center mb-4">
+                                    <div class="font-extrabold text-slate-800 text-lg">Vipercell</div>
+                                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary"><i class="fa-solid fa-gamepad"></i></div>
+                                </div>
+                                <div class="h-16 bg-slate-100 rounded-xl mb-3"></div>
+                                <div class="grid grid-cols-3 gap-2"><div class="h-10 bg-slate-100 rounded-lg"></div><div class="h-10 bg-slate-100 rounded-lg"></div><div class="h-10 bg-slate-100 rounded-lg"></div></div>
+                            </div>
+                            <!-- Live Badge -->
+                            <div class="absolute top-4 right-4 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md flex items-center gap-2">
+                                <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span> Live
+                            </div>
+                        </div>
+                        <div class="p-8">
+                            <div class="text-primary text-sm font-bold mb-2">Digital Top-Up Ecosystem</div>
+                            <h4 class="text-2xl font-extrabold text-slate-900 mb-4">Vipercell Platform</h4>
+                            <p class="text-slate-600 mb-6 text-sm leading-relaxed">
+                                Ekosistem digital revolusioner untuk *gamer*. Dilengkapi dengan integrasi API pihak ketiga untuk pemrosesan order instan, manajemen saldo pengguna, dan sistem *payment gateway* otomatis QRIS yang berjalan 24 jam tanpa henti.
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 px-3 py-1 rounded-full border border-gray-200">HTML/Tailwind</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 px-3 py-1 rounded-full border border-gray-200">Firebase DB</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 px-3 py-1 rounded-full border border-gray-200">API Integration</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Proyek 2: Portal Klien -->
+                    <div class="group rounded-3xl bg-slate-50 border border-gray-200 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500">
+                        <div class="h-64 bg-slate-900 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] relative overflow-hidden flex items-center justify-center">
+                            <!-- Mockup Abstrak -->
+                            <div class="w-3/4 h-48 bg-slate-800 rounded-t-2xl shadow-2xl border border-slate-700 transform translate-y-8 group-hover:translate-y-4 transition-transform duration-500 flex flex-col">
+                                <div class="p-3 border-b border-slate-700 flex items-center gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div><div class="w-3 h-3 rounded-full bg-yellow-500"></div><div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="p-4 flex-1 flex gap-4">
+                                    <div class="w-1/3 bg-slate-700 rounded-lg"></div>
+                                    <div class="w-2/3 flex flex-col gap-2">
+                                        <div class="h-8 bg-slate-700 rounded-lg w-1/2"></div>
+                                        <div class="flex-1 bg-slate-700/50 rounded-lg"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-8">
+                            <div class="text-blue-500 text-sm font-bold mb-2">SaaS & CRM System</div>
+                            <h4 class="text-2xl font-extrabold text-slate-900 mb-4">Viperdev Client Portal</h4>
+                            <p class="text-slate-600 mb-6 text-sm leading-relaxed">
+                                Sistem manajemen hubungan klien (CRM) kustom. Memungkinkan *tracking* proyek secara *real-time*, otentikasi Google yang aman, ruang diskusi privat yang dienkripsi, serta dasbor analitik komprehensif untuk sisi administrator.
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 px-3 py-1 rounded-full border border-gray-200">Single Page App</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 px-3 py-1 rounded-full border border-gray-200">Realtime Firestore</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 px-3 py-1 rounded-full border border-gray-200">Auth & Rules</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA & FOOTER PUBLIC -->
+        <section class="py-20 bg-slate-900 text-center px-4 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[100px] -z-10"></div>
+            <h3 class="text-3xl md:text-5xl font-extrabold text-white mb-6">Siap Mewujudkan Ide Anda?</h3>
+            <p class="text-slate-400 mb-10 max-w-xl mx-auto">Login ke portal sekarang untuk mengajukan permintaan proyek baru dan berdiskusi langsung dengan arsitek kami.</p>
+            <button onclick="triggerLogin()" class="bg-primary hover:bg-emerald-600 text-white px-8 py-4 rounded-full font-bold transition-all shadow-lg flex items-center gap-3 text-lg mx-auto">
+                <i class="fa-brands fa-google text-white"></i> Akses Client Portal
+            </button>
+        </section>
+
+        <footer class="bg-slate-950 pt-12 pb-8 border-t border-white/5 text-center text-slate-500 text-sm font-medium">
+            <div class="flex items-center justify-center gap-2 mb-4">
+                <i class="fa-solid fa-code text-primary"></i> <span class="font-bold text-white tracking-wider">VIPER<span class="text-primary">DEV</span></span>
+            </div>
+            &copy; 2026 Viperdev Company. Built with passion by Teves.
+        </footer>
     </div>
 
+
     <!-- ========================================== -->
-    <!-- VIEW 2: PORTAL DASHBOARD -->
+    <!-- VIEW 2: PORTAL DASHBOARD (Tetap Aman) -->
     <!-- ========================================== -->
     <div id="dashboard-view" class="view-section min-h-screen bg-slate-100 flex-col md:flex-row">
         
@@ -349,7 +554,7 @@
         let activeAdminChatUid = null;
         let unsubscribeChat = null;
 
-        // UI HELPERS (Fixing Toggle Logic)
+        // UI HELPERS
         const showToast = (msg, isSuccess=true) => {
             const t = document.getElementById('global-toast');
             t.textContent = msg;
@@ -359,12 +564,9 @@
         };
 
         window.switchTab = (tabId) => {
-            // Sembunyikan semua tab
             document.querySelectorAll('.dashboard-tab').forEach(el => el.classList.remove('active-tab'));
-            // Tampilkan tab yang dipilih
             document.getElementById(`tab-${tabId}`).classList.add('active-tab');
             
-            // Ubah gaya tombol menu (Sidebar)
             document.querySelectorAll('.nav-btn').forEach(b => {
                 b.classList.remove('bg-primary/10', 'text-primary');
                 b.classList.add('text-slate-600', 'hover:bg-slate-50');
@@ -374,13 +576,11 @@
                 event.currentTarget.classList.add('bg-primary/10', 'text-primary');
             }
 
-            // Tutup sidebar di mobile setelah klik
             if(window.innerWidth < 768) {
                 document.getElementById('sidebar-menu').classList.add('hidden');
             }
         };
 
-        // Mobile Sidebar Toggle
         document.getElementById('mobile-menu-toggle').addEventListener('click', () => {
             const menu = document.getElementById('sidebar-menu');
             menu.classList.toggle('hidden');
@@ -415,7 +615,6 @@
                 currentUser = user;
                 isAdmin = (user.email === ADMIN_EMAIL);
                 
-                // Set Profile
                 await setDoc(doc(db, "users", user.uid), {
                     name: user.displayName, email: user.email, photo: user.photoURL, role: isAdmin ? 'admin' : 'client', lastLogin: serverTimestamp()
                 }, { merge: true });
@@ -424,19 +623,18 @@
                 document.getElementById('user-avatar').src = user.photoURL;
                 document.getElementById('user-role-display').textContent = isAdmin ? 'Super Admin' : 'Klien VIP';
 
-                // Toggling Views (The Bug Fix)
                 landingView.classList.remove('active-view');
-                dashView.classList.add('active-flex'); // Menggunakan display: flex dari class active-flex
+                dashView.classList.add('active-flex');
 
                 if (isAdmin) {
                     document.getElementById('nav-admin').classList.remove('hidden');
                     document.getElementById('nav-client').classList.add('hidden');
-                    switchTab('admin-overview'); // Paksa pindah ke tab pertama admin
+                    switchTab('admin-overview');
                     initAdminDashboard();
                 } else {
                     document.getElementById('nav-client').classList.remove('hidden');
                     document.getElementById('nav-admin').classList.add('hidden');
-                    switchTab('client-overview'); // Paksa pindah ke tab pertama klien
+                    switchTab('client-overview');
                     initClientDashboard();
                 }
                 showToast(`Selamat datang, ${user.displayName}!`);
@@ -466,7 +664,6 @@
         // FITUR KLIEN
         // ==========================================
         const initClientDashboard = () => {
-            // 1. Data Proyek Klien
             const qProj = query(collection(db, "project_requests"), where("userId", "==", currentUser.uid), orderBy("createdAt", "desc"));
             onSnapshot(qProj, (snapshot) => {
                 const list = document.getElementById('client-projects-list');
@@ -497,7 +694,6 @@
                 document.getElementById('client-stat-done').textContent = done;
             });
 
-            // 2. Chat Klien
             const box = document.getElementById('client-chat-box');
             const qChat = query(collection(db, `chats/${currentUser.uid}/messages`), orderBy('createdAt', 'asc'));
             if(unsubscribeChat) unsubscribeChat();
@@ -507,7 +703,6 @@
             });
         };
 
-        // Kirim Proyek Baru
         document.getElementById('project-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button');
@@ -518,11 +713,11 @@
                     userId: currentUser.uid, userName: currentUser.displayName, userEmail: currentUser.email,
                     type: document.getElementById('proj-type').value,
                     desc: document.getElementById('proj-desc').value,
-                    createdAt: serverTimestamp(), status: 'Pending' // Pending, Proses, Selesai
+                    createdAt: serverTimestamp(), status: 'Pending'
                 });
                 showToast("Berhasil! Proyek Anda sedang kami tinjau.", true);
                 e.target.reset();
-                switchTab('client-projects'); // Arahkan ke list proyek
+                switchTab('client-projects');
             } catch(e) { showToast("Gagal menyimpan data. Cek Firestore Rules.", false); }
             btn.innerHTML = ogText; btn.disabled = false;
         });
@@ -542,7 +737,6 @@
         // FITUR ADMIN (SUPER POWER)
         // ==========================================
         const initAdminDashboard = () => {
-            // 1. Data User
             onSnapshot(collection(db, "users"), (snapshot) => {
                 document.getElementById('admin-stat-users').textContent = snapshot.size;
                 const list = document.getElementById('admin-users-list');
@@ -561,7 +755,6 @@
                 });
             });
 
-            // 2. Data Proyek (Full Control)
             const qProj = query(collection(db, "project_requests"), orderBy('createdAt', 'desc'));
             onSnapshot(qProj, (snapshot) => {
                 const list = document.getElementById('admin-projects-list');
@@ -603,7 +796,6 @@
                 document.getElementById('admin-stat-proj-done').textContent = d;
             });
 
-            // 3. Inbox Admin
             const qChat = query(collection(db, "chats"), orderBy('updatedAt', 'desc'));
             onSnapshot(qChat, (snapshot) => {
                 const list = document.getElementById('admin-chat-list');
@@ -629,7 +821,6 @@
             });
         };
 
-        // Fungsi Super Admin: Ubah Status Proyek
         window.updateProjectStatus = async (docId, newStatus) => {
             try {
                 await updateDoc(doc(db, "project_requests", docId), { status: newStatus });
@@ -637,7 +828,6 @@
             } catch(e) { showToast("Gagal memperbarui status.", false); }
         };
 
-        // Fungsi Super Admin: Hapus Proyek
         window.deleteProject = async (docId) => {
             if(confirm("Yakin ingin menghapus data proyek ini secara permanen?")) {
                 try { await deleteDoc(doc(db, "project_requests", docId)); showToast("Data dihapus."); } 
@@ -645,16 +835,13 @@
             }
         };
 
-        // Logic Chat Admin
         window.openAdminChat = async (uid, name) => {
             activeAdminChatUid = uid;
             
-            // Tampilkan Ruangan UI
             const room = document.getElementById('admin-chat-room');
             room.classList.remove('hidden');
             room.classList.add('flex');
             
-            // Sembunyikan list di mobile
             if(window.innerWidth < 768) {
                 document.getElementById('admin-chat-list').parentElement.classList.add('hidden');
             }
@@ -694,7 +881,6 @@
             } catch(e) {}
         };
 
-        // Enter keys
         document.getElementById('client-msg-input')?.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendClientMsg(); });
         document.getElementById('admin-msg-input')?.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendAdminMsg(); });
     </script>
